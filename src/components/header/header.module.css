@@ -1,0 +1,92 @@
+
+.cus_navbar{
+    background-color:#121212;
+    color: #fff !important;;
+}
+
+.cus_navlink{
+    color: #fff!important;
+    font-family: "Russo One", sans-serif;
+    font-weight: 100;
+}
+
+.GameLogo{
+    width: 75px;
+}
+.cus_navlink{
+    color: #fff!important;
+    font-family: "Russo One", sans-serif;
+    font-weight: 100;
+}
+.decentra_link{
+    text-decoration: none;
+}
+.decentra_link span:nth-child(1){
+    font-size: 12px;
+    color: #dbdbdb;
+    text-decoration: none;
+}
+.decentra_link span:nth-child(2){
+    font-size: 12px;
+    color: #ececec;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.decentra_link2{
+    text-decoration: none;
+   /*  */
+}
+.decentra_link2 span:nth-child(1){
+    font-size: 25px;
+    color: #dbdbdb;
+    text-decoration: none;
+}
+.decentra_link2 span:nth-child(2){
+    font-size: 35px;
+    color: #ececec;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.cus_form{
+    background-color:#464646!important;
+    box-shadow: none!important;
+    color: #fff!important;
+    position: relative;
+    padding: 5px 35px!important;
+    border: 0!important;
+    border-radius:20px!important;
+}
+.main_form_tag{
+    position: relative;
+}
+
+.serach_icon{
+    position: absolute;
+     top:20%;
+     transform: translate(-20%);
+     left:5%;
+      font-weight: 900;
+    color: #fff;
+    box-shadow: none!important;
+}
+
+.connect_btn{
+    background-color: #fff!important;
+    color: black;
+    padding: 5px 20px;
+    box-shadow: none!important;
+    font-family: "Russo One", sans-serif;
+    font-weight:500;
+}
+
+
+  .modal_body_cus{
+    background-color:#212529!important;
+    border:none!important;
+  }
+  .offcanvas_cus{
+    background-color:#212529;
+    border:none!important;
+  }

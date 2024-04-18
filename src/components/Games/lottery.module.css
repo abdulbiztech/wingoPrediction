@@ -1,0 +1,171 @@
+.wallet_card{
+text-align: center;
+background-color: aliceblue;
+box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+
+}
+
+.balance_show{
+    display: flex;
+     align-items: center;
+    justify-content: center;
+}
+.balance_show P{
+    margin-bottom: 0;
+    font-size: 30px;
+    font-weight: 600;
+    color: green;
+}
+
+.balance_title{
+    display: flex;
+    align-items: center;
+    grid-gap:10px;
+    justify-content: center;
+}
+.balance_title p{
+    margin-bottom: 0;
+    font-weight: 500;
+    font-size: 17px;
+}
+
+.withbtn{
+    padding: 6px 20px;
+    background-color: #ffffff;
+    border: 1px solid #e97c0a;
+    border-radius: 20px;
+}
+
+.depobtn{
+    padding: 6px 20px;
+    background-color: #e97c0a;
+    border: 1px solid #e97c0a ;
+    color: #fff;
+    border-radius: 20px;
+}
+.time_box_wihing{
+    text-align: center;
+    border-radius: 20px;
+}
+.time_box_wihing p{
+    color: #e97c0a;
+    margin-bottom: 0;
+}
+.time_box_wihing img {
+ width:40px;
+}
+.time_box{
+    margin:20px 0px;
+    display: flex;
+    justify-content: space-evenly;
+    background-color: #fff;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+    padding: 10px 0px;
+
+
+}
+.time_box_wihing.cus_active{
+    background-color:#e775042b;
+    padding: 10px;
+}
+
+.btn_howplay{
+    padding:5px 20px;
+    border: 1px solid orange;
+    border-radius: 20px;
+}
+.play_box{
+    background-color: #e775042b;
+    /* text-align: center; */
+    padding: 10px 10px;
+    height:170px;
+    border-radius: 10px;
+}
+.how_box{
+    text-align: center;
+}
+.win_res{
+  margin: 10px 0px;
+}
+.number_img {
+    display: flex;
+    grid-gap: 5px;
+}
+.number_img img{
+    width:40px;
+}
+.count_num{
+    padding:10px;
+    margin: 5px;
+    background-color: rgb(255, 255, 255);
+    text-align: end;
+
+
+}
+.remain_box{
+    text-align: end;
+    margin:10px 0px;
+}
+.remain_box p{
+    margin-bottom: 0;
+}
+.bolder_num{
+    font-weight: 600;
+    font-size: 25px;
+}
+
+
+.number_count button:nth-child(1){
+    border-top-left-radius:14px;
+}
+
+.number_count button:nth-child(5){
+    border-bottom-right-radius:14px;
+}
+.number_count{
+    text-align: end;
+}
+.clr_btn_box{
+    background-color: #d9d5d5;
+    display: flex;
+   justify-content: space-around;
+   margin: 10px 0px;
+   padding: 10px;
+}
+.play_num_box{
+    display: flex;
+    justify-content: space-around;
+}
+
+.play_num_box{
+    display: flex;
+    width: 100%;
+    /* justify-content:space-around; */
+}
+.numberbox_img{
+    display: flex;
+    grid-gap:30px;
+     flex-wrap: wrap;
+     justify-content: center;
+     background-color:#e5e5e5;
+     padding: 10px;
+}
+.numberbox_img img{
+    width: 70px;
+}
+
+.num_boxbtn{
+    text-align: center;
+    margin: 5px 0px;
+}
+.num_boxbtn button{
+     margin: 5px;
+}
+.num_play_boxbtn{
+    text-align: center;
+}
+.num_play_boxbtn button{
+    width: 40%;
+    margin: 5px;
+    border-radius: 10px;
+}
