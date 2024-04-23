@@ -1,0 +1,167 @@
+.gameHistory {
+    width: 100%;
+    display: flex;
+    align-content: flex-start;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gameHistory button {
+    width: 100%;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #f2f2f2;
+}
+
+
+.gamehistory_btn {
+    background: #e8e7e8;
+    font-weight: 600;
+    color: #000;
+}
+
+.chart_btn {
+    background: #e8e7e8;
+    font-weight: 600;
+    color: #000;
+}
+
+.myhistory_btn {
+    background: #e8e7e8;
+    font-weight: 600;
+    color: #000;
+}
+
+
+.gamehistory_btn_selected {
+    background: #ec7c01;
+    font-weight: 600;
+    color: #fff;
+}
+
+.gamehistory_btn_selected:hover {
+    color: #fff;
+}
+
+.chart_btn_selected {
+    background: #ec7c01;
+    font-weight: 600;
+    color: #fff;
+}
+
+.chart_btn_selected:hover {
+    color: #fff;
+}
+
+.myhistory_btn_selected {
+    background: #ec7c01;
+    font-weight: 600;
+    color: #fff;
+}
+
+.myhistory_btn_selected:hover {
+    color: #fff;
+}
+
+.numbers {
+    font-size: 24px;
+    font-weight: 700;
+    /* color: rgb(255, 0, 255); */
+}
+
+/* /pagination css */
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination a {
+    color: black;
+    cursor: pointer;
+    margin: 0 5px;
+    padding: 5px;
+    text-decoration: none;
+}
+
+.pagination button {
+    margin-right: 5px;
+    background-color: #ff9901;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination span {
+    margin-right: 5px;
+    padding: 5px 10px;
+    font-size: 16px;
+}
+
+.pagination button:hover {
+    background-color: #ff9901;
+}
+
+.pagination button:disabled {
+    background-color: #aaaaaa;
+    cursor: not-allowed;
+}
+
+span {
+    margin: 0 10px;
+}
+
+
+/* ///my history */
+
+.mygame_history_box {
+    background-color: #8a7373;
+}
+
+.mygame_history_list {
+    display: flex;
+    padding: 7px 7px;
+    height: 60px;
+    -webkit-box-align: center;
+    /* align-items: center; */
+    /* text-align: center; */
+
+}
+
+.mygame_history_item_1 {
+    height: 35px;
+    width: 40px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 10px;
+    color: #fff;
+    font-size: .64rem;
+    /* margin-right: .29333rem; */
+    /* -webkit-box-flex: 0; */
+    /* -webkit-flex: none; */
+    flex: none;
+    background: #6da7f4;
+    font-size: 18px;
+}

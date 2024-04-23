@@ -246,7 +246,16 @@ slider */
 
 
  }
+ .heading{
+    display: flex;
+    align-items: center;
+    text-align: center;
 
+ }
+ .heading img{
+    width: 40px;
+    margin-right: 10px;
+ }
  .heading_side {
      color: #fff;
      font-size: 18px;

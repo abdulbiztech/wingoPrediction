@@ -104,7 +104,8 @@ const Banner = () => {
       <div className="container my-5">
         <div className="row">
           <div className="col-12">
-            <div className="heading">
+            <div className={` ${styles.heading}`}>
+              <img src="/src/assets/lottery_logo.png" alt="" />
               <h3>Lottery</h3>
             </div>
           </div>
