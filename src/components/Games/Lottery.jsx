@@ -3,6 +3,7 @@ import Header from "../header/Header";
 import styles from "./lottery.module.css";
 import GameHistory from "../GameHistory/GameHistory";
 import { Modal, Button } from "react-bootstrap";
+
 const Lottery = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [time, setTime] = useState(60);
@@ -11,6 +12,9 @@ const Lottery = () => {
   const [count, setCount] = useState(5);
   const [show, setShow] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [selectedButton, setSelectedButton] = useState();
+  const [selectedColor, setSelectedColor] = useState();
+
   const handleItemClick = (index) => {
     setActiveIndex(index);
   };
@@ -38,6 +42,7 @@ const Lottery = () => {
   const seconds = time % 60;
   const tensPlace = Math.floor(seconds / 10);
   const unitsPlace = seconds % 10;
+
   useEffect(() => {
     if (tensPlace === 0 && unitsPlace <= 5) {
       setShow(true);
@@ -45,7 +50,16 @@ const Lottery = () => {
       setShow(false);
     }
   }, [tensPlace, unitsPlace]);
-
+  const getRandomNumber = () => {
+    const randomNumber = Math.floor(Math.random() * 10);
+    setSelectedButton(randomNumber.toString());
+    setShowModal(true);
+    setSelectedColor(
+      randomNumber % 2 === 0
+        ? "linear-gradient(180deg, #40ad72 51.48%, #b659fe 51.49%)"
+        : "#fd565c"
+    );
+  };
   return (
     <>
       <Header />
@@ -163,33 +177,148 @@ const Lottery = () => {
                 )}
                 <div className={`${styles.clr_btn_box}`}>
                   <div className={`${styles.clr_btn}`}>
-                    <button className={`btn ${styles.green}`}> Green</button>
+                    <button
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Green");
+                        setSelectedColor("#40ad72");
+                      }}
+                      className={`btn ${styles.green}`}
+                    >
+                      {" "}
+                      Green
+                    </button>
                   </div>
                   <div className={`${styles.clr_btn}`}>
-                    <button className={`btn ${styles.violet}`}> Violet</button>
+                    <button
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Violet");
+                        setSelectedColor("#b659fe");
+                      }}
+                      className={`btn ${styles.violet}`}
+                    >
+                      {" "}
+                      Violet
+                    </button>
                   </div>
                   <div className={`${styles.clr_btn}`}>
-                    <button className={`btn ${styles.red}`}> Red</button>
+                    <button
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Red");
+                        setSelectedColor("#fd565c");
+                      }}
+                      className={`btn ${styles.red}`}
+                    >
+                      {" "}
+                      Red
+                    </button>
                   </div>
                 </div>
 
                 <div className={` ${styles.play_num_box}`}>
                   <div className={`${styles.numberbox_img}`}>
-                    <img src="/src/assets/number-0.png" alt="" />
-                    <img src="/src/assets/number-1.png" alt="" />
-                    <img src="/src/assets/number-2.png" alt="" />
-                    <img src="/src/assets/number-3.png" alt="" />
-                    <img src="/src/assets/number-4.png" alt="" />
-                    <img src="/src/assets/number-5.png" alt="" />
-                    <img src="/src/assets/number-6.png" alt="" />
-                    <img src="/src/assets/number-7.png" alt="" />
-                    <img src="/src/assets/number-8.png" alt="" />
-                    <img src="/src/assets/number-9.png" alt="" />
+                    <img
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Green");
+                        setSelectedColor(
+                          "linear-gradient(180deg, #FD565C 50.96%, #b659fe 50.97%)"
+                        );
+                      }}
+                      src="/src/assets/number-0.png"
+                      alt=""
+                    />
+                    <img
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Green");
+                        setSelectedColor("#40ad72");
+                      }}
+                      src="/src/assets/number-1.png"
+                      alt=""
+                    />
+                    <img
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Green");
+                        setSelectedColor("#fd565c");
+                      }}
+                      src="/src/assets/number-2.png"
+                      alt=""
+                    />
+                    <img
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Green");
+                        setSelectedColor("#40ad72");
+                      }}
+                      src="/src/assets/number-3.png"
+                      alt=""
+                    />
+                    <img
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Green");
+                        setSelectedColor("#fd565c");
+                      }}
+                      src="/src/assets/number-4.png"
+                      alt=""
+                    />
+                    <img
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Green");
+                        setSelectedColor(
+                          "linear-gradient(180deg, #40ad72 51.48%, #b659fe 51.49%)"
+                        );
+                      }}
+                      src="/src/assets/number-5.png"
+                      alt=""
+                    />
+                    <img
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Green");
+                        setSelectedColor("#fd565c");
+                      }}
+                      src="/src/assets/number-6.png"
+                      alt=""
+                    />
+                    <img
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Green");
+                        setSelectedColor("#40ad72");
+                      }}
+                      src="/src/assets/number-7.png"
+                      alt=""
+                    />
+                    <img
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Green");
+                        setSelectedColor("#fd565c");
+                      }}
+                      src="/src/assets/number-8.png"
+                      alt=""
+                    />
+                    <img
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedButton("Green");
+                        setSelectedColor("#40ad72");
+                      }}
+                      src="/src/assets/number-9.png"
+                      alt=""
+                    />
                   </div>
                 </div>
 
                 <div className={`${styles.num_boxbtn}`}>
-                  <button className={`btn ${styles.num_boxbtn_random}`}>
+                  <button className={`btn ${styles.num_boxbtn_random}`}
+                   onClick={() => getRandomNumber()}>
                     Random
                   </button>
                   <button
@@ -243,12 +372,23 @@ const Lottery = () => {
                 </div>
 
                 <div className={`${styles.num_play_boxbtn}`}>
-                  <button className={`btn ${styles.num_play_boxbtn_big}`}>
+                  <button
+                    className={`btn ${styles.num_play_boxbtn_big}`}
+                    onClick={() => {
+                      setShowModal(true);
+                      setSelectedButton("Big");
+                      setSelectedColor("Big");
+                    }}
+                  >
                     Big
                   </button>
                   <button
                     className={`btn ${styles.num_play_boxbtn_small}`}
-                    onClick={() => setShowModal(true)}
+                    onClick={() => {
+                      setShowModal(true);
+                      setSelectedButton("Small");
+                      setSelectedColor("Small");
+                    }}
                   >
                     Small
                   </button>
@@ -266,15 +406,18 @@ const Lottery = () => {
       </div>
       {/* Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header className={`${styles.pop_up_head}`}>
-          {/* <Modal.Title>Modal title</Modal.Title> */}
-
+        <Modal.Header
+          className={`${styles.pop_up_head}`}
+          style={{
+            background: `${selectedColor}`,
+          }}
+        >
           <div className={`${styles.pop_up_title}`}>
             <p>Win Go 1Min</p>
           </div>
           <div className={`${styles.pop_up_selected}`}>
             <span>Select</span>
-            <span>Big</span>
+            <span>{selectedButton}</span>
           </div>
         </Modal.Header>
         <Modal.Body>
@@ -293,8 +436,11 @@ const Lottery = () => {
               Quantity
               <div className={`${styles.pop_up_body_line_btn}`}>
                 <button className={`btn ${styles.pop_up_body_btn}`}>-</button>
-                <input type="text" value={1} className={` ${styles.pop_up_body_btn_1}`} />
-                {/* <button type="input" className={` ${styles.pop_up_body_btn_1}`}>1</button> */}
+                <input
+                  type="text"
+                  defaultValue={1}
+                  className={` ${styles.pop_up_body_btn_1}`}
+                />
                 <button className={`btn ${styles.pop_up_body_btn}`}>+</button>
               </div>
             </div>
@@ -333,7 +479,6 @@ const Lottery = () => {
                 </button>
               </div>
             </div>
-
             <div className={`${styles.pop_up_body_line}`}>
               <div className={`${styles.pop_up_body_line_agree}`}>
                 <input
@@ -341,10 +486,10 @@ const Lottery = () => {
                   id="agree"
                   name="agreement"
                   className="radio-btn"
+                  checked
                 />
                 <span>I agree Pre-sale-rules</span>
               </div>
-              <div></div>
             </div>
           </div>
         </Modal.Body>

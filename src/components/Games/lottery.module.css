@@ -190,9 +190,9 @@
     background-color: #f3e7e7;
     display: flex;
     justify-content: space-around;
-    margin: 10px 10px;
+    margin: 10px 0px;
     padding: 10px;
-    width: 96%;
+    width: 100%;
 }
 
 .clr_btn .green {
@@ -260,6 +260,7 @@
     border-radius: 10px;
     font-size: 18px;
     color: #eb8a1f;
+    box-shadow: none;
 }
 
 .num_boxbtn .num_boxbtn_btns {
@@ -292,6 +293,8 @@
     font-size: 16px;
     font-weight: 600;
     color: #fff;
+    box-shadow: none;
+
 }
 
 .num_play_boxbtn .num_play_boxbtn_small {
@@ -300,6 +303,7 @@
     font-size: 16px;
     font-weight: 600;
     color: #fff;
+    box-shadow: none;
 }
 
 .num_play_boxbtn button {
@@ -358,7 +362,7 @@
 }
 
 .pop_up_head {
-    background: linear-gradient(90deg, #ffa82e 0%, #ffc511 100%);
+    /* background: linear-gradient(90deg, #ffa82e 0%, #ffc511 100%); */
     /* height: 65px; */
     position: relative;
     padding-top: .4rem;
@@ -373,13 +377,10 @@
     font-size: 15px;
     text-align: center;
     color: #fff;
-    /* margin:10px 0px; */
-
 }
 
 .pop_up_selected {
     width: 170px;
-    /* height: 10px; */
     margin: 20px auto 0;
     background: #ffffff;
     border-radius: 3px;
@@ -405,8 +406,6 @@
 .pop_up_body_line {
     font-size: 15px;
     color: #4d4d4d;
-    /* height: 12px; */
-    /* line-height: 12px; */
     display: flex;
     -webkit-box-pack: justify;
     -webkit-justify-content: space-between;
@@ -437,7 +436,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* grid-gap: 10px !important; */
     font-size: 12px;
     margin: 0 8px;
     color: #ffff;
@@ -450,29 +448,30 @@
     margin: 10px 0px;
 }
 
+.pop_up_body_btn_1 {
+    color: #1e1818 !important;
+    width: 50px;
+    border: 0;
+    outline: none;
+    text-align: center;
+    margin: 0 10px;
+}
+
+
 .pop_up_body_btn {
     color: #fff !important;
     padding: 1px 10px;
 }
 
-.pop_up_body_btn_1 {
-    color: #1e1818 !important;
-    width: 50px;
-    border: 0;
-    /* border-color: rgb(52, 50, 50); */
-    outline: none;
-    text-align: center;
-}
+
 
 .pop_up_submit {
     display: flex;
-    /* width: 50%; */
     flex-wrap: nowrap !important;
     border: none !important
 }
 
 .pop_up_submit_btn {
-    /* width: 100% */
     width: 50%;
 
 }
@@ -492,4 +491,7 @@
     display: flex;
     align-items: center;
     margin: 10px 0px;
-  }
+    margin-top: 24px;
+    margin-bottom: -20px;
+
+}
