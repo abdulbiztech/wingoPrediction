@@ -1,95 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styles from "./gamehistory.module.css";
 import ReactPaginate from "react-paginate";
+import axios from "axios";
+import API_BASE_URL from "../../environment/api.js";
+import myContext from "../Context/MyContext.jsx";
 
 const GameHistory = () => {
+  const {  timeLeft, setTimeLeft } = useContext(myContext);
   const [selectedButton, setSelectedButton] = useState("gameHistory");
   const [currentPage, setCurrentPage] = useState(0);
+  const [gameHistory, setGameHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [time, setTime] = useState(null);
+  const [gameIssue, setGameIssue] = useState(null);
   const pageSize = 15;
-
   const data = {
     list: [
       {
         issueNumber: "20240420010731",
         number: "6",
-        colour: "red",
-        premium: "Small",
-      },
-      {
-        issueNumber: "20240420010730",
-        number: "8",
-        colour: "red",
-        premium: "Small",
-      },
-      {
-        issueNumber: "20240420010729",
-        number: "4",
-        colour: "red",
-        premium: "Small",
-      },
-      {
-        issueNumber: "20240420010728",
-        number: "0",
-        colour: "red,violet",
-        premium: "Big",
-      },
-      {
-        issueNumber: "20240420010727",
-        number: "0",
-        colour: "red,violet",
-        premium: "Big",
-      },
-      {
-        issueNumber: "20240420010726",
-        number: "5",
-        colour: "green,violet",
-        premium: "Big",
-      },
-      {
-        issueNumber: "20240420010725",
-        number: "9",
-        colour: "green",
-        premium: "Big",
-      },
-      {
-        issueNumber: "20240420010724",
-        number: "1",
-        colour: "green",
-        premium: "Big",
-      },
-      {
-        issueNumber: "20240420010723",
-        number: "7",
-        colour: "green",
-        premium: "Big",
-      },
-      {
-        issueNumber: "20240420010722",
-        number: "8",
-        colour: "red",
-        premium: "Small",
-      },
-      {
-        issueNumber: "20240420010725",
-        number: "9",
-        colour: "green",
-        premium: "Big",
-      },
-      {
-        issueNumber: "20240420010724",
-        number: "1",
-        colour: "green",
-        premium: "Big",
-      },
-      {
-        issueNumber: "20240420010723",
-        number: "7",
-        colour: "green",
-        premium: "Big",
-      },
-      {
-        issueNumber: "20240420010722",
-        number: "8",
         colour: "red",
         premium: "Small",
       },
@@ -107,7 +37,7 @@ const GameHistory = () => {
     setCurrentPage(selected);
   };
 
-  const getColorForPremium = (premium, number, colour) => {
+  const getColorForPremium = (category, number, color) => {
     if (number === "0") {
       return "linear-gradient(to top, rgba(253, 86, 92, 1) 50%, rgba(182, 89, 254, 1) 50.01%)";
     } else if (number === "5") {
@@ -119,14 +49,14 @@ const GameHistory = () => {
         case 4:
         case 6:
         case 8:
-          return colour === "green"
+          return typeof color === "string" && color === "green"
             ? "rgba(71, 186, 124, 1)"
             : "rgba(253, 86, 92, 1)"; // Green if color is green, otherwise red
         case 1:
         case 3:
         case 7:
         case 9:
-          return colour.includes("red")
+          return typeof color === "string" && color.includes("red")
             ? "linear-gradient(to top, rgba(253, 86, 92, 1) 50%, rgba(182, 89, 254, 1) 50.01%)"
             : "rgba(71, 186, 124, 1)"; // Red if color is red, otherwise green
         default:
@@ -134,11 +64,88 @@ const GameHistory = () => {
       }
     }
   };
-
-  const paginatedData = data.list.slice(
+  const getGameHistory = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/api/game/get-game-history?page=1`
+      );
+      setGameHistory(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const paginatedData = gameHistory.data?.slice(
     currentPage * pageSize,
     (currentPage + 1) * pageSize
   );
+
+  const getGameIssue = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/api/game/get-currentGame-issue`
+      );
+      if (!response.data) {
+        throw new Error("Failed to fetch game issue data");
+      }
+      await getGameHistory();
+      setGameIssue(response.data?.data);
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log("Request canceled:", error.message);
+      } else {
+        console.error("Error fetching game issue data:", error);
+      }
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      await getGameIssue();
+    } catch (error) {
+      console.error("Error fetching game data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if ((timeLeft?.minutes == 0 && timeLeft?.seconds == 0 ) || null) {
+      fetchData();
+    }
+  }, [timeLeft]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const calculateTimeLeft = () => {
+        if (!gameIssue) return { minutes: 0, seconds: 0 };
+
+        const startTime = new Date(gameIssue.startTime);
+        console.log("gameIssue",gameIssue);
+        const endTime = new Date(gameIssue.endTime);
+        const now = new Date();
+        let difference;
+
+        if (now < startTime) {
+          difference = startTime - now;
+        } else if (now > endTime) {
+          const timeUntilNextIssue = new Date(endTime);
+          timeUntilNextIssue.setSeconds(timeUntilNextIssue.getSeconds() + 60); // Assuming the next issue starts after 60 seconds
+          difference = timeUntilNextIssue - now;
+        } else {
+          difference = endTime - now;
+        }
+        console.log("now",now);
+        console.log("difference",difference);
+
+        const totalSeconds = Math.floor(difference / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        return { minutes, seconds };
+      };
+
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [gameIssue]);
 
   return (
     <>
@@ -186,15 +193,15 @@ const GameHistory = () => {
               </tr>
             </thead>
             <tbody>
-              {paginatedData.map((item, index) => (
+              {paginatedData?.map((item, index) => (
                 <tr key={index}>
                   <td>{item.issueNumber}</td>
                   <td
                     style={{
                       background: getColorForPremium(
-                        item.premium,
+                        item.category,
                         item.number,
-                        item.colour
+                        item.color
                       ),
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
@@ -204,7 +211,7 @@ const GameHistory = () => {
                   >
                     {item.number}
                   </td>
-                  <td>{item.premium}</td>
+                  <td>{item.category}</td>
                   <td>
                     <div
                       style={{
@@ -212,8 +219,10 @@ const GameHistory = () => {
                         justifyContent: "space-evenly",
                       }}
                     >
-                      {item.colour.includes("red") &&
-                      item.colour.includes("violet") ? (
+                      {item.color &&
+                      typeof item.color === "string" &&
+                      item.color.includes("red") &&
+                      item.color.includes("violet") ? (
                         <>
                           <div
                             style={{
@@ -232,8 +241,10 @@ const GameHistory = () => {
                             }}
                           ></div>
                         </>
-                      ) : item.colour.includes("green") &&
-                        item.colour.includes("violet") ? (
+                      ) : item.color &&
+                        typeof item.color === "string" &&
+                        item.color.includes("green") &&
+                        item.color.includes("violet") ? (
                         <>
                           <div
                             style={{
@@ -252,7 +263,9 @@ const GameHistory = () => {
                             }}
                           ></div>
                         </>
-                      ) : item.colour.includes("violet") &&
+                      ) : item.color &&
+                        typeof item.color === "string" &&
+                        item.color.includes("violet") &&
                         item.number !== "5" ? (
                         <div
                           style={{
@@ -262,7 +275,10 @@ const GameHistory = () => {
                             backgroundColor: "#ec4cdf",
                           }}
                         ></div>
-                      ) : item.colour.includes("red") && item.number !== "5" ? (
+                      ) : item.color &&
+                        typeof item.color === "string" &&
+                        item.color.includes("red") &&
+                        item.number !== "5" ? (
                         <div
                           style={{
                             width: "10px",
@@ -271,7 +287,7 @@ const GameHistory = () => {
                             backgroundColor: "#fd565c",
                           }}
                         ></div>
-                      ) : item.colour === "green" ? (
+                      ) : item.color === "green" ? (
                         <div
                           style={{
                             width: "10px",
@@ -326,6 +342,9 @@ const GameHistory = () => {
           </div>
         </div>
       )}
+      {/* <div>
+        Time Left: {timeLeft?.minutes}: {timeLeft?.seconds}
+      </div> */}
     </>
   );
 };

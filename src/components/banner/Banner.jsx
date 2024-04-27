@@ -7,77 +7,78 @@ const Banner = () => {
   return (
     <>
       <Header />
-      <div className="container-fluid my-5">
-        <div
-          id="carouselExampleIndicators"
-          className="carousel slide"
-          data-bs-ride="carousel"
-        >
-          <div className="carousel-indicators">
-            <button
-              type="button"
-              data-bs-target="#carouselExampleIndicators"
-              data-bs-slide-to={0}
-              className="active"
-              aria-current="true"
-              aria-label="Slide 1"
-            />
-            <button
-              type="button"
-              data-bs-target="#carouselExampleIndicators"
-              data-bs-slide-to={1}
-              aria-label="Slide 2"
-            />
-            <button
-              type="button"
-              data-bs-target="#carouselExampleIndicators"
-              data-bs-slide-to={2}
-              aria-label="Slide 3"
-            />
-          </div>
-          <div className="carousel-inner">
-            <div className={`carousel-item active ${styles.cus_carousel_item}`}>
-              <img
-                src="/src/assets/banner1.png"
-                className="d-block w-100"
-                alt="..."
-              />
-            </div>
-            <div className={`carousel-item ${styles.cus_carousel_item}`}>
-              <img
-                src="/src/assets/banner.png"
-                className="d-block w-100"
-                alt="..."
-              />
-            </div>
-            <div className={`carousel-item ${styles.cus_carousel_item}`}>
-              <img
-                src="/src/assets/banner3.jpg"
-                className="d-block w-100"
-                alt="..."
-              />
-            </div>
-          </div>
+
+        <div className="container-fluid my-1 mx-1">
+      <div
+        id="carouselExampleIndicators"
+        className="carousel slide"
+        data-bs-ride="carousel"
+      >
+        <div className="carousel-indicators">
           <button
-            className={`carousel-control-prev ${styles.prev_nav}`}
             type="button"
             data-bs-target="#carouselExampleIndicators"
-            data-bs-slide="prev"
-          >
-            <span className="carousel-control-prev-icon" aria-hidden="true" />
-            <span className="visually-hidden">Previous</span>
-          </button>
+            data-bs-slide-to={0}
+            className="active"
+            aria-current="true"
+            aria-label="Slide 1"
+          />
           <button
-            className={`carousel-control-next ${styles.prev_next}`}
             type="button"
             data-bs-target="#carouselExampleIndicators"
-            data-bs-slide="next"
-          >
-            <span className="carousel-control-next-icon" aria-hidden="true" />
-            <span className="visually-hidden">Next</span>
-          </button>
+            data-bs-slide-to={1}
+            aria-label="Slide 2"
+          />
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to={2}
+            aria-label="Slide 3"
+          />
         </div>
+        <div className="carousel-inner">
+          <div className={`carousel-item active ${styles.cus_carousel_item}`}>
+            <img
+              src="/src/assets/banner1.png"
+              className="d-block w-100"
+              alt="..."
+            />
+          </div>
+          <div className={`carousel-item ${styles.cus_carousel_item}`}>
+            <img
+              src="/src/assets/banner.png"
+              className="d-block w-100"
+              alt="..."
+            />
+          </div>
+          <div className={`carousel-item ${styles.cus_carousel_item}`}>
+            <img
+              src="/src/assets/banner3.jpg"
+              className="d-block w-100"
+              alt="..."
+            />
+          </div>
+        </div>
+        <button
+          className={`carousel-control-prev ${styles.prev_nav}`}
+          type="button"
+          data-bs-target="#carouselExampleIndicators"
+          data-bs-slide="prev"
+        >
+          <span className="carousel-control-prev-icon" aria-hidden="true" />
+          <span className="visually-hidden">Previous</span>
+        </button>
+        <button
+          className={`carousel-control-next ${styles.prev_next}`}
+          type="button"
+          data-bs-target="#carouselExampleIndicators"
+          data-bs-slide="next"
+        >
+          <span className="carousel-control-next-icon" aria-hidden="true" />
+          <span className="visually-hidden">Next</span>
+        </button>
       </div>
+    </div>
 
       {/* OUR GAMES */}
       <div className="container">
@@ -112,7 +113,6 @@ const Banner = () => {
         </div>
         <div className="row my-2">
           <div className="col-12">
-            {/* Wrap the div with a Link component */}
             <Link to="/lottery">
               <div className={` ${styles.banner}`}>
                 <img
