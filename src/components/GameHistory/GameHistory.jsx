@@ -6,14 +6,16 @@ import API_BASE_URL from "../../environment/api.js";
 import myContext from "../Context/MyContext.jsx";
 
 const GameHistory = () => {
-  const {  timeLeft, setTimeLeft } = useContext(myContext);
+  const { timeLeft, setTimeLeft } = useContext(myContext);
+  const { setIssueNum } = useContext(myContext);
   const [selectedButton, setSelectedButton] = useState("gameHistory");
   const [currentPage, setCurrentPage] = useState(0);
   const [gameHistory, setGameHistory] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [time, setTime] = useState(null);
   const [gameIssue, setGameIssue] = useState(null);
+
+  const saveTimeLeftToLocalStorage = (timeLeft) => {
+    localStorage.setItem("timeLeft", JSON.stringify(timeLeft));
+  };
   const pageSize = 15;
   const data = {
     list: [
@@ -79,6 +81,25 @@ const GameHistory = () => {
     (currentPage + 1) * pageSize
   );
 
+  // const getGameIssue = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${API_BASE_URL}/api/game/get-currentGame-issue`
+  //     );
+  //     if (!response.data) {
+  //       throw new Error("Failed to fetch game issue data");
+  //     }
+  //     await getGameHistory();
+  //     setGameIssue(response.data?.data);
+  //     setIssueNum(response.data?.data?.issueNumber);
+  //   } catch (error) {
+  //     if (axios.isCancel(error)) {
+  //       console.log("Request canceled:", error.message);
+  //     } else {
+  //       console.error("Error fetching game issue data:", error);
+  //     }
+  //   }
+  // };
   const getGameIssue = async () => {
     try {
       const response = await axios.get(
@@ -87,37 +108,44 @@ const GameHistory = () => {
       if (!response.data) {
         throw new Error("Failed to fetch game issue data");
       }
-      await getGameHistory();
-      setGameIssue(response.data?.data);
+      return response.data.data; // Return the game issue data
     } catch (error) {
       if (axios.isCancel(error)) {
         console.log("Request canceled:", error.message);
       } else {
         console.error("Error fetching game issue data:", error);
       }
+      throw error; // Re-throw the error to be caught by the caller
     }
   };
 
   const fetchData = async () => {
     try {
-      await getGameIssue();
+      await getGameHistory();
+
+      const gameIssueData = await getGameIssue();
+      setGameIssue(gameIssueData);
+      setIssueNum(gameIssueData?.issueNumber);
     } catch (error) {
       console.error("Error fetching game data:", error);
     }
   };
 
-  useEffect(() => {
-    if ((timeLeft?.minutes == 0 && timeLeft?.seconds == 0 ) || null) {
-      fetchData();
+  const loadTimeLeftFromLocalStorage = () => {
+    const storedTimeLeft = localStorage.getItem("timeLeft");
+    if (storedTimeLeft) {
+      return JSON.parse(storedTimeLeft);
     }
-  }, [timeLeft]);
+    return null;
+  };
+
+  // Timer Effect
   useEffect(() => {
     const interval = setInterval(() => {
-      const calculateTimeLeft = () => {
+      setTimeLeft((prevTimeLeft) => {
         if (!gameIssue) return { minutes: 0, seconds: 0 };
 
         const startTime = new Date(gameIssue.startTime);
-        console.log("gameIssue",gameIssue);
         const endTime = new Date(gameIssue.endTime);
         const now = new Date();
         let difference;
@@ -131,21 +159,40 @@ const GameHistory = () => {
         } else {
           difference = endTime - now;
         }
-        console.log("now",now);
-        console.log("difference",difference);
 
         const totalSeconds = Math.floor(difference / 1000);
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
 
-        return { minutes, seconds };
-      };
+        if (minutes === 0 && seconds === 0) {
+          fetchData(); // Fetch data every minute
+        }
 
-      setTimeLeft(calculateTimeLeft());
+        // Save time left to local storage only when it changes
+        if (
+          prevTimeLeft.minutes !== minutes ||
+          prevTimeLeft.seconds !== seconds
+        ) {
+          saveTimeLeftToLocalStorage({ minutes, seconds });
+        }
+
+        return { minutes, seconds };
+      });
     }, 1000);
 
     return () => clearInterval(interval);
   }, [gameIssue]);
+
+  // Initial Fetch Effect
+  useEffect(() => {
+    fetchData();
+  }, []);
+  useEffect(() => {
+    const savedTimeLeft = loadTimeLeftFromLocalStorage();
+    if (savedTimeLeft) {
+      setTimeLeft(savedTimeLeft);
+    }
+  }, []);
 
   return (
     <>
@@ -198,13 +245,13 @@ const GameHistory = () => {
                   <td>{item.issueNumber}</td>
                   <td
                     style={{
-                      background: getColorForPremium(
+                      color: getColorForPremium(
                         item.category,
                         item.number,
                         item.color
                       ),
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
+                      // WebkitBackgroundClip: "text",
+                      // WebkitTextFillColor: "transparent",
                       fontSize: "24px",
                       fontWeight: "bold",
                     }}

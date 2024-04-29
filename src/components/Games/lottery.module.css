@@ -14,6 +14,9 @@
     justify-content: center;
     text-align: center;
 }
+.balance_show .balance_box{
+    box-shadow: none;
+}
 
 .balance_show P {
     margin-bottom: 0;
