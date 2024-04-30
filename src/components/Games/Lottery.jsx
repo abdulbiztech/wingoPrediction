@@ -6,7 +6,8 @@ import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import API_BASE_URL from "../../environment/api.js";
 import myContext from "../Context/MyContext.jsx";
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Lottery = () => {
   const { timeLeft } = useContext(myContext);
   const { issueNum } = useContext(myContext);
@@ -19,6 +20,9 @@ const Lottery = () => {
   const [selectedButton, setSelectedButton] = useState();
   const [selectedColor, setSelectedColor] = useState();
   const [balance, setBalance] = useState(null);
+  const [amount, setAmount] = useState(1);
+  const [isBettingAllowed, setIsBettingAllowed] = useState(true);
+  const betAmounts = [1, 5, 10, 20, 50, 100]; // Available bet amounts
   const handleItemClick = (index) => {
     setActiveIndex(index);
   };
@@ -27,31 +31,18 @@ const Lottery = () => {
     setSelectedOption(option);
   };
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTime((prevTime) => {
-        if (prevTime === 0) {
-          return 60;
-        }
-        if (prevTime === 5) {
-          setShowPopup(true);
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
+  const handleAmountChange = (event) => {
+    setAmount(event.target.value);
+  };
+  const handleIncrement = () => {
+    setAmount((prevAmount) => prevAmount + 1);
+  };
 
-    return () => clearInterval(intervalId);
-  }, []);
-  const seconds = time % 60;
-  const tensPlace = Math.floor(seconds / 10);
-  const unitsPlace = seconds % 10;
-  useEffect(() => {
-    if (timeLeft?.minutes == 0 && timeLeft?.seconds <= 5) {
-      setShow(true);
-    } else {
-      setShow(false);
+  const handleDecrement = () => {
+    if (amount > 1) {
+      setAmount((prevAmount) => prevAmount - 1);
     }
-  }, [timeLeft]);
+  };
 
   const getRandomNumber = () => {
     const randomNumber = Math.floor(Math.random() * 10);
@@ -76,10 +67,6 @@ const Lottery = () => {
         throw new Error("Failed to fetch user balance data");
       }
       setBalance(response?.data?.data?.walletBalance);
-      console.log(
-        "response.data.data.walletBalance",
-        response?.data?.data?.walletBalance
-      );
     } catch (error) {
       if (axios.isCancel(error)) {
         console.log("Request canceled:", error.message);
@@ -88,9 +75,66 @@ const Lottery = () => {
       }
     }
   };
-// useEffect(()=>{
-//   getBalance();
-// },[])
+  const generateBetData = (selectType, amount) => {
+    return {
+      userId: 1,
+      issueNumber: issueNum,
+      selectType: selectType,
+      amount: amount,
+      betCount: amount,
+      gameId: 1,
+    };
+  };
+
+  const placeBet = async (selectType, amount) => {
+    const data = generateBetData(selectType, amount);
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/api/user/predict`,
+        data
+      );
+      if (response.data.status) {
+        console.log("Bet placed successfully");
+        toast.success("Bet placed successfully");
+        setShowModal(false);
+        setAmount(1);
+      } else {
+        console.error("Failed to place bet:", response.data.message);
+        toast.error(`Failed to place bet: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error("Error placing bet:", error);
+      toast.error(`Error placing bet: ${error.message}`);
+    }
+  };
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTime((prevTime) => {
+        if (prevTime === 0) {
+          return 60;
+        }
+        if (prevTime === 5) {
+          setShowPopup(true);
+          setIsBettingAllowed(false); // Disable betting when time reaches 5 seconds
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    if (timeLeft?.minutes == 0 && timeLeft?.seconds <= 5) {
+      setShow(true);
+    } else {
+      setShow(false);
+    }
+  }, [timeLeft]);
+
+  useEffect(() => {
+    getBalance();
+  }, []);
 
   return (
     <>
@@ -252,7 +296,7 @@ const Lottery = () => {
                     <img
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Green");
+                        setSelectedButton("0");
                         setSelectedColor(
                           "linear-gradient(180deg, #FD565C 50.96%, #b659fe 50.97%)"
                         );
@@ -263,7 +307,7 @@ const Lottery = () => {
                     <img
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Green");
+                        setSelectedButton("1");
                         setSelectedColor("#40ad72");
                       }}
                       src="/src/assets/number-1.png"
@@ -272,7 +316,7 @@ const Lottery = () => {
                     <img
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Green");
+                        setSelectedButton("2");
                         setSelectedColor("#fd565c");
                       }}
                       src="/src/assets/number-2.png"
@@ -281,7 +325,7 @@ const Lottery = () => {
                     <img
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Green");
+                        setSelectedButton("3");
                         setSelectedColor("#40ad72");
                       }}
                       src="/src/assets/number-3.png"
@@ -290,7 +334,7 @@ const Lottery = () => {
                     <img
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Green");
+                        setSelectedButton("4");
                         setSelectedColor("#fd565c");
                       }}
                       src="/src/assets/number-4.png"
@@ -299,7 +343,7 @@ const Lottery = () => {
                     <img
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Green");
+                        setSelectedButton("5");
                         setSelectedColor(
                           "linear-gradient(180deg, #40ad72 51.48%, #b659fe 51.49%)"
                         );
@@ -310,7 +354,7 @@ const Lottery = () => {
                     <img
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Green");
+                        setSelectedButton("6");
                         setSelectedColor("#fd565c");
                       }}
                       src="/src/assets/number-6.png"
@@ -319,7 +363,7 @@ const Lottery = () => {
                     <img
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Green");
+                        setSelectedButton("7");
                         setSelectedColor("#40ad72");
                       }}
                       src="/src/assets/number-7.png"
@@ -328,7 +372,7 @@ const Lottery = () => {
                     <img
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Green");
+                        setSelectedButton("8");
                         setSelectedColor("#fd565c");
                       }}
                       src="/src/assets/number-8.png"
@@ -337,7 +381,7 @@ const Lottery = () => {
                     <img
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Green");
+                        setSelectedButton("9");
                         setSelectedColor("#40ad72");
                       }}
                       src="/src/assets/number-9.png"
@@ -468,48 +512,38 @@ const Lottery = () => {
             <div className={`${styles.pop_up_body_line}`}>
               Quantity
               <div className={`${styles.pop_up_body_line_btn}`}>
-                <button className={`btn ${styles.pop_up_body_btn}`}>-</button>
+                <button
+                  className={`btn ${styles.pop_up_body_btn}`}
+                  onClick={handleDecrement}
+                >
+                  -
+                </button>
                 <input
                   type="text"
-                  defaultValue={1}
+                  value={amount} // Use value instead of defaultValue
+                  onChange={handleAmountChange}
                   className={` ${styles.pop_up_body_btn_1}`}
                 />
-                <button className={`btn ${styles.pop_up_body_btn}`}>+</button>
+                <button
+                  className={`btn ${styles.pop_up_body_btn}`}
+                  onClick={handleIncrement}
+                >
+                  +
+                </button>
               </div>
             </div>
             <div className={`${styles.pop_up_body_line}`}>
               <div className="div"></div>
               <div className={`${styles.pop_up_body_line_content}`}>
-                <button
-                  className={`btn ${styles.pop_up_body_line_content_btn}`}
-                >
-                  x1
-                </button>
-                <button
-                  className={`btn ${styles.pop_up_body_line_content_btn}`}
-                >
-                  x5
-                </button>
-                <button
-                  className={`btn ${styles.pop_up_body_line_content_btn}`}
-                >
-                  x10
-                </button>
-                <button
-                  className={`btn ${styles.pop_up_body_line_content_btn}`}
-                >
-                  x20
-                </button>
-                <button
-                  className={`btn ${styles.pop_up_body_line_content_btn}`}
-                >
-                  x50
-                </button>
-                <button
-                  className={`btn ${styles.pop_up_body_line_content_btn}`}
-                >
-                  x100
-                </button>
+                {betAmounts.map((betAmount, index) => (
+                  <button
+                    key={index}
+                    className={`btn ${styles.pop_up_body_line_content_btn}`}
+                    onClick={() => setAmount(betAmount)}
+                  >
+                    {`x${betAmount}`}
+                  </button>
+                ))}
               </div>
             </div>
             <div className={`${styles.pop_up_body_line}`}>
@@ -533,7 +567,10 @@ const Lottery = () => {
           >
             Cancel
           </Button>
-          <Button className={`btn ${styles.pop_up_submit_btn}`}>
+          <Button
+            className={`btn ${styles.pop_up_submit_btn}`}
+            onClick={() => placeBet(selectedButton, amount)}
+          >
             Total Amount
           </Button>
         </Modal.Footer>

@@ -4,7 +4,7 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import API_BASE_URL from "../../environment/api.js";
 import myContext from "../Context/MyContext.jsx";
-
+import io from "socket.io-client";
 const GameHistory = () => {
   const { timeLeft, setTimeLeft } = useContext(myContext);
   const { setIssueNum } = useContext(myContext);
@@ -80,26 +80,6 @@ const GameHistory = () => {
     currentPage * pageSize,
     (currentPage + 1) * pageSize
   );
-
-  // const getGameIssue = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${API_BASE_URL}/api/game/get-currentGame-issue`
-  //     );
-  //     if (!response.data) {
-  //       throw new Error("Failed to fetch game issue data");
-  //     }
-  //     await getGameHistory();
-  //     setGameIssue(response.data?.data);
-  //     setIssueNum(response.data?.data?.issueNumber);
-  //   } catch (error) {
-  //     if (axios.isCancel(error)) {
-  //       console.log("Request canceled:", error.message);
-  //     } else {
-  //       console.error("Error fetching game issue data:", error);
-  //     }
-  //   }
-  // };
   const getGameIssue = async () => {
     try {
       const response = await axios.get(
@@ -119,81 +99,96 @@ const GameHistory = () => {
     }
   };
 
-  const fetchData = async () => {
-    try {
-      await getGameHistory();
+  // const fetchData = async () => {
+  //   try {
+  //     await getGameHistory();
 
-      const gameIssueData = await getGameIssue();
-      setGameIssue(gameIssueData);
-      setIssueNum(gameIssueData?.issueNumber);
-    } catch (error) {
-      console.error("Error fetching game data:", error);
-    }
-  };
+  //     const gameIssueData = await getGameIssue();
+  //     setGameIssue(gameIssueData);
+  //     setIssueNum(gameIssueData?.issueNumber);
+  //   } catch (error) {
+  //     console.error("Error fetching game data:", error);
+  //   }
+  // };
 
-  const loadTimeLeftFromLocalStorage = () => {
-    const storedTimeLeft = localStorage.getItem("timeLeft");
-    if (storedTimeLeft) {
-      return JSON.parse(storedTimeLeft);
-    }
-    return null;
-  };
+  // const loadTimeLeftFromLocalStorage = () => {
+  //   const storedTimeLeft = localStorage.getItem("timeLeft");
+  //   if (storedTimeLeft) {
+  //     return JSON.parse(storedTimeLeft);
+  //   }
+  //   return null;
+  // };
 
   // Timer Effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft((prevTimeLeft) => {
-        if (!gameIssue) return { minutes: 0, seconds: 0 };
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setTimeLeft((prevTimeLeft) => {
+  //       if (!gameIssue) return { minutes: 0, seconds: 0 };
 
-        const startTime = new Date(gameIssue.startTime);
-        const endTime = new Date(gameIssue.endTime);
-        const now = new Date();
-        let difference;
+  //       const startTime = new Date(gameIssue.startTime);
+  //       const endTime = new Date(gameIssue.endTime);
+  //       const now = new Date();
+  //       let difference;
 
-        if (now < startTime) {
-          difference = startTime - now;
-        } else if (now > endTime) {
-          const timeUntilNextIssue = new Date(endTime);
-          timeUntilNextIssue.setSeconds(timeUntilNextIssue.getSeconds() + 60); // Assuming the next issue starts after 60 seconds
-          difference = timeUntilNextIssue - now;
-        } else {
-          difference = endTime - now;
-        }
+  //       if (now < startTime) {
+  //         difference = startTime - now;
+  //       } else if (now > endTime) {
+  //         const timeUntilNextIssue = new Date(endTime);
+  //         timeUntilNextIssue.setSeconds(timeUntilNextIssue.getSeconds() + 60); // Assuming the next issue starts after 60 seconds
+  //         difference = timeUntilNextIssue - now;
+  //       } else {
+  //         difference = endTime - now;
+  //       }
 
-        const totalSeconds = Math.floor(difference / 1000);
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
+  //       const totalSeconds = Math.floor(difference / 1000);
+  //       const minutes = Math.floor(totalSeconds / 60);
+  //       const seconds = totalSeconds % 60;
 
-        if (minutes === 0 && seconds === 0) {
-          fetchData(); // Fetch data every minute
-        }
+  //       if (minutes === 0 && seconds === 0) {
+  //         fetchData(); // Fetch data every minute
+  //       }
 
-        // Save time left to local storage only when it changes
-        if (
-          prevTimeLeft.minutes !== minutes ||
-          prevTimeLeft.seconds !== seconds
-        ) {
-          saveTimeLeftToLocalStorage({ minutes, seconds });
-        }
+  //       // Save time left to local storage only when it changes
+  //       if (
+  //         prevTimeLeft.minutes !== minutes ||
+  //         prevTimeLeft.seconds !== seconds
+  //       ) {
+  //         saveTimeLeftToLocalStorage({ minutes, seconds });
+  //       }
 
-        return { minutes, seconds };
-      });
-    }, 1000);
+  //       return { minutes, seconds };
+  //     });
+  //   }, 1000);
 
-    return () => clearInterval(interval);
-  }, [gameIssue]);
+  //   return () => clearInterval(interval);
+  // }, [gameIssue]);
 
   // Initial Fetch Effect
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+  // useEffect(() => {
+  //   const savedTimeLeft = loadTimeLeftFromLocalStorage();
+  //   if (savedTimeLeft) {
+  //     setTimeLeft(savedTimeLeft);
+  //   }
+  // }, []);
   useEffect(() => {
-    fetchData();
-  }, []);
-  useEffect(() => {
-    const savedTimeLeft = loadTimeLeftFromLocalStorage();
-    if (savedTimeLeft) {
-      setTimeLeft(savedTimeLeft);
-    }
-  }, []);
+    const socket = io("http://192.168.1.28:4000"); // Replace with your WebSocket server URL
 
+    // Subscribe to the "gameIssue" event
+    socket.on("gameIssueGenerated", (data) => {
+      console.log("data",data);
+      // console.log("issueNumber",data?.data?.issueNumber);
+      // setGameIssue(data);
+      // setIssueNum(data?.issueNumber);
+    });
+
+    // Cleanup function
+    // return () => {
+    //   socket.disconnect(); // Disconnect the WebSocket connection when component unmounts
+    // };
+  }, []);
   return (
     <>
       <div className={styles.gameHistory}>
