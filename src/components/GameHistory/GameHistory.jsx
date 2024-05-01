@@ -12,7 +12,7 @@ const GameHistory = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [gameHistory, setGameHistory] = useState([]);
   const [gameIssue, setGameIssue] = useState(null);
-
+  const [selectedCard, setSelectedCard] = useState(null);
   const saveTimeLeftToLocalStorage = (timeLeft) => {
     localStorage.setItem("timeLeft", JSON.stringify(timeLeft));
   };
@@ -31,6 +31,9 @@ const GameHistory = () => {
     totalCount: 16838,
   };
 
+  const handleCardClick = (cardId) => {
+    setSelectedCard(selectedCard === cardId ? null : cardId); // Toggle the selected card
+  };
   const handleButtonClick = (buttonName) => {
     setSelectedButton(buttonName === selectedButton ? null : buttonName);
   };
@@ -178,7 +181,7 @@ const GameHistory = () => {
 
     // Subscribe to the "gameIssue" event
     socket.on("gameIssueGenerated", (data) => {
-      console.log("data",data);
+      console.log("data", data);
       // console.log("issueNumber",data?.data?.issueNumber);
       // setGameIssue(data);
       // setIssueNum(data?.issueNumber);
@@ -368,25 +371,224 @@ const GameHistory = () => {
           </div>
         </>
       )}
-      {selectedButton === "chart" && <div>Chart</div>}
-      {selectedButton === "myHistory" && (
-        <div className={`${styles.mygame_history_box}`}>
-          <div className={`${styles.mygame_history_list}`}>
-            <div className={`${styles.mygame_history_item_1}`}>
-              <p>Small</p>
+      {selectedButton === "chart" && (
+        // <div className={`${styles.chart_box}`}>
+        //   <div className={`row ${styles.chart_box_title}`}>
+        //     <div className="col-4">
+        //       <p>Period</p>
+        //     </div>
+        //     <div className="col-8">
+        //       <p>Number</p>
+        //     </div>
+        //   </div>
+
+        //   here start the code
+        // </div>
+        <div className={`${styles.chart_box}`}>
+          <div className={`row ${styles.chart_box_title}`}>
+            <div className="col-4">
+              <p>Statistic (last 100 Periods)</p>
             </div>
-            <div className={`${styles.mygame_history_item_2}`}>
-              <p>2</p>
+            <div className="col-8">
+              <p>Number</p>
             </div>
-            <div className={`${styles.mygame_history_item_3}`}>
-              <p>3</p>
+          </div>
+
+          {/* Content */}
+          <div className={`row ${styles.chart_content}`}>
+            {/* Winning number */}
+            <div className="col-4">
+              <p>Winning number</p>
+            </div>
+            <div className="col-8">
+              <div className={`${styles.Winning_Num}`}>
+                <p>9</p>
+                <p>14</p>
+                <p>15</p>
+                <p>8</p>
+                <p>9</p>
+                <p>9</p>
+                <p>5</p>
+                <p>14</p>
+                <p>5</p>
+                <p>12</p>
+              </div>
+            </div>
+
+            {/* Missing */}
+            <div className="col-4">
+              <p>Missing</p>
+            </div>
+            <div className="col-8">
+              <div className={`${styles.Missing_Num}`}>
+                <p>19</p>
+                <p>1</p>
+                <p>2</p>
+                <p>5</p>
+                <p>27</p>
+                <p>8</p>
+                <p>9</p>
+                <p>7</p>
+                <p>0</p>
+                <p>6</p>
+              </div>
+            </div>
+
+            {/* Avg missing */}
+            <div className="col-4">
+              <p>Avg missing</p>
+            </div>
+            <div className="col-8">
+              <div className={`${styles.AVG_Num}`}>
+                <div>10</div>
+                <div>6</div>
+                <div>7</div>
+                <div>11</div>
+                <div>10</div>
+                <div>9</div>
+                <div>15</div>
+                <div>7</div>
+                <div>19</div>
+                <div>8</div>
+              </div>
+            </div>
+
+            {/* Frequency */}
+            <div className="col-4">
+              <p>Frequency</p>
+            </div>
+            <div className="col-8">
+              <div className={`${styles.MAX_NUM}`}>
+                <div>9</div>
+                <div>14</div>
+                <div>15</div>
+                <div>8</div>
+                <div>9</div>
+                <div>9</div>
+                <div>5</div>
+                <div>14</div>
+                <div>5</div>
+                <div>12</div>
+              </div>
+            </div>
+
+            {/* Max consecutive */}
+            <div className="col-4">
+              <p>Max consecutive</p>
+            </div>
+            <div className="col-8">
+              <div className={`${styles.MAX_CON_NUM}`}>
+                <div>2</div>
+                <div>3</div>
+                <div>3</div>
+                <div>2</div>
+                <div>2</div>
+                <div>1</div>
+                <div>1</div>
+                <div>2</div>
+                <div>1</div>
+                <div>2</div>
+              </div>
             </div>
           </div>
         </div>
       )}
-      {/* <div>
-        Time Left: {timeLeft?.minutes}: {timeLeft?.seconds}
-      </div> */}
+      {selectedButton === "myHistory" && (
+        <div className="row dashboard-cards">
+          <div
+            className={`card col-md-12 ${styles.mygame_history_item_2}`}
+            onClick={() => handleCardClick(1)}
+          >
+            <div className={`${styles.MyGameRecordList__C}`}>
+              <div className={`${styles.MyGameRecordList__item_1}`}>small</div>
+              <div className="MyGameRecordList__C-item-m">
+                <div className="MyGameRecordList__C-item-m-top">
+                  20240429011019
+                </div>
+                <div className="MyGameRecordList__C-item-m-bottom">
+                  2024-04-29 16:58:09
+                </div>
+              </div>
+              <div className="MyGameRecordList__C-item-r">
+                <div className="">Failed</div>
+                <span>-₹0.98</span>
+              </div>
+            </div>
+            {selectedCard === 1 && (
+              <div>
+                <div className={`${styles.card_Details}`}>
+                  <h2>Details</h2>
+                  <div className={`${styles.card_Details_1}`}>
+                    <p>Order Number</p>
+                    <p>WG2024042916580928159291a</p>
+                  </div>
+                  <div className={`${styles.card_Details_2}`}>
+                    <p>Period</p>
+                    <p>20240429011019</p>
+                  </div>
+
+                  <div className={`${styles.card_Details_3}`}>
+                    <p>Purchase Amount</p>
+                    <p>₹1.00</p>
+                  </div>
+
+                  <div className={`${styles.card_Details_4}`}>
+                    <p>Quantity</p>
+                    <p>1</p>
+                  </div>
+
+                  <div className={`${styles.card_Details_5}`}>
+                    <p>Amount After Tax</p>
+                    <p className="red">₹0.98</p>
+                  </div>
+
+                  <div className={`${styles.card_Details_6}`}>
+                    <p>Tax</p>
+                    <p>₹0.02</p>
+                  </div>
+
+                  <div className={`${styles.card_Details_7}`}>
+                    <p>Result</p>
+                    <div>
+                      <div className={styles.MyGameRecordList__C_inlineB}>
+                        8
+                      </div>
+                      <div
+                        className={`${styles.MyGameRecordList__C_inlineB} ${styles.redColor}`}
+                      >
+                        Red
+                      </div>
+                      <div className={styles.MyGameRecordList__C_inlineB}>
+                        Big
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={`${styles.card_Details_8}`}>
+                    <p>Select</p>
+                    <p>Small</p>
+                  </div>
+
+                  <div className={`${styles.card_Details_9}`}>
+                    <p>Status</p>
+                    <p className="red">Failed</p>
+                  </div>
+
+                  <div className={`${styles.card_Details_10}`}>
+                    <p>Win/Lose</p>
+                    <p className="red">- ₹0.98</p>
+                  </div>
+
+                  <div className={`${styles.card_Details_11}`}>
+                    <p>Order Time</p>
+                    <p>2024-04-29 16:58:09</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 };
