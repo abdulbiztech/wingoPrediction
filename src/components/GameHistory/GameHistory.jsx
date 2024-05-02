@@ -101,97 +101,99 @@ const GameHistory = () => {
       throw error; // Re-throw the error to be caught by the caller
     }
   };
-
-  // const fetchData = async () => {
-  //   try {
-  //     await getGameHistory();
-
-  //     const gameIssueData = await getGameIssue();
-  //     setGameIssue(gameIssueData);
-  //     setIssueNum(gameIssueData?.issueNumber);
-  //   } catch (error) {
-  //     console.error("Error fetching game data:", error);
-  //   }
-  // };
-
-  // const loadTimeLeftFromLocalStorage = () => {
-  //   const storedTimeLeft = localStorage.getItem("timeLeft");
-  //   if (storedTimeLeft) {
-  //     return JSON.parse(storedTimeLeft);
-  //   }
-  //   return null;
-  // };
-
-  // Timer Effect
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setTimeLeft((prevTimeLeft) => {
-  //       if (!gameIssue) return { minutes: 0, seconds: 0 };
-
-  //       const startTime = new Date(gameIssue.startTime);
-  //       const endTime = new Date(gameIssue.endTime);
-  //       const now = new Date();
-  //       let difference;
-
-  //       if (now < startTime) {
-  //         difference = startTime - now;
-  //       } else if (now > endTime) {
-  //         const timeUntilNextIssue = new Date(endTime);
-  //         timeUntilNextIssue.setSeconds(timeUntilNextIssue.getSeconds() + 60); // Assuming the next issue starts after 60 seconds
-  //         difference = timeUntilNextIssue - now;
-  //       } else {
-  //         difference = endTime - now;
-  //       }
-
-  //       const totalSeconds = Math.floor(difference / 1000);
-  //       const minutes = Math.floor(totalSeconds / 60);
-  //       const seconds = totalSeconds % 60;
-
-  //       if (minutes === 0 && seconds === 0) {
-  //         fetchData(); // Fetch data every minute
-  //       }
-
-  //       // Save time left to local storage only when it changes
-  //       if (
-  //         prevTimeLeft.minutes !== minutes ||
-  //         prevTimeLeft.seconds !== seconds
-  //       ) {
-  //         saveTimeLeftToLocalStorage({ minutes, seconds });
-  //       }
-
-  //       return { minutes, seconds };
-  //     });
-  //   }, 1000);
-
-  //   return () => clearInterval(interval);
-  // }, [gameIssue]);
-
-  // Initial Fetch Effect
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
-  // useEffect(() => {
-  //   const savedTimeLeft = loadTimeLeftFromLocalStorage();
-  //   if (savedTimeLeft) {
-  //     setTimeLeft(savedTimeLeft);
-  //   }
-  // }, []);
   useEffect(() => {
-    const socket = io("http://192.168.1.28:4000"); // Replace with your WebSocket server URL
+    const socket = io("http://192.168.1.34:4000");
 
-    // Subscribe to the "gameIssue" event
+    // Subscribe to the "gameIssueGenerated" event
     socket.on("gameIssueGenerated", (data) => {
-      console.log("data", data);
-      // console.log("issueNumber",data?.data?.issueNumber);
-      // setGameIssue(data);
-      // setIssueNum(data?.issueNumber);
+      console.log("Received game issue data:", data);
     });
 
     // Cleanup function
-    // return () => {
-    //   socket.disconnect(); // Disconnect the WebSocket connection when component unmounts
-    // };
+    return () => {
+      socket.disconnect(); // Disconnect the WebSocket connection when component unmounts
+    };
   }, []);
+  const fetchData = async () => {
+    try {
+      await getGameHistory();
+      // socket.on("gameIssueGenerated", (dataRec) => {
+      //   console.log("Received game issue data:", dataRec);
+      // });
+      const gameIssueData = await getGameIssue();
+      setGameIssue(gameIssueData);
+      setIssueNum(gameIssueData?.issueNumber);
+      // setGameIssue(dataRec);
+      // setIssueNum(dataRec.data.issueNumber);
+    } catch (error) {
+      console.error("Error fetching game data:", error);
+    }
+  };
+
+  useEffect(() => {
+    const socket = io("http://192.168.1.34:4000");
+
+    // Subscribe to the "gameIssueGenerated" event
+    socket.on("gameIssueGenerated", (dataRec) => {
+      console.log("Received game issue data:", dataRec);
+    });
+    socket.on("countdownUpdate", (countDown) => {
+      console.log("Received  countDown:", countDown);
+    });
+
+    // Cleanup function
+    return () => {
+      socket.disconnect(); // Disconnect the WebSocket connection when component unmounts
+    };
+  }, []);
+  // Timer Effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft((prevTimeLeft) => {
+        if (!gameIssue) return { minutes: 0, seconds: 0 };
+
+        const startTime = new Date(gameIssue.startTime);
+        const endTime = new Date(gameIssue.endTime);
+        const now = new Date();
+        let difference;
+
+        if (now < startTime) {
+          difference = startTime - now;
+        } else if (now > endTime) {
+          const timeUntilNextIssue = new Date(endTime);
+          timeUntilNextIssue.setSeconds(timeUntilNextIssue.getSeconds() + 60);
+          difference = timeUntilNextIssue - now;
+        } else {
+          difference = endTime - now;
+        }
+
+        const totalSeconds = Math.floor(difference / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        if (minutes === 0 && seconds === 0) {
+          fetchData();
+        }
+
+        if (
+          prevTimeLeft.minutes !== minutes ||
+          prevTimeLeft.seconds !== seconds
+        ) {
+          saveTimeLeftToLocalStorage({ minutes, seconds });
+        }
+
+        return { minutes, seconds };
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [gameIssue]);
+
+  // Initial Fetch Effect
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <>
       <div className={styles.gameHistory}>
@@ -387,7 +389,7 @@ const GameHistory = () => {
         <div className={`${styles.chart_box}`}>
           <div className={`row ${styles.chart_box_title}`}>
             <div className="col-4">
-              <p>Statistic (last 100 Periods)</p>
+              <p>Periods</p>
             </div>
             <div className="col-8">
               <p>Number</p>
@@ -489,6 +491,27 @@ const GameHistory = () => {
                 <div>1</div>
                 <div>2</div>
               </div>
+            </div>
+          </div>
+          <div className={`${styles.chart_table_data}`}>
+            <div className={`${styles.issueNumber}`}>
+                <div className="row">
+                <div className="col-4">20240502011059</div>
+                <div className={`col-8 ${styles.number_category}`}>
+                  <p>0</p>
+                  <p>1</p>
+                  <p>2</p>
+                  <p>3</p>
+                  <p>4</p>
+                  <p>5</p>
+                  <p>6</p>
+                  <p>7</p>
+                  <p>8</p>
+                  <p>9</p>
+                  <p>S</p>
+
+                </div>
+                </div>
             </div>
           </div>
         </div>

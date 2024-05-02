@@ -256,3 +256,17 @@ span {
   justify-content: space-evenly;
   /* margin: 0 3px; */
 }
+.number_category{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 50%;
+}
+.number_category p{
+  display: flex;
+  align-items: center;
+  border-radius: 50%;
+  width: 20px;
+  border: 1px solid rgb(75, 74, 74);
+  justify-content: center;
+}
