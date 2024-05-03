@@ -6,17 +6,13 @@ import API_BASE_URL from "../../environment/api.js";
 import myContext from "../Context/MyContext.jsx";
 import io from "socket.io-client";
 const GameHistory = () => {
-  const { timeLeft, setTimeLeft } = useContext(myContext);
   const { setIssueNum } = useContext(myContext);
+  const { setCountDown } = useContext(myContext);
   const [selectedButton, setSelectedButton] = useState("gameHistory");
   const [currentPage, setCurrentPage] = useState(0);
   const [gameHistory, setGameHistory] = useState([]);
-  const [gameIssue, setGameIssue] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
-  const saveTimeLeftToLocalStorage = (timeLeft) => {
-    localStorage.setItem("timeLeft", JSON.stringify(timeLeft));
-  };
-  const pageSize = 15;
+  const pageSize = 13;
   const data = {
     list: [
       {
@@ -32,7 +28,7 @@ const GameHistory = () => {
   };
 
   const handleCardClick = (cardId) => {
-    setSelectedCard(selectedCard === cardId ? null : cardId); // Toggle the selected card
+    setSelectedCard(selectedCard === cardId ? null : cardId);
   };
   const handleButtonClick = (buttonName) => {
     setSelectedButton(buttonName === selectedButton ? null : buttonName);
@@ -44,9 +40,17 @@ const GameHistory = () => {
 
   const getColorForPremium = (category, number, color) => {
     if (number === "0") {
-      return "linear-gradient(to top, rgba(253, 86, 92, 1) 50%, rgba(182, 89, 254, 1) 50.01%)";
+      // if (color === "#de2323") {
+      return "linear-gradient(to top, rgba(253, 86, 92, 1) 50%, rgba(182, 89, 254, 1) 50.01%)"; // Red and violet gradient for number 0
+      // } else {
+      // return "rgba(253, 86, 92, 1)"; // Red color for number 0
+      // }
     } else if (number === "5") {
-      return "linear-gradient(to top, rgba(71, 186, 124, 1) 50%, rgba(236, 76, 223, 1) 50.01%)";
+      // if (color === "#de23cd") {
+      return "linear-gradient(to top, rgba(71, 186, 124, 1) 50%, rgba(182, 89, 254, 1) 50.01%)"; // Green and violet gradient for number 5
+      // } else {
+      // return "rgba(71, 186, 124, 1)"; // Green color for number 5
+      // }
     } else {
       switch (parseInt(number)) {
         case 0:
@@ -56,142 +60,52 @@ const GameHistory = () => {
         case 8:
           return typeof color === "string" && color === "green"
             ? "rgba(71, 186, 124, 1)"
-            : "rgba(253, 86, 92, 1)"; // Green if color is green, otherwise red
+            : "rgba(253, 86, 92, 1)";
         case 1:
         case 3:
         case 7:
         case 9:
           return typeof color === "string" && color.includes("red")
-            ? "linear-gradient(to top, rgba(253, 86, 92, 1) 50%, rgba(182, 89, 254, 1) 50.01%)"
-            : "rgba(71, 186, 124, 1)"; // Red if color is red, otherwise green
+            ? "rgba(253, 86, 92, 1)"
+            : "rgba(71, 186, 124, 1)";
         default:
-          return "rgba(253, 86, 92, 1)"; // Red
+          return "rgba(253, 86, 92, 1)";
       }
     }
   };
   const getGameHistory = async () => {
     try {
+      console.log("Fetching game history...");
       const response = await axios.get(
-        `${API_BASE_URL}/api/game/get-game-history?page=1`
+        `${API_BASE_URL}/api/game/get-game-history?page=${currentPage}`
       );
+      console.log("Game history response:", response.data);
       setGameHistory(response.data);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching game history:", error);
     }
   };
+
   const paginatedData = gameHistory.data?.slice(
     currentPage * pageSize,
     (currentPage + 1) * pageSize
   );
-  const getGameIssue = async () => {
-    try {
-      const response = await axios.get(
-        `${API_BASE_URL}/api/game/get-currentGame-issue`
-      );
-      if (!response.data) {
-        throw new Error("Failed to fetch game issue data");
+
+  useEffect(() => {
+    getGameHistory();
+    const socket = io("http://192.168.1.46:4000");
+
+    const countDownIssue = (countdownUpdate) => {
+      setIssueNum(countdownUpdate?.issueNumber);
+      setCountDown(countdownUpdate?.remainingTime);
+      if (countdownUpdate?.remainingTime === 0) {
+        getGameHistory();
       }
-      return response.data.data; // Return the game issue data
-    } catch (error) {
-      if (axios.isCancel(error)) {
-        console.log("Request canceled:", error.message);
-      } else {
-        console.error("Error fetching game issue data:", error);
-      }
-      throw error; // Re-throw the error to be caught by the caller
-    }
-  };
-  useEffect(() => {
-    const socket = io("http://192.168.1.34:4000");
-
-    // Subscribe to the "gameIssueGenerated" event
-    socket.on("gameIssueGenerated", (data) => {
-      console.log("Received game issue data:", data);
-    });
-
-    // Cleanup function
-    return () => {
-      socket.disconnect(); // Disconnect the WebSocket connection when component unmounts
     };
-  }, []);
-  const fetchData = async () => {
-    try {
-      await getGameHistory();
-      // socket.on("gameIssueGenerated", (dataRec) => {
-      //   console.log("Received game issue data:", dataRec);
-      // });
-      const gameIssueData = await getGameIssue();
-      setGameIssue(gameIssueData);
-      setIssueNum(gameIssueData?.issueNumber);
-      // setGameIssue(dataRec);
-      // setIssueNum(dataRec.data.issueNumber);
-    } catch (error) {
-      console.error("Error fetching game data:", error);
-    }
-  };
-
-  useEffect(() => {
-    const socket = io("http://192.168.1.34:4000");
-
-    // Subscribe to the "gameIssueGenerated" event
-    socket.on("gameIssueGenerated", (dataRec) => {
-      console.log("Received game issue data:", dataRec);
-    });
-    socket.on("countdownUpdate", (countDown) => {
-      console.log("Received  countDown:", countDown);
-    });
-
-    // Cleanup function
+    socket.on("countdownUpdate", countDownIssue);
     return () => {
-      socket.disconnect(); // Disconnect the WebSocket connection when component unmounts
+      socket.disconnect();
     };
-  }, []);
-  // Timer Effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft((prevTimeLeft) => {
-        if (!gameIssue) return { minutes: 0, seconds: 0 };
-
-        const startTime = new Date(gameIssue.startTime);
-        const endTime = new Date(gameIssue.endTime);
-        const now = new Date();
-        let difference;
-
-        if (now < startTime) {
-          difference = startTime - now;
-        } else if (now > endTime) {
-          const timeUntilNextIssue = new Date(endTime);
-          timeUntilNextIssue.setSeconds(timeUntilNextIssue.getSeconds() + 60);
-          difference = timeUntilNextIssue - now;
-        } else {
-          difference = endTime - now;
-        }
-
-        const totalSeconds = Math.floor(difference / 1000);
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
-
-        if (minutes === 0 && seconds === 0) {
-          fetchData();
-        }
-
-        if (
-          prevTimeLeft.minutes !== minutes ||
-          prevTimeLeft.seconds !== seconds
-        ) {
-          saveTimeLeftToLocalStorage({ minutes, seconds });
-        }
-
-        return { minutes, seconds };
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [gameIssue]);
-
-  // Initial Fetch Effect
-  useEffect(() => {
-    fetchData();
   }, []);
 
   return (
@@ -245,13 +159,16 @@ const GameHistory = () => {
                   <td>{item.issueNumber}</td>
                   <td
                     style={{
-                      color: getColorForPremium(
+                      background: getColorForPremium(
                         item.category,
                         item.number,
                         item.color
                       ),
-                      // WebkitBackgroundClip: "text",
-                      // WebkitTextFillColor: "transparent",
+
+                      backgroundClip: "text",
+                      // WebkitTextFillColor:"transparent",
+                      WebkitBackgroundClip: "text",
+                      color: "transparent",
                       fontSize: "24px",
                       fontWeight: "bold",
                     }}
@@ -350,7 +267,18 @@ const GameHistory = () => {
               ))}
             </tbody>
           </table>
-          <div className={styles.pagination}>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            pageCount={data.totalPage} // Total number of pages
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageClick} // Function to handle page change
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+          />
+          {/* <div className={styles.pagination}>
             <button
               onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 0}
@@ -370,22 +298,10 @@ const GameHistory = () => {
             >
               Next
             </button>
-          </div>
+          </div> */}
         </>
       )}
       {selectedButton === "chart" && (
-        // <div className={`${styles.chart_box}`}>
-        //   <div className={`row ${styles.chart_box_title}`}>
-        //     <div className="col-4">
-        //       <p>Period</p>
-        //     </div>
-        //     <div className="col-8">
-        //       <p>Number</p>
-        //     </div>
-        //   </div>
-
-        //   here start the code
-        // </div>
         <div className={`${styles.chart_box}`}>
           <div className={`row ${styles.chart_box_title}`}>
             <div className="col-4">
@@ -396,9 +312,7 @@ const GameHistory = () => {
             </div>
           </div>
 
-          {/* Content */}
           <div className={`row ${styles.chart_content}`}>
-            {/* Winning number */}
             <div className="col-4">
               <p>Winning number</p>
             </div>
@@ -417,7 +331,6 @@ const GameHistory = () => {
               </div>
             </div>
 
-            {/* Missing */}
             <div className="col-4">
               <p>Missing</p>
             </div>
@@ -436,7 +349,6 @@ const GameHistory = () => {
               </div>
             </div>
 
-            {/* Avg missing */}
             <div className="col-4">
               <p>Avg missing</p>
             </div>
@@ -455,7 +367,6 @@ const GameHistory = () => {
               </div>
             </div>
 
-            {/* Frequency */}
             <div className="col-4">
               <p>Frequency</p>
             </div>
@@ -474,7 +385,6 @@ const GameHistory = () => {
               </div>
             </div>
 
-            {/* Max consecutive */}
             <div className="col-4">
               <p>Max consecutive</p>
             </div>
@@ -495,7 +405,7 @@ const GameHistory = () => {
           </div>
           <div className={`${styles.chart_table_data}`}>
             <div className={`${styles.issueNumber}`}>
-                <div className="row">
+              <div className="row">
                 <div className="col-4">20240502011059</div>
                 <div className={`col-8 ${styles.number_category}`}>
                   <p>0</p>
@@ -509,9 +419,8 @@ const GameHistory = () => {
                   <p>8</p>
                   <p>9</p>
                   <p>S</p>
-
                 </div>
-                </div>
+              </div>
             </div>
           </div>
         </div>

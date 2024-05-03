@@ -9,8 +9,7 @@ import myContext from "../Context/MyContext.jsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const Lottery = () => {
-  const { timeLeft } = useContext(myContext);
-  const { issueNum } = useContext(myContext);
+  const { countDown, issueNum } = useContext(myContext);
   const [activeIndex, setActiveIndex] = useState(0);
   const [time, setTime] = useState(0);
   const [selectedOption, setSelectedOption] = useState("x1");
@@ -22,7 +21,7 @@ const Lottery = () => {
   const [balance, setBalance] = useState(null);
   const [amount, setAmount] = useState(1);
   const [isBettingAllowed, setIsBettingAllowed] = useState(true);
-  const betAmounts = [1, 5, 10, 20, 50, 100]; // Available bet amounts
+  const betAmounts = [1, 5, 10, 20, 50, 100];
   const handleItemClick = (index) => {
     setActiveIndex(index);
   };
@@ -108,29 +107,19 @@ const Lottery = () => {
     }
   };
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTime((prevTime) => {
-        if (prevTime === 0) {
-          return 60;
-        }
-        if (prevTime === 5) {
-          setShowPopup(true);
-          setIsBettingAllowed(false); // Disable betting when time reaches 5 seconds
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(intervalId);
+    if (countDown === 5) {
+      setShowPopup(true);
+      setIsBettingAllowed(false); // Disable betting when time reaches 5 seconds
+    }
   }, []);
 
   useEffect(() => {
-    if (timeLeft?.minutes == 0 && timeLeft?.seconds <= 5) {
+    if (countDown <= 5) {
       setShow(true);
     } else {
       setShow(false);
     }
-  }, [timeLeft]);
+  }, [countDown]);
 
   useEffect(() => {
     getBalance();
@@ -227,12 +216,10 @@ const Lottery = () => {
                     </div>
                     <div className={` ${styles.remain_time}`}>
                       <div className={` ${styles.number_count}`}>
-                        <button className={`btn ${styles.count_num}`}>
-                          {timeLeft.minutes}
-                        </button>
+                        <button className={`btn ${styles.count_num}`}>0</button>
                         <button className={`btn ${styles.count_num}`}>:</button>
                         <button className={`btn ${styles.count_num}`}>
-                          {timeLeft.seconds}
+                          {countDown}
                         </button>
                       </div>
                     </div>
@@ -246,7 +233,7 @@ const Lottery = () => {
                 {show && (
                   <div className={`${styles.betting_card_mark}`}>
                     <div>0</div>
-                    <div>{timeLeft?.seconds}</div>
+                    <div>{countDown}</div>
                   </div>
                 )}
                 <div className={`${styles.clr_btn_box}`}>
@@ -254,7 +241,7 @@ const Lottery = () => {
                     <button
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Green");
+                        setSelectedButton("green");
                         setSelectedColor("#40ad72");
                       }}
                       className={`btn ${styles.green}`}
@@ -267,7 +254,7 @@ const Lottery = () => {
                     <button
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Violet");
+                        setSelectedButton("violet");
                         setSelectedColor("#b659fe");
                       }}
                       className={`btn ${styles.violet}`}
@@ -280,7 +267,7 @@ const Lottery = () => {
                     <button
                       onClick={() => {
                         setShowModal(true);
-                        setSelectedButton("Red");
+                        setSelectedButton("red");
                         setSelectedColor("#fd565c");
                       }}
                       className={`btn ${styles.red}`}
@@ -452,8 +439,8 @@ const Lottery = () => {
                     className={`btn ${styles.num_play_boxbtn_big}`}
                     onClick={() => {
                       setShowModal(true);
-                      setSelectedButton("Big");
-                      setSelectedColor("Big");
+                      setSelectedButton("big");
+                      setSelectedColor("big");
                     }}
                   >
                     Big
@@ -462,8 +449,8 @@ const Lottery = () => {
                     className={`btn ${styles.num_play_boxbtn_small}`}
                     onClick={() => {
                       setShowModal(true);
-                      setSelectedButton("Small");
-                      setSelectedColor("Small");
+                      setSelectedButton("small");
+                      setSelectedColor("small");
                     }}
                   >
                     Small
