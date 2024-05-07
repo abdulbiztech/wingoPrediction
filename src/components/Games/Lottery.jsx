@@ -8,22 +8,29 @@ import API_BASE_URL from "../../environment/api.js";
 import myContext from "../Context/MyContext.jsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import io from "socket.io-client";
 const Lottery = () => {
   const { countDown, issueNum } = useContext(myContext);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [time, setTime] = useState(0);
   const [selectedOption, setSelectedOption] = useState("x1");
   const [showPopup, setShowPopup] = useState(false);
   const [show, setShow] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedButton, setSelectedButton] = useState();
+  const [showModalPlay, setShowModalPlay] = useState(false);
   const [selectedColor, setSelectedColor] = useState();
   const [balance, setBalance] = useState(null);
   const [amount, setAmount] = useState(1);
   const [isBettingAllowed, setIsBettingAllowed] = useState(true);
   const betAmounts = [1, 5, 10, 20, 50, 100];
+  const [recentWinner, setRecentWinner] = useState([]);
+  const [isplace,setIsplace]=useState(false)
+
   const handleItemClick = (index) => {
     setActiveIndex(index);
+  };
+  const toggleModalPlay = () => {
+    setShowModalPlay(!showModalPlay);
   };
 
   const handleButtonClick = (option) => {
@@ -56,24 +63,19 @@ const Lottery = () => {
 
   const getBalance = async () => {
     const userId = 1;
-
     try {
       const response = await axios.get(
         `${API_BASE_URL}/api/user/get-balance?userId=${userId}`
       );
-
       if (!response.data) {
         throw new Error("Failed to fetch user balance data");
       }
       setBalance(response?.data?.data?.walletBalance);
     } catch (error) {
-      if (axios.isCancel(error)) {
-        console.log("Request canceled:", error.message);
-      } else {
-        console.error("Error fetching user balance data:", error);
-      }
+      console.error("Error fetching user balance data:", error);
     }
   };
+
   const generateBetData = (selectType, amount) => {
     return {
       userId: 1,
@@ -95,26 +97,46 @@ const Lottery = () => {
       if (response.data.status) {
         console.log("Bet placed successfully");
         toast.success("Bet placed successfully");
+        setIsplace(true);
         setShowModal(false);
         setAmount(1);
+        getBalance();
       } else {
-        console.error("Failed to place bet:", response.data.message);
-        toast.error(`Failed to place bet: ${response.data.message}`);
+        console.error("Failed to place bet:", response.data);
+        toast.error(`Failed to place bet: ${response?.data?.data?.message}`);
       }
     } catch (error) {
       console.error("Error placing bet:", error);
-      toast.error(`Error placing bet: ${error.message}`);
+      // console.log("error.message",error.message);
+      toast.error(`Error placing bet: ${error.response.data.message}`);
     }
   };
+
+  const recentWin = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/api/game/latest-results`
+      );
+      if (response) {
+        setRecentWinner(response.data.data);
+      } else {
+        console.error("Error:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching recentWin", error);
+    }
+  };
+
   useEffect(() => {
     if (countDown === 5) {
       setShowPopup(true);
-      setIsBettingAllowed(false); // Disable betting when time reaches 5 seconds
+      setIsBettingAllowed(false);
+      setShowModal(false);
     }
-  }, []);
+  }, [countDown]);
 
   useEffect(() => {
-    if (countDown <= 5) {
+    if (countDown <= 5 && countDown > 0) {
       setShow(true);
     } else {
       setShow(false);
@@ -123,7 +145,16 @@ const Lottery = () => {
 
   useEffect(() => {
     getBalance();
+    recentWin();
   }, []);
+
+  useEffect(() => {
+    if (countDown === 0) {
+      getBalance();
+      recentWin();
+    }
+  }, [countDown]);
+  // console.log("setisplace",isplace);
 
   return (
     <>
@@ -168,11 +199,7 @@ const Lottery = () => {
                 </div>
               </div>
               <div className={`${styles.time_box}`}>
-                {[
-                  { text: "Win Go 1 Min" },
-                  { text: "Win Go 3 Min" },
-                  { text: "Win Go 5 Min" },
-                ].map((item, index) => (
+                {[{ text: "Win Go 1 Min" }].map((item, index) => (
                   <div
                     key={index}
                     className={`${styles.time_box_wihing} ${
@@ -190,8 +217,10 @@ const Lottery = () => {
                 <div className="col-6">
                   <div className={` ${styles.play_box}`}>
                     <div className={` ${styles.how_box}`}>
-                      <button className={`btn ${styles.btn_howplay}`}>
-                        {" "}
+                      <button
+                        className={`btn ${styles.btn_howplay}`}
+                        onClick={toggleModalPlay}
+                      >
                         <i className="bi bi-file-earmark"></i> How to play
                       </button>
                     </div>
@@ -200,11 +229,13 @@ const Lottery = () => {
                         Win Go <strong>1Min</strong>
                       </p>
                       <div className={` ${styles.number_img}`}>
-                        <img src="/src/assets/number-1.png" alt="" />
-                        <img src="/src/assets/number-2.png" alt="" />
-                        <img src="/src/assets/number-3.png" alt="" />
-                        <img src="/src/assets/number-4.png" alt="" />
-                        <img src="/src/assets/number-5.png" alt="" />
+                        {recentWinner.map((item, index) => (
+                          <img
+                            key={index}
+                            src={`/src/assets/number-${item.number}.png`}
+                            alt={`Number ${item.number}`}
+                          />
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -461,13 +492,66 @@ const Lottery = () => {
 
             <div className="col-6">
               <div className={`${styles.game_record}`}>
-                <GameHistory />
+                <GameHistory setIsplace={setIsplace} isplace={isplace}/>
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* How To Play Modal */}
+      <Modal
+        show={showModalPlay}
+        className={`${styles.how_to_play_modal}`}
+        onHide={toggleModalPlay}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className={`${styles.how_to_play_title}`}>
+            How to Play
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className={`${styles.modal_body}`}>
+          <p>
+            1 minutes 1 issue, 55 seconds to order, 5 seconds waiting for the
+            draw. It opens all day. The total number of trade is 1440 issues. If
+            you spend 100 to trade, after deductin g service fee 2%, contract
+            amount: 98
+          </p>
+          <p>
+            1.Select green: if the result shows 1,3,7,9 you will get
+            (98*2)=196,If the result shows 5, you will get (98*1.5) 147
+          </p>
+          <p>
+            2.Select red: if the result shows 2,4,6,8 you will get (98*2)=196
+            :If the resuIt shows 0, you will get (98*1.5) 147
+          </p>
+          <p>
+            3.Select violet: if the result shows 0 or 5, you will get (98*4.5)
+            441
+          </p>
+          <p>
+            4.Select number: if the result is the same as the number you
+            selected, you will get (98*9)=882
+          </p>
+          <p>
+            5.Select big: if the result shows 5,6,7,8,9 you will get (98*2)=196
+          </p>
+          <p>
+            6.Select small: if the result shows 0,1,2,3,4 you will get
+            (98*2)=196
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          {/* Close button */}
+          <Button
+            variant="secondary"
+            className={`${styles.close_button}`}
+            onClick={toggleModalPlay}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
       {/* Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header

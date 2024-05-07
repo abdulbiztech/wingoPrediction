@@ -14,7 +14,8 @@
     justify-content: center;
     text-align: center;
 }
-.balance_show .balance_box{
+
+.balance_show .balance_box {
     box-shadow: none;
 }
 
@@ -498,3 +499,37 @@
     margin-bottom: -20px;
 
 }
+
+/* ///models css */
+
+.how_to_play_modal .modal-content {
+    background-color: #fff;
+    border-radius: 5px;
+}
+.model-title{
+    display: flex;
+    justify-content: center;
+}
+.how_to_play_modal .modal-header {
+    background-color: #007bff;
+    color: #fff;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+}
+
+
+.how_to_play_modal .how_to_play_title{
+    display: flex;
+    justify-content: center;
+}
+
+
+
+.how_to_play_modal .modal_body p {
+    font-size: 13px;
+    font-family: Bahnschrift Regular;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+

@@ -133,11 +133,14 @@ span {
   display: flex;
   flex-wrap: wrap;
 }
+
 .MyGameRecordList__C {
   display: flex;
   justify-content: space-between;
-  margin: 15px;
+  margin: 5px;
+  align-items: center;
 }
+
 .MyGameRecordList__item_1 {
   background-color: rgb(122, 207, 222);
   border-radius: 10px;
@@ -196,27 +199,24 @@ span {
   justify-content: center;
   align-content: center;
 }
+
 .chart_box {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 20px;
-  margin-top: 20px;
 }
 
 .chart_box_title {
   background-color: orange;
-  text-align: center;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  padding: 5px;
+  margin: auto;
 }
 
-.chart_box_title > .col-4 {
+.chart_box_title>.col-4 {
   font-weight: bold;
 }
 
-.chart_box_title > .col-8 {
+.chart_box_title>.col-8 {
   font-weight: bold;
 }
 
@@ -240,9 +240,11 @@ span {
 .MAX_NUM {
   display: flex;
 }
+
 .MAX_CON_NUM {
   display: flex;
 }
+
 .Winning_Num p {
   border-radius: 50%;
   border: 2px solid #fd565c;
@@ -251,22 +253,142 @@ span {
   margin: 0px 2px;
   font-size: 13px;
 }
+
 .Missing_Num p {
   display: flex;
   justify-content: space-evenly;
-  /* margin: 0 3px; */
 }
-.number_category{
+
+.number_category {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 50%;
 }
-.number_category p{
+
+.number_category p {
   display: flex;
   align-items: center;
   border-radius: 50%;
   width: 20px;
   border: 1px solid rgb(75, 74, 74);
   justify-content: center;
+}
+
+.bet_result_box {
+  border: 1px solid red;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination_button {
+  padding: 8px 16px;
+  margin: 0 5px;
+  border: 1px solid #007bff;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pagination_button:hover {
+  background-color: #0056b3;
+}
+
+.pagination_button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination_info {
+  margin: 0 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.noData_message {
+  text-align: center;
+  font-size: 18px;
+  color: #888;
+  margin-top: 20px;
+}
+
+/* Define the colors for different select types */
+
+.smallColor {
+  background-color: #6da7f4;
+  color: #fff;
+}
+
+
+.bigColor {
+  background-color: #ffa82e;
+  color: #fff;
+}
+
+.gradientRedViolet {
+  background: linear-gradient(to top, rgba(182, 89, 254, 1) 50%, rgba(253, 86, 92, 1) 50.01%);
+  color: #fff;
+}
+
+.gradientGreenViolet {
+  background: linear-gradient(to top, rgba(182, 89, 254, 1) 50%, rgba(71, 186, 124, 1) 50.01%);
+  color: #fff;
+}
+
+.greenColor {
+  color: #fff;
+  background-color: #40ad72;
+}
+
+.redColor {
+  color: #fff;
+  background-color: #fd565c;
+}
+.violetColor {
+  color: #fff;
+  background-color: #b659fe;
+}
+
+/* //for numbers */
+.gradientRedViolet2 {
+  color: linear-gradient(to top, rgba(182, 89, 254, 1) 50%, rgba(253, 86, 92, 1) 50.01%);
+  font-size:24px;
+  font-weight:bold;
+
+}
+
+.gradientGreenViolet2 {
+  background: -webkit-linear-gradient(top, #40ad72 51.48%, #b659fe 51.49%);
+  background: linear-gradient(180deg, #40ad72 51.48%, #b659fe 51.49%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size:24px;
+  font-weight:bold;
+}
+
+.greenColor2 {
+  color: #40ad72;
+  font-size:24px;
+  font-weight:bold;
+}
+
+.redColor2 {
+  color: #fd565c;
+  font-size:24px;
+  font-weight:bold;
+}
+.violetColor2 {
+  color: #b659fe;
+  font-size:24px;
+  font-weight:bold;
 }
