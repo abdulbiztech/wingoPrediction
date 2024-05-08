@@ -6,6 +6,9 @@ import API_BASE_URL from "../../environment/api.js";
 import myContext from "../Context/MyContext.jsx";
 import io from "socket.io-client";
 import { Modal, Button } from "react-bootstrap";
+import winResult from "../../assets/win-result.png";
+import loseResult from "../../assets/lose-result.png";
+
 const GameHistory = (props) => {
   // console.log("GameHistory",props);
   const { setIsplace, isplace } = props;
@@ -26,7 +29,9 @@ const GameHistory = (props) => {
   const [paginatedDataMyHis, setPaginatedDataMyHis] = useState([]);
   const itemsPerPage = 10;
   const [resultAnnounced, setResultAnnounced] = useState(false);
-
+  const [gameResult, setGameResult] = useState({ status: null });
+// console.log("ValidateLogin",gameResult);
+  // console.log("userResults",userResults);
   const handleCardClick = (cardId) => {
     setSelectedCard(selectedCard === cardId ? null : cardId);
   };
@@ -44,8 +49,6 @@ const GameHistory = (props) => {
       return ""; // Return default style
     }
   };
-
-
   const getColorForSelectType = (selectType) => {
     if (selectType.toLowerCase() === "0") {
       return styles.gradientRedViolet;
@@ -65,20 +68,6 @@ const GameHistory = (props) => {
       return styles.violetColor;
     } else if (selectType.toLowerCase() === "red") {
       return styles.redColor;
-    } else {
-      return "";
-    }
-  };
-
-  const getColorForSelect = (selectType) => {
-    if (selectType.toLowerCase() === "0") {
-      return styles.gradientRedViolet;
-    } else if (selectType.toLowerCase() === "5") {
-      return styles.gradientGreenViolet;
-    } else if (["2", "4", "6", "8"].includes(selectType.toLowerCase())) {
-      return styles.redColor;
-    } else if (["1", "3", "7", "9"].includes(selectType.toLowerCase())) {
-      return styles.greenColor;
     } else {
       return "";
     }
@@ -131,25 +120,36 @@ const GameHistory = (props) => {
       userId: 1,
       issueNumber: issueNum,
     };
+
     try {
       const response = await axios.post(
         `${API_BASE_URL}/api/game/announce-results`,
         data
       );
-      if (response) {
+
+      if (response.status === 200) {
         setResultAnnounced(true);
+        setGameResult(response);
+        console.log("Response:", response);
         setUserResults(response.data.message);
       } else {
         console.error("Error:", response.data.message);
       }
+      console.log("Response:", response);
+
     } catch (error) {
-      if (error.response && error.response.status === 404) {
-        console.error("404 Not Found: The endpoint does not exist.");
+      if (error.response) {
+        console.error(
+          `${error.response.status} ${error.response.statusText}: ${error.response.data}`
+        );
+      } else if (error.request) {
+        console.error("No response received:", error.request);
       } else {
-        console.error("Error fetching user bet history:", error);
+        console.error("Error fetching user result:", error.message);
       }
     }
   };
+
   const placeBetsData = (placeBets) => {
     if (placeBets) {
       setBetPlaced(true);
@@ -157,7 +157,7 @@ const GameHistory = (props) => {
   };
   useEffect(() => {
     if (countDown === 0) {
-      getUserResult();
+      // getUserResult();
       getUserBetHistory();
       // setIsplace(false);
     }
@@ -165,10 +165,21 @@ const GameHistory = (props) => {
   useEffect(() => {
     if (isplace === true) {
       getUserBetHistory();
-      setIsplace(false);
+      // getUserResult();
     }
   }, [isplace]);
 
+
+  useEffect(()=>{
+    if(countDown === 0 && isplace){
+      getUserResult();
+      setResultAnnounced(true);
+      setIsplace(false);
+    }
+  },[countDown])
+  // console.log("isplace",isplace);
+// console.log("checking",countDown,isplace);
+// console.log("setResultAnnounced",resultAnnounced);
   useEffect(() => {
     getGameHistory();
     getUserBetHistory();
@@ -209,40 +220,87 @@ const GameHistory = (props) => {
     );
   }, [userBet, currentPageMyhistory, itemsPerPage]);
 
+  // const handlePopUpResult2 = () => {
+  //   setResultAnnounced(true);
+  // };
+  const handlePopUpResult = () => {
+    setResultAnnounced(false);
+  };
+
+  const handleAutoClose = (event) => {
+    if (event.target.checked) {
+      setTimeout(() => {
+        setResultAnnounced(false);
+      }, 3000);
+    }
+  };
   return (
     <>
-      <Modal show={resultAnnounced} onHide={() => setResultAnnounced(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Result Announced</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <h2>{userResults}</h2>
+      {/* <button className="" onClick={handlePopUpResult2}></button> */}
+      <Modal className={`${styles.model_body}`} show={resultAnnounced} onHide={() => setResultAnnounced(false)}>
+        <Modal.Body className="p-0">
+          <div className={styles.modal}>
+            {gameHistory && (
+              <div className={styles.lotteryResult}>
+                <h5>Lottery Result</h5>
+                <button className={`btn ${styles.lottery_color_result}`}>{gameHistory[0]?.color}</button>
+                <button className={`btn ${styles.lottery_color_number}`}>{gameHistory[0]?.number}</button>
+                <button className={`btn ${styles.lottery_color_category}`}>{gameHistory[0]?.category}</button>
+              </div>
+            )}
+            <div className={styles.modalTop}>
+              <img
+                src={gameResult && gameResult.status ? loseResult : winResult}
+                alt="Result"
+                className={styles.modalIcon + " u-imgResponsive"}
+              />
+              <div className={styles.modalHeader}>
+                {gameResult && gameResult.status ? (
+                  <p>Sorry, You lose!</p>
+                ) : (
+                  <p>Congratulations! You won!</p>
+                )}
+              </div>
+              <div className={styles.modalSubheader}>
+                {gameResult && gameResult.status ? "You have won $2" : ""}
+              </div>
+
+            </div>
+
+            <div className={styles.modalBottom}>
+              <input
+                type="checkbox"
+                id="autoClose"
+                name="autoClose"
+                onChange={handleAutoClose}
+              />
+              <label htmlFor="autoClose">3 seconds auto close</label>
+            </div>
+
+            <div className={`${styles.closeBtn}`}>
+              <button type="button" className="btn btn-close shadow-none" onClick={handlePopUpResult}></button>
+            </div>
+          </div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setResultAnnounced(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
       </Modal>
+
 
       <div className={styles.gameHistory}>
         <button
-          className={`btn ${
-            selectedButton === "gameHistory"
-              ? styles.gamehistory_btn_selected
-              : styles.gamehistory_btn
-          }`}
+          className={`btn ${selectedButton === "gameHistory"
+            ? styles.gamehistory_btn_selected
+            : styles.gamehistory_btn
+            }`}
           onClick={() => handleButtonClick("gameHistory")}
         >
           Game History
         </button>
 
         <button
-          className={`btn ${
-            selectedButton === "myHistory"
-              ? styles.myhistory_btn_selected
-              : styles.myhistory_btn
-          }`}
+          className={`btn ${selectedButton === "myHistory"
+            ? styles.myhistory_btn_selected
+            : styles.myhistory_btn
+            }`}
           onClick={() => handleButtonClick("myHistory")}
         >
           My History
@@ -268,10 +326,9 @@ const GameHistory = (props) => {
                   <tr key={index}>
                     <td>{item.issueNumber}</td>
 
-<td className={`${getColorForPremium(item.number)}`}>
-  {item.number}
-</td>
-
+                    <td className={`${getColorForPremium(item.number)}`}>
+                      {item.number}
+                    </td>
 
                     <td>{item.category}</td>
                     <td>
@@ -282,9 +339,9 @@ const GameHistory = (props) => {
                         }}
                       >
                         {item.color &&
-                        typeof item.color === "string" &&
-                        item.color.includes("red") &&
-                        item.color.includes("violet") ? (
+                          typeof item.color === "string" &&
+                          item.color.includes("red") &&
+                          item.color.includes("violet") ? (
                           <>
                             <div
                               style={{
@@ -399,17 +456,9 @@ const GameHistory = (props) => {
                 onClick={() => handleCardClick(index)}
               >
                 <div className={`${styles.MyGameRecordList__C}`}>
-                  {/* <div className={`${styles.MyGameRecordList__item_1}`}>
-                    {bet.selectType}
-                  </div> */}
                   <div
-                    className={`${
-                      styles.MyGameRecordList__item_1
-                    } ${getColorForSelectType(
-                      bet.selectType,
-                      bet.number,
-                      bet.color
-                    )}`}
+                    className={`${styles.MyGameRecordList__item_1} ${getColorForSelectType(bet.selectType, bet.number, bet.color)
+                      }`}
                   >
                     {bet.selectType}
                   </div>
@@ -426,20 +475,23 @@ const GameHistory = (props) => {
                       )}
                     </div>
                   </div>
-                  <div className="MyGameRecordList__C-item-r">
-                    <div className={`${styles.bet_result_box}`}>
-                      {bet.betResult !== "pending"
-                        ? bet.betResult === "win"
-                          ? "Success"
-                          : "Failed"
-                        : "Pending"}
+                  <div className={`${styles.MyGameRecordList__C_item_r}`}>
+                    <div
+                      className={`${styles.bet_result_box} ${bet.betResult === "win" ? styles.greenSuccess : styles.redfail
+                        }`}
+                    >
+                     {bet.betResult === "win" ? "Success" : "Failed"}
                     </div>
-                    <span>
+                    <span
+                      className={bet.betResult === "win" ? styles.green : styles.red}
+                    >
                       {bet.betResult !== "pending"
-                        ? `$${bet.amountAfterTax}`
+                        ? `${bet.betResult === "win" ? "+" : "-"
+                        }$${bet.betresult == "win" ? bet.profitAmount.toFixed(2) : bet.amountAfterTax.toFixed(2)}`
                         : "Pending"}
                     </span>
                   </div>
+
                 </div>
 
                 {selectedCard === index && (
@@ -484,11 +536,10 @@ const GameHistory = (props) => {
                             {bet.number}
                           </div>
                           <div
-                            className={`${styles.MyGameRecordList__C_inlineB} ${
-                              bet.color === "red"
-                                ? styles.redColor
-                                : styles.greenColor
-                            }`}
+                            className={`${styles.MyGameRecordList__C_inlineB} ${bet.color === "red"
+                              ? styles.redColor
+                              : styles.greenColor
+                              }`}
                           >
                             {bet.color}
                           </div>
