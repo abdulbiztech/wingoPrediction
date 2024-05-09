@@ -24,7 +24,8 @@ const Lottery = () => {
   const [isBettingAllowed, setIsBettingAllowed] = useState(true);
   const betAmounts = [1, 5, 10, 20, 50, 100];
   const [recentWinner, setRecentWinner] = useState([]);
-  const [isplace,setIsplace]=useState(false)
+  const [isplace, setIsplace] = useState(false)
+  const [showResult, setShowResult] = useState(false)
 
   const handleItemClick = (index) => {
     setActiveIndex(index);
@@ -36,20 +37,17 @@ const Lottery = () => {
   const handleButtonClick = (option) => {
     setSelectedOption(option);
   };
-
   const handleAmountChange = (event) => {
     setAmount(event.target.value);
   };
   const handleIncrement = () => {
     setAmount((prevAmount) => prevAmount + 1);
   };
-
   const handleDecrement = () => {
     if (amount > 1) {
       setAmount((prevAmount) => prevAmount - 1);
     }
   };
-
   const getRandomNumber = () => {
     const randomNumber = Math.floor(Math.random() * 10);
     setSelectedButton(randomNumber.toString());
@@ -60,7 +58,6 @@ const Lottery = () => {
         : "#fd565c"
     );
   };
-
   const getBalance = async () => {
     const userId = 1;
     try {
@@ -75,7 +72,6 @@ const Lottery = () => {
       console.error("Error fetching user balance data:", error);
     }
   };
-
   const generateBetData = (selectType, amount) => {
     return {
       userId: 1,
@@ -86,7 +82,6 @@ const Lottery = () => {
       gameId: 1,
     };
   };
-
   const placeBet = async (selectType, amount) => {
     const data = generateBetData(selectType, amount);
     try {
@@ -95,9 +90,10 @@ const Lottery = () => {
         data
       );
       if (response.data.status) {
-        console.log("Bet placed successfully");
+        // console.log("Bet placed successfully");
         toast.success("Bet placed successfully");
         setIsplace(true);
+        setShowResult(true);
         setShowModal(false);
         setAmount(1);
         getBalance();
@@ -107,11 +103,9 @@ const Lottery = () => {
       }
     } catch (error) {
       console.error("Error placing bet:", error);
-      // console.log("error.message",error.message);
       toast.error(`Error placing bet: ${error.response.data.message}`);
     }
   };
-
   const recentWin = async () => {
     try {
       const response = await axios.get(
@@ -126,7 +120,6 @@ const Lottery = () => {
       console.error("Error fetching recentWin", error);
     }
   };
-
   useEffect(() => {
     if (countDown === 5) {
       setShowPopup(true);
@@ -134,7 +127,6 @@ const Lottery = () => {
       setShowModal(false);
     }
   }, [countDown]);
-
   useEffect(() => {
     if (countDown <= 5 && countDown > 0) {
       setShow(true);
@@ -147,14 +139,12 @@ const Lottery = () => {
     getBalance();
     recentWin();
   }, []);
-
   useEffect(() => {
     if (countDown === 0) {
       getBalance();
       recentWin();
     }
   }, [countDown]);
-  // console.log("setisplace",isplace);
 
   return (
     <>
@@ -202,9 +192,8 @@ const Lottery = () => {
                 {[{ text: "Win Go 1 Min" }].map((item, index) => (
                   <div
                     key={index}
-                    className={`${styles.time_box_wihing} ${
-                      activeIndex === index ? styles.cus_active : ""
-                    }`}
+                    className={`${styles.time_box_wihing} ${activeIndex === index ? styles.cus_active : ""
+                      }`}
                     onClick={() => handleItemClick(index)}
                   >
                     <img src="/src/assets/time-img.png" alt="" />
@@ -416,49 +405,43 @@ const Lottery = () => {
                     Random
                   </button>
                   <button
-                    className={`btn ${styles.num_boxbtn_btns} ${
-                      selectedOption === "x1" ? styles.selected : ""
-                    }`}
+                    className={`btn ${styles.num_boxbtn_btns} ${selectedOption === "x1" ? styles.selected : ""
+                      }`}
                     onClick={() => handleButtonClick("x1")}
                   >
                     x1
                   </button>
                   <button
-                    className={`btn ${styles.num_boxbtn_btns} ${
-                      selectedOption === "x5" ? styles.selected : ""
-                    }`}
+                    className={`btn ${styles.num_boxbtn_btns} ${selectedOption === "x5" ? styles.selected : ""
+                      }`}
                     onClick={() => handleButtonClick("x5")}
                   >
                     x5
                   </button>
                   <button
-                    className={`btn ${styles.num_boxbtn_btns} ${
-                      selectedOption === "x10" ? styles.selected : ""
-                    }`}
+                    className={`btn ${styles.num_boxbtn_btns} ${selectedOption === "x10" ? styles.selected : ""
+                      }`}
                     onClick={() => handleButtonClick("x10")}
                   >
                     x10
                   </button>
                   <button
-                    className={`btn ${styles.num_boxbtn_btns} ${
-                      selectedOption === "x20" ? styles.selected : ""
-                    }`}
+                    className={`btn ${styles.num_boxbtn_btns} ${selectedOption === "x20" ? styles.selected : ""
+                      }`}
                     onClick={() => handleButtonClick("x20")}
                   >
                     x20
                   </button>
                   <button
-                    className={`btn ${styles.num_boxbtn_btns} ${
-                      selectedOption === "x50" ? styles.selected : ""
-                    }`}
+                    className={`btn ${styles.num_boxbtn_btns} ${selectedOption === "x50" ? styles.selected : ""
+                      }`}
                     onClick={() => handleButtonClick("x50")}
                   >
                     x50
                   </button>
                   <button
-                    className={`btn ${styles.num_boxbtn_btns} ${
-                      selectedOption === "x100" ? styles.selected : ""
-                    }`}
+                    className={`btn ${styles.num_boxbtn_btns} ${selectedOption === "x100" ? styles.selected : ""
+                      }`}
                     onClick={() => handleButtonClick("x100")}
                   >
                     x100
@@ -492,7 +475,7 @@ const Lottery = () => {
 
             <div className="col-6">
               <div className={`${styles.game_record}`}>
-                <GameHistory setIsplace={setIsplace} isplace={isplace}/>
+                <GameHistory setIsplace={setIsplace} isplace={isplace} showResult={showResult} setShowResult={setShowResult} />
               </div>
             </div>
           </div>
@@ -591,7 +574,7 @@ const Lottery = () => {
                 </button>
                 <input
                   type="text"
-                  value={amount} // Use value instead of defaultValue
+                  value={amount}
                   onChange={handleAmountChange}
                   className={` ${styles.pop_up_body_btn_1}`}
                 />

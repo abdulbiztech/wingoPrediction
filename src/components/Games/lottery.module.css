@@ -312,7 +312,6 @@
 
 .num_play_boxbtn button {
     width: 45%;
-    /* margin: 5px; */
     border-radius: 10px;
 }
 
@@ -366,8 +365,6 @@
 }
 
 .pop_up_head {
-    /* background: linear-gradient(90deg, #ffa82e 0%, #ffc511 100%); */
-    /* height: 65px; */
     position: relative;
     padding-top: .4rem;
     display: flex;

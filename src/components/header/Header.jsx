@@ -39,7 +39,7 @@ const Header = () => {
         <div className="collapse  navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ml-auto mb-2 mb-lg-0">
             <li className={`nav-item ${styles.cus_navitem}`}>
-              <a className={`nav-link active ${styles.cus_navlink}`} href="/store">Store</a>
+              <a className={`nav-link active ${styles.cus_navlink}`} href="/store">About</a>
             </li>
             <li className={`nav-item ${styles.cus_navitem}`}>
               <a className={`nav-link ${styles.cus_navlink}`} href="/games">Game</a>
