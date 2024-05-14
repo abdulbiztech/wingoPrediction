@@ -9,6 +9,18 @@ import myContext from "../Context/MyContext.jsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import time_img from "../../assets/time-img.png"
+import number_0 from "../../assets/number-0.png"
+import number_1 from "../../assets/number-1.png"
+import number_2 from "../../assets/number-2.png"
+import number_3 from "../../assets/number-3.png"
+import number_4 from "../../assets/number-4.png"
+import number_5 from "../../assets/number-5.png"
+import number_6 from "../../assets/number-6.png"
+import number_7 from "../../assets/number-7.png"
+import number_8 from "../../assets/number-8.png"
+import number_9 from "../../assets/number-9.png"
+
+
 const Lottery = () => {
   const { countDown, issueNum } = useContext(myContext);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -221,7 +233,7 @@ const Lottery = () => {
                         {recentWinner.map((item, index) => (
                           <img
                             key={index}
-                            src={`/assets/number-${item.number}.png`}
+                            src={`/src/assets/number-${item.number}.png`}
                             alt={`Number ${item.number}`}
                           />
                         ))}
@@ -308,7 +320,7 @@ const Lottery = () => {
                           "linear-gradient(180deg, #FD565C 50.96%, #b659fe 50.97%)"
                         );
                       }}
-                      src="/src/assets/number-0.png"
+                      src={number_0}
                       alt=""
                     />
                     <img
@@ -317,7 +329,7 @@ const Lottery = () => {
                         setSelectedButton("1");
                         setSelectedColor("#40ad72");
                       }}
-                      src="/src/assets/number-1.png"
+                      src={number_1}
                       alt=""
                     />
                     <img
@@ -326,7 +338,7 @@ const Lottery = () => {
                         setSelectedButton("2");
                         setSelectedColor("#fd565c");
                       }}
-                      src="/src/assets/number-2.png"
+                      src={number_2}
                       alt=""
                     />
                     <img
@@ -335,7 +347,7 @@ const Lottery = () => {
                         setSelectedButton("3");
                         setSelectedColor("#40ad72");
                       }}
-                      src="/src/assets/number-3.png"
+                      src={number_3}
                       alt=""
                     />
                     <img
@@ -344,7 +356,7 @@ const Lottery = () => {
                         setSelectedButton("4");
                         setSelectedColor("#fd565c");
                       }}
-                      src="/src/assets/number-4.png"
+                      src={number_4}
                       alt=""
                     />
                     <img
@@ -355,7 +367,7 @@ const Lottery = () => {
                           "linear-gradient(180deg, #40ad72 51.48%, #b659fe 51.49%)"
                         );
                       }}
-                      src="/src/assets/number-5.png"
+                      src={number_5}
                       alt=""
                     />
                     <img
@@ -364,7 +376,7 @@ const Lottery = () => {
                         setSelectedButton("6");
                         setSelectedColor("#fd565c");
                       }}
-                      src="/src/assets/number-6.png"
+                      src={number_6}
                       alt=""
                     />
                     <img
@@ -373,7 +385,7 @@ const Lottery = () => {
                         setSelectedButton("7");
                         setSelectedColor("#40ad72");
                       }}
-                      src="/src/assets/number-7.png"
+                      src={number_7}
                       alt=""
                     />
                     <img
@@ -382,7 +394,7 @@ const Lottery = () => {
                         setSelectedButton("8");
                         setSelectedColor("#fd565c");
                       }}
-                      src="/src/assets/number-8.png"
+                      src={number_8}
                       alt=""
                     />
                     <img
@@ -391,7 +403,7 @@ const Lottery = () => {
                         setSelectedButton("9");
                         setSelectedColor("#40ad72");
                       }}
-                      src="/src/assets/number-9.png"
+                      src={number_9}
                       alt=""
                     />
                   </div>
