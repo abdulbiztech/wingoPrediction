@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 import styles from "./header.module.css";
 import GameVerseHub from "../../assets/GameVerseHub.png"
+import { useNavigate } from "react-router-dom";
+import myContext from "../Context/MyContext.jsx";
 
 const Header = () => {
+  const { userId, setUserId } = useContext(myContext); // Move useContext inside the function body
+  const navigate = useNavigate();
+
+  const handleConnectClick = () => {
+    navigate('/login');
+  };
+
+  const handleRemoveUserId = () => {
+    setUserId(null);
+  };
+
   return (
     <nav className={`navbar navbar-expand-lg navbar-light bg-dark ${styles.cus_navbar}`}>
       <div className="container">
@@ -51,9 +64,29 @@ const Header = () => {
           </ul>
 
           {/* Connect Button */}
-          <form className={`form-inline my-2 my-lg-0 ${styles.connect_form}`}>
-            <button  className={`btn ${styles.connect_btn}`} type="button">Connect</button>
-          </form>
+          {/* <form className={`form-inline my-2 my-lg-0 ${styles.connect_form}`}>
+            <button onClick={handleConnectClick} className={`btn ${styles.connect_btn}`} type="button">Connect</button>
+          </form> */}
+          {userId ? (
+
+            <div className={`form-inline my-2 my-lg-0 ${styles.user_box}`}>
+                     <p>User ID: {userId}</p>
+                   <button onClick={handleRemoveUserId} className={`btn ${styles.connect_btn}`} type="button">Logout</button>
+
+            </div>
+                    //   <form className={`form-inline my-2 my-lg-0 ${styles.connect_form}`}>
+                    //     <p>User ID: {userId}</p>
+                    //   <button onClick={handleRemoveUserId} className={`btn ${styles.connect_btn}`} type="button">Logout</button>
+                    // </form>
+            // <div>
+            //   <p>User ID: {userId}</p>
+            //   <button onClick={handleRemoveUserId}>Remove UserId</button>
+            // </div>
+          ) : (
+            <form className={`form-inline my-2 my-lg-0 ${styles.connect_form}`}>
+              <button onClick={handleConnectClick} className={`btn ${styles.connect_btn}`} type="button">Connect</button>
+            </form>
+          )}
         </div>
       </div>
     </nav>

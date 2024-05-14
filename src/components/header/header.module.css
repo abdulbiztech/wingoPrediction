@@ -37,6 +37,13 @@
     font-family: "Russo One", sans-serif;
     font-weight: 500;
   }
+  .user_box{
+    display: flex;
+    margin-left: auto;
+  }
+  .user_box p{
+    margin: 10px 16px;
+  }
 
   @media (max-width: 992px) {
     .navbar-brand img {

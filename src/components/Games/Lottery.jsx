@@ -31,14 +31,14 @@ const Lottery = () => {
   const [selectedButton, setSelectedButton] = useState();
   const [showModalPlay, setShowModalPlay] = useState(false);
   const [selectedColor, setSelectedColor] = useState();
-  const [balance, setBalance] = useState(null);
+  const { balance, setBalance } = useContext(myContext);
   const [amount, setAmount] = useState(1);
   const [isBettingAllowed, setIsBettingAllowed] = useState(true);
   const betAmounts = [1, 5, 10, 20, 50, 100];
   const [recentWinner, setRecentWinner] = useState([]);
   const [isplace, setIsplace] = useState(false)
   const [showResult, setShowResult] = useState(false)
-
+  const { userId, setUserId } = useContext(myContext);
   const handleItemClick = (index) => {
     setActiveIndex(index);
   };
@@ -71,7 +71,7 @@ const Lottery = () => {
     );
   };
   const getBalance = async () => {
-    const userId = 1;
+    // const userId = 1;
     try {
       const response = await axios.get(
         `${API_BASE_URL}/api/user/get-balance?userId=${userId}`
