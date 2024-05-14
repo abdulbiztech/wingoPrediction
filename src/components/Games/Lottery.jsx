@@ -233,7 +233,7 @@ const Lottery = () => {
                         {recentWinner.map((item, index) => (
                           <img
                             key={index}
-                            src={`/src/assets/number-${item.number}.png`}
+                            src={`/assets/number-${item.number}.png`}
                             alt={`Num`}
                           />
                         ))}
