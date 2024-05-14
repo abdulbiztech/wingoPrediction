@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./Login.module.css"; // Import your CSS module
 import Header from "../header/Header";
+import axios from "axios";
 
 const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://192.168.1.39:29388/WebService.asmx/ValidateLogin', {
+        username: username,
+        password: password
+      });
+      console.log('Response:', response.data);
+    } catch (error) {
+      setErrorMessage('Error validating login: ' + error.message);
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -16,7 +35,7 @@ const Login = () => {
                   <h2>Login</h2>
                 </div>
                 <div className={`${styles.logibtnbox}`}>
-                  <form>
+                  <form onSubmit={handleSubmit}>
                     <div className="mb-2">
                       <label
                         htmlFor="sponsorAddress"
@@ -35,6 +54,8 @@ const Login = () => {
                         placeholder="Username"
                         aria-label="Username"
                         aria-describedby="basic-addon1"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                       />
                     </div>
                     <div className="mb-2">
@@ -46,15 +67,16 @@ const Login = () => {
                       </label>
                     </div>
                     <div className="input-group mb-3">
-                    <span className={`input_group_text ${styles.input_group_text}`} >
+                      <span className={`input_group_text ${styles.input_group_text}`} >
                         <i className="bi bi-person-rolodex"></i>
                       </span>
                       <input
-                        type="text"
+                        type="password"
                         className={`${styles.cus_control} form-control`}
-                        placeholder="Username"
-                        aria-label="Username"
-                        aria-describedby="basic-addon1"
+                        placeholder="Password"
+                        aria-label="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                     </div>
                     <div className="text-center">
@@ -67,11 +89,6 @@ const Login = () => {
                     </div>
                   </form>
                 </div>
-                {/* <div className={`${styles.bottom_linklogin} text-center`}>
-                  <p>
-                    Already have an account? <a href="login.html">Login</a>
-                  </p>
-                </div> */}
               </div>
             </div>
           </div>
