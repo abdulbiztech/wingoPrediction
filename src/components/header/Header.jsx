@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./header.module.css";
+import GameVerseHub from "../../assets/GameVerseHub.png"
 
 const Header = () => {
   return (
@@ -7,7 +8,7 @@ const Header = () => {
       <div className="container">
         <a className="navbar-brand" href="/">
           <img
-            src="/src/assets/GameVerseHub.png"
+            src={GameVerseHub}
             className={`img-fluid ${styles.GameLogo}`}
             alt="GameVerseHub Logo"
           />

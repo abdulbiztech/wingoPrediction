@@ -8,6 +8,7 @@ import API_BASE_URL from "../../environment/api.js";
 import myContext from "../Context/MyContext.jsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import time_img from "../../assets/time-img.png"
 const Lottery = () => {
   const { countDown, issueNum } = useContext(myContext);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -195,7 +196,7 @@ const Lottery = () => {
                       }`}
                     onClick={() => handleItemClick(index)}
                   >
-                    <img src="/src/assets/time-img.png" alt="" />
+                    <img src={time_img} alt="" />
                     <p>{item.text}</p>
                   </div>
                 ))}
@@ -220,7 +221,7 @@ const Lottery = () => {
                         {recentWinner.map((item, index) => (
                           <img
                             key={index}
-                            src={`/src/assets/number-${item.number}.png`}
+                            src={`/assets/number-${item.number}.png`}
                             alt={`Number ${item.number}`}
                           />
                         ))}
