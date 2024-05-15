@@ -27,8 +27,7 @@ const Login = () => {
       navigate('/lottery');
     } catch (error) {
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
+
         console.error('Server responded with error status:', error.response.status);
         console.error('Error response data:', error.response.data);
         if (error.response.status === 400) {
@@ -37,11 +36,9 @@ const Login = () => {
           setErrorMessage('An error occurred while processing your request. Please try again later.');
         }
       } else if (error.request) {
-        // The request was made but no response was received
         console.error('No response received from server:', error.request);
         setErrorMessage('No response received from server. Please check your network connection and try again.');
       } else {
-        // Something happened in setting up the request that triggered an Error
         console.error('Error setting up request:', error.message);
         setErrorMessage('An error occurred while processing your request. Please try again later.');
       }

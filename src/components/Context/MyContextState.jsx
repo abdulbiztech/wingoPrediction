@@ -6,7 +6,9 @@ const MyContextState = (props) => {
   const [countDown, setCountDown] = useState(null);
   const [userBet, setUserBet] = useState([]);
   const [balance, setBalance] = useState(null);
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState(0);
+
+
 
 
   return (

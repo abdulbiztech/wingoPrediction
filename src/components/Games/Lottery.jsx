@@ -19,9 +19,11 @@ import number_6 from "../../assets/number-6.png"
 import number_7 from "../../assets/number-7.png"
 import number_8 from "../../assets/number-8.png"
 import number_9 from "../../assets/number-9.png"
+import { useNavigate } from "react-router-dom";
 
 
 const Lottery = () => {
+  const navigate = useNavigate();
   const { countDown, issueNum } = useContext(myContext);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("x1");
@@ -86,7 +88,7 @@ const Lottery = () => {
   };
   const generateBetData = (selectType, amount) => {
     return {
-      userId: 1,
+      userId: userId,
       issueNumber: issueNum,
       selectType: selectType,
       amount: amount,
@@ -95,6 +97,15 @@ const Lottery = () => {
     };
   };
   const placeBet = async (selectType, amount) => {
+    // Check if userId is null
+    if (!userId) {
+      // Handle the case where userId is null (e.g., display an error message)
+      console.error("User is not logged in");
+      toast.error("Please log in to place a bet");
+      navigate('/login');
+
+      return;
+    }
     const data = generateBetData(selectType, amount);
     try {
       const response = await axios.post(
@@ -102,7 +113,6 @@ const Lottery = () => {
         data
       );
       if (response.data.status) {
-        // console.log("Bet placed successfully");
         toast.success("Bet placed successfully");
         setIsplace(true);
         setShowResult(true);

@@ -21,6 +21,7 @@ const GameHistory = (props) => {
   const [totalPages, setTotalPages] = useState(1);
   const [userResults, setUserResults] = useState("");
   const [betPlaced, setBetPlaced] = useState(false);
+  const { userId, setUserId } = useContext(myContext);
   const pageSize = 13;
   const [currentPageMyhistory, setCurrentPageMyHistory] = useState(1);
   const [totalPagesMyhistory, setTotalPagesMyhistory] = useState(1);
@@ -97,7 +98,7 @@ const GameHistory = (props) => {
   const getUserBetHistory = async () => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/api/user/bet-history?userId=1&page=${currentPageMyhistory}`
+        `${API_BASE_URL}/api/user/bet-history?userId=${userId}&page=${currentPageMyhistory}`
       );
       setUserBet(response?.data?.data);
       setTotalPagesMyhistory(response?.data?.pagination?.totalPages);
@@ -112,7 +113,7 @@ const GameHistory = (props) => {
     }
 
     const data = {
-      userId: 1,
+      userId: userId,
       issueNumber: issueNum,
     };
 
