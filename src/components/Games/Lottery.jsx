@@ -73,10 +73,11 @@ const Lottery = () => {
     );
   };
   const getBalance = async () => {
+    const storedUserId = localStorage.getItem('userId');
     // const userId = 1;
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/api/user/get-balance?userId=${userId}`
+        `${API_BASE_URL}/api/user/get-balance?userId=${storedUserId}`
       );
       if (!response.data) {
         throw new Error("Failed to fetch user balance data");

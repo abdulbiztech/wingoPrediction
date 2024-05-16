@@ -6,6 +6,7 @@
 // import myContext from "../Context/MyContext.jsx";
 // import API_BASE_URL from "../../environment/api";
 // import { toast } from "react-toastify";
+
 // const Login = () => {
 //   const [username, setUsername] = useState('');
 //   const [password, setPassword] = useState('');
@@ -18,30 +19,42 @@
 //     e.preventDefault();
 //     try {
 //       const response = await axios.post(`${API_BASE_URL}/api/user/user-login`, {
-//         username: username,
-//         password: password
+//         username,
+//         password
 //       });
 //       console.log('Response:', response.data.data);
 //       setBalance(response?.data?.data?.userBalance);
-//       setUserId(response?.data?.data?.userId)
+//       setUserId(response?.data?.data?.userId);
+//       console.log("response?.data?.data?.userId",response?.data?.data?.userId);
+//       localStorage.setItem('userId', response?.data?.data?.userId);
 //       navigate('/lottery');
+//       toast.success("Login successful!");
 //     } catch (error) {
 //       if (error.response) {
-
+//         // The request was made and the server responded with a status code
+//         // that falls out of the range of 2xx
 //         console.error('Server responded with error status:', error.response.status);
 //         console.error('Error response data:', error.response.data);
-//         toast.error(error.response.data);
 //         if (error.response.status === 400) {
 //           setErrorMessage('Invalid username or password. Please try again.');
+//           toast.error('Invalid username or password. Please try again.');
+//         } else if (error.response.status === 404) {
+//           setErrorMessage('User not found. Please check your username and try again.');
+//           toast.error('User not found. Please check your username and try again.');
 //         } else {
 //           setErrorMessage('An error occurred while processing your request. Please try again later.');
+//           toast.error('An error occurred while processing your request. Please try again later.');
 //         }
 //       } else if (error.request) {
+//         // The request was made but no response was received
 //         console.error('No response received from server:', error.request);
 //         setErrorMessage('No response received from server. Please check your network connection and try again.');
+//         toast.error('No response received from server. Please check your network connection and try again.');
 //       } else {
+//         // Something happened in setting up the request that triggered an Error
 //         console.error('Error setting up request:', error.message);
 //         setErrorMessage('An error occurred while processing your request. Please try again later.');
+//         toast.error('An error occurred while processing your request. Please try again later.');
 //       }
 //       console.error('Error:', error);
 //     }
@@ -63,7 +76,7 @@
 //                   <form onSubmit={handleSubmit}>
 //                     <div className="mb-2">
 //                       <label
-//                         htmlFor="sponsorAddress"
+//                         htmlFor="username"
 //                         className={`${styles.form_label}`}
 //                       >
 //                         Username
@@ -85,7 +98,7 @@
 //                     </div>
 //                     <div className="mb-2">
 //                       <label
-//                         htmlFor="userAddress"
+//                         htmlFor="password"
 //                         className={`${styles.form_label}`}
 //                       >
 //                         Password <span className="text-danger">*</span>
@@ -113,6 +126,9 @@
 //                       </button>
 //                     </div>
 //                   </form>
+//                   {errorMessage && (
+//                     <div className="text-danger mt-3 text-center">{errorMessage}</div>
+//                   )}
 //                 </div>
 //               </div>
 //             </div>
@@ -124,8 +140,7 @@
 // };
 
 // export default Login;
-
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import styles from "./Login.module.css"; // Import your CSS module
 import Header from "../header/Header";
 import axios from "axios";
@@ -142,6 +157,21 @@ const Login = () => {
   const { userId, setUserId } = useContext(myContext);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('userId');
+    if (storedUserId) {
+      setUserId(storedUserId);
+      axios.get(`${API_BASE_URL}/api/user/${storedUserId}`)
+        .then(response => {
+          setBalance(response.data.userBalance);
+          navigate('/lottery');
+        })
+        .catch(error => {
+          console.error('Error fetching user data:', error);
+        });
+    }
+  }, [setUserId, setBalance, navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -149,15 +179,14 @@ const Login = () => {
         username,
         password
       });
-      console.log('Response:', response.data.data);
+      // console.log('Response:', response.data.data);
       setBalance(response?.data?.data?.userBalance);
       setUserId(response?.data?.data?.userId);
+      localStorage.setItem('userId', response?.data?.data?.userId);
       navigate('/lottery');
       toast.success("Login successful!");
     } catch (error) {
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
         console.error('Server responded with error status:', error.response.status);
         console.error('Error response data:', error.response.data);
         if (error.response.status === 400) {
@@ -171,18 +200,24 @@ const Login = () => {
           toast.error('An error occurred while processing your request. Please try again later.');
         }
       } else if (error.request) {
-        // The request was made but no response was received
         console.error('No response received from server:', error.request);
         setErrorMessage('No response received from server. Please check your network connection and try again.');
         toast.error('No response received from server. Please check your network connection and try again.');
       } else {
-        // Something happened in setting up the request that triggered an Error
         console.error('Error setting up request:', error.message);
         setErrorMessage('An error occurred while processing your request. Please try again later.');
         toast.error('An error occurred while processing your request. Please try again later.');
       }
       console.error('Error:', error);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('userId');
+    setUserId(null);
+    setBalance(null);
+    navigate('/login');
+    toast.success("Logout successful!");
   };
 
   return (
@@ -254,6 +289,16 @@ const Login = () => {
                   {errorMessage && (
                     <div className="text-danger mt-3 text-center">{errorMessage}</div>
                   )}
+                  {/* {userId && (
+                    <div className="text-center mt-3">
+                      <button
+                        className="btn btn-danger"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )} */}
                 </div>
               </div>
             </div>

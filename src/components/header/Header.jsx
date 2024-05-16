@@ -1,14 +1,21 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import styles from "./header.module.css";
 import GameVerseHub from "../../assets/GameVerseHub.png"
 import { useNavigate } from "react-router-dom";
 import myContext from "../Context/MyContext.jsx";
 import axios from "axios";
 import API_BASE_URL from "../../environment/api.js";
-
+import { toast } from "react-toastify";
 const Header = () => {
-  const { userId, setUserId } = useContext(myContext); // Move useContext inside the function body
+  const { userId, setUserId } = useContext(myContext);
+  const { balance, setBalance } = useContext(myContext);
   const navigate = useNavigate();
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('userId');
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
+  }, [setUserId]);
 
   const handleConnectClick = () => {
     navigate('/login');
@@ -21,6 +28,10 @@ const Header = () => {
       if (response.data.status) {
         console.log(response.data.message);
         setUserId(0);
+        setBalance(0)
+        localStorage.removeItem('userId');
+        navigate('/login');
+        toast.success("Logout successful!");
       } else {
         console.error('Logout failed');
       }
@@ -77,14 +88,12 @@ const Header = () => {
 
           {/* Connect Button */}
 
-          {userId ? (
 
+          {userId ? (
             <div className={`form-inline my-2 my-lg-0 ${styles.user_box}`}>
               <p>User ID: {userId}</p>
               <button onClick={handleRemoveUserId} className={`btn ${styles.connect_btn}`} type="button">Logout</button>
-
             </div>
-
           ) : (
             <form className={`form-inline my-2 my-lg-0 ${styles.connect_form}`}>
               <button onClick={handleConnectClick} className={`btn ${styles.connect_btn}`} type="button">Connect</button>
