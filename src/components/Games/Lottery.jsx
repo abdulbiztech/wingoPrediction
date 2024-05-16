@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Header from "../header/Header";
 import styles from "./lottery.module.css";
 import GameHistory from "../GameHistory/GameHistory";
@@ -9,22 +9,21 @@ import myContext from "../Context/MyContext.jsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import time_img from "../../assets/time-img.png"
-import number_0 from "../../assets/number-0.png"
-import number_1 from "../../assets/number-1.png"
-import number_2 from "../../assets/number-2.png"
-import number_3 from "../../assets/number-3.png"
-import number_4 from "../../assets/number-4.png"
-import number_5 from "../../assets/number-5.png"
-import number_6 from "../../assets/number-6.png"
-import number_7 from "../../assets/number-7.png"
-import number_8 from "../../assets/number-8.png"
-import number_9 from "../../assets/number-9.png"
+import number_0 from "/assets/number-0.png"
+import number_1 from "/assets/number-1.png"
+import number_2 from "/assets/number-2.png"
+import number_3 from "/assets/number-3.png"
+import number_4 from "/assets/number-4.png"
+import number_5 from "/assets/number-5.png"
+import number_6 from "/assets/number-6.png"
+import number_7 from "/assets/number-7.png"
+import number_8 from "/assets/number-8.png"
+import number_9 from "/assets/number-9.png"
 import { useNavigate } from "react-router-dom";
-
 
 const Lottery = () => {
   const navigate = useNavigate();
-  const { countDown, issueNum } = useContext(myContext);
+  const { countDown, issueNum, balance, setBalance, userId, setUserId } = useContext(myContext);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("x1");
   const [showPopup, setShowPopup] = useState(false);
@@ -33,17 +32,18 @@ const Lottery = () => {
   const [selectedButton, setSelectedButton] = useState();
   const [showModalPlay, setShowModalPlay] = useState(false);
   const [selectedColor, setSelectedColor] = useState();
-  const { balance, setBalance } = useContext(myContext);
   const [amount, setAmount] = useState(1);
   const [isBettingAllowed, setIsBettingAllowed] = useState(true);
-  const betAmounts = [1, 5, 10, 20, 50, 100];
   const [recentWinner, setRecentWinner] = useState([]);
-  const [isplace, setIsplace] = useState(false)
-  const [showResult, setShowResult] = useState(false)
-  const { userId, setUserId } = useContext(myContext);
+  const [isplace, setIsplace] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+
+  const betAmounts = [1, 5, 10, 20, 50, 100];
+
   const handleItemClick = (index) => {
     setActiveIndex(index);
   };
+
   const toggleModalPlay = () => {
     setShowModalPlay(!showModalPlay);
   };
@@ -51,17 +51,21 @@ const Lottery = () => {
   const handleButtonClick = (option) => {
     setSelectedOption(option);
   };
+
   const handleAmountChange = (event) => {
-    setAmount(event.target.value);
+    setAmount(parseInt(event.target.value));
   };
+
   const handleIncrement = () => {
     setAmount((prevAmount) => prevAmount + 1);
   };
+
   const handleDecrement = () => {
     if (amount > 1) {
       setAmount((prevAmount) => prevAmount - 1);
     }
   };
+
   const getRandomNumber = () => {
     const randomNumber = Math.floor(Math.random() * 10);
     setSelectedButton(randomNumber.toString());
@@ -72,26 +76,27 @@ const Lottery = () => {
         : "#fd565c"
     );
   };
+
   const getBalance = async () => {
-    if (userId == null) {
-      console.log("user id is null");
-    } else {
-      const storedUserId = localStorage.getItem('userId');
-      // const userId = 1;
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/api/user/get-balance?userId=${storedUserId}`
-        );
-        if (!response.data) {
-          throw new Error("Failed to fetch user balance data");
-        }
-        setBalance(response?.data?.data?.walletBalance);
-      } catch (error) {
-        console.error("Error fetching user balance data:", error);
-      }
+    const storedUserId = localStorage.getItem('userId');
+    if (!storedUserId) {
+      console.log("Stored User ID is null");
+      return;
     }
 
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/api/user/get-balance?userId=${storedUserId}`
+      );
+      if (!response.data) {
+        throw new Error("Failed to fetch user balance data");
+      }
+      setBalance(response.data.data.walletBalance);
+    } catch (error) {
+      console.error("Error fetching user balance data:", error);
+    }
   };
+
   const generateBetData = (selectType, amount) => {
     return {
       userId: userId,
@@ -102,14 +107,12 @@ const Lottery = () => {
       gameId: 1,
     };
   };
+
   const placeBet = async (selectType, amount) => {
-    // Check if userId is null
     if (!userId) {
-      // Handle the case where userId is null (e.g., display an error message)
       console.error("User is not logged in");
       toast.error("Please log in to place a bet");
       navigate('/login');
-
       return;
     }
     const data = generateBetData(selectType, amount);
@@ -134,6 +137,7 @@ const Lottery = () => {
       toast.error(`Error placing bet: ${error.response.data.message}`);
     }
   };
+
   const recentWin = async () => {
     try {
       const response = await axios.get(
@@ -148,6 +152,7 @@ const Lottery = () => {
       console.error("Error fetching recentWin", error);
     }
   };
+
   useEffect(() => {
     if (countDown === 5) {
       setShowPopup(true);
@@ -155,6 +160,7 @@ const Lottery = () => {
       setShowModal(false);
     }
   }, [countDown]);
+
   useEffect(() => {
     if (countDown <= 5 && countDown > 0) {
       setShow(true);
@@ -167,6 +173,7 @@ const Lottery = () => {
     getBalance();
     recentWin();
   }, []);
+
   useEffect(() => {
     if (countDown === 0) {
       getBalance();
