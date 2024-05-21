@@ -9,16 +9,6 @@ import myContext from "../Context/MyContext.jsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import time_img from "../../assets/time-img.png"
-import number_0 from "/assets/number-0.png"
-import number_1 from "/assets/number-1.png"
-import number_2 from "/assets/number-2.png"
-import number_3 from "/assets/number-3.png"
-import number_4 from "/assets/number-4.png"
-import number_5 from "/assets/number-5.png"
-import number_6 from "/assets/number-6.png"
-import number_7 from "/assets/number-7.png"
-import number_8 from "/assets/number-8.png"
-import number_9 from "/assets/number-9.png"
 import { useNavigate } from "react-router-dom";
 
 const Lottery = () => {
@@ -187,17 +177,14 @@ const Lottery = () => {
       <div className={`${styles.mainContainer}`}>
         <div className="container my-5">
           <div className="row">
-            <div className="col-6">
+            <div className="col-12 col-md-6">
               <div className="wallet-box">
                 <div className={`card ${styles.wallet_card}`}>
-                  <div className="card-body">
-                    <div className={` ${styles.price_box}`}>
+                  <div className={`card-body ${styles.main_container_balance_time}`}>
+                    <div className={`${styles.price_box}`}>
                       <div className={`${styles.balance_show}`}>
                         <p>$ {balance}</p>
-                        <button
-                          className={`btn ${styles.balance_box}`}
-                          onClick={getBalance}
-                        >
+                        <button className={`btn ${styles.balance_box}`} onClick={getBalance}>
                           <i className="bi bi-arrow-clockwise"></i>
                         </button>
                       </div>
@@ -206,35 +193,24 @@ const Lottery = () => {
                         <p> Wallet balance</p>
                       </div>
                     </div>
-                  </div>
-                  <div className="card-footer">
-                    <div className="row">
-                      <div className="col-6">
-                        <button className={`btn ${styles.withbtn}`}>
-                          Withdraw
-                        </button>
-                      </div>
-                      <div className="col-6">
-                        <button className={`btn ${styles.depobtn}`}>
-                          Deposit
-                        </button>
-                      </div>
+                    <div className={`${styles.time_box}`}>
+                      {[{ text: "Win Go 1 Min" }].map((item, index) => (
+                        <div
+                          key={index}
+                          className={`${styles.time_box_wihing} ${activeIndex === index ? styles.cus_active : ""}`}
+                          onClick={() => handleItemClick(index)}
+                        >
+                          <img src={time_img} alt="" />
+                          <p>{item.text}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className={`${styles.time_box}`}>
-                {[{ text: "Win Go 1 Min" }].map((item, index) => (
-                  <div
-                    key={index}
-                    className={`${styles.time_box_wihing} ${activeIndex === index ? styles.cus_active : ""
-                      }`}
-                    onClick={() => handleItemClick(index)}
-                  >
-                    <img src={time_img} alt="" />
-                    <p>{item.text}</p>
+                  <div className={`${styles.button_box}`}>
+                    <button className={`btn ${styles.withbtn}`}>Withdraw</button>
+                    <button className={`btn ${styles.depobtn}`}>Deposit</button>
                   </div>
-                ))}
+                </div>
               </div>
 
               <div className="row">
@@ -343,7 +319,7 @@ const Lottery = () => {
                           "linear-gradient(180deg, #FD565C 50.96%, #b659fe 50.97%)"
                         );
                       }}
-                      src={number_0}
+                      src={"/assets/number-0.png"}
                       alt=""
                     />
                     <img
@@ -352,7 +328,7 @@ const Lottery = () => {
                         setSelectedButton("1");
                         setSelectedColor("#40ad72");
                       }}
-                      src={number_1}
+                      src={"/assets/number-1.png"}
                       alt=""
                     />
                     <img
@@ -361,7 +337,7 @@ const Lottery = () => {
                         setSelectedButton("2");
                         setSelectedColor("#fd565c");
                       }}
-                      src={number_2}
+                      src={"/assets/number-2.png"}
                       alt=""
                     />
                     <img
@@ -370,7 +346,7 @@ const Lottery = () => {
                         setSelectedButton("3");
                         setSelectedColor("#40ad72");
                       }}
-                      src={number_3}
+                      src={"/assets/number-3.png"}
                       alt=""
                     />
                     <img
@@ -379,7 +355,7 @@ const Lottery = () => {
                         setSelectedButton("4");
                         setSelectedColor("#fd565c");
                       }}
-                      src={number_4}
+                      src={"/assets/number-4.png"}
                       alt=""
                     />
                     <img
@@ -390,7 +366,7 @@ const Lottery = () => {
                           "linear-gradient(180deg, #40ad72 51.48%, #b659fe 51.49%)"
                         );
                       }}
-                      src={number_5}
+                      src={"/assets/number-5.png"}
                       alt=""
                     />
                     <img
@@ -399,7 +375,7 @@ const Lottery = () => {
                         setSelectedButton("6");
                         setSelectedColor("#fd565c");
                       }}
-                      src={number_6}
+                      src={"/assets/number-6.png"}
                       alt=""
                     />
                     <img
@@ -408,7 +384,7 @@ const Lottery = () => {
                         setSelectedButton("7");
                         setSelectedColor("#40ad72");
                       }}
-                      src={number_7}
+                      src={"/assets/number-7.png"}
                       alt=""
                     />
                     <img
@@ -417,7 +393,7 @@ const Lottery = () => {
                         setSelectedButton("8");
                         setSelectedColor("#fd565c");
                       }}
-                      src={number_8}
+                      src={"/assets/number-8.png"}
                       alt=""
                     />
                     <img
@@ -426,7 +402,7 @@ const Lottery = () => {
                         setSelectedButton("9");
                         setSelectedColor("#40ad72");
                       }}
-                      src={number_9}
+                      src={"/assets/number-9.png"}
                       alt=""
                     />
                   </div>
@@ -508,11 +484,18 @@ const Lottery = () => {
               </section>
             </div>
 
-            <div className="col-6">
+            <div className={`col-6 mx-auto ${styles.web_only}`} >
               <div className={`${styles.game_record}`}>
                 <GameHistory setIsplace={setIsplace} isplace={isplace} showResult={showResult} setShowResult={setShowResult} />
               </div>
             </div>
+
+            <div className={`col-12  ${styles.mobile_only} ${styles.game_record_row}`}>
+              <div className={`${styles.game_record}`}>
+                <GameHistory setIsplace={setIsplace} isplace={isplace} showResult={showResult} setShowResult={setShowResult} />
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

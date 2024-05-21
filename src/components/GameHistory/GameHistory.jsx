@@ -305,7 +305,8 @@ const GameHistory = (props) => {
           {gameHistory.length === 0 ? (
             <div className={`${styles.noData_message}`}>No data available</div>
           ) : (
-            <table className={styles.table}>
+            <div className="table-responsive">
+         <table className={`${styles.table}`}>
               <thead>
                 <tr>
                   <th>Period</th>
@@ -415,6 +416,8 @@ const GameHistory = (props) => {
                 ))}
               </tbody>
             </table>
+            </div>
+
           )}
           {/* Pagination */}
           <div className={styles.pagination}>

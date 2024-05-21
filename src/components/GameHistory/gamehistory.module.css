@@ -14,7 +14,7 @@
 
 .table {
   width: 100%;
-  border-collapse: collapse;
+  /* border-collapse: collapse; */
 }
 
 .table th,
@@ -330,7 +330,6 @@ span {
   margin-top: 20px;
 }
 
-/* Define the colors for different select types */
 
 .smallColor {
   background-color: #6da7f4;
@@ -409,8 +408,6 @@ span {
 }
 
 /* //winner pop up */
-/* Modal Wrapper */
-/* Modal Wrapper */
 .wrapper {
   display: flex;
 }
@@ -419,10 +416,6 @@ span {
 .modal {
   width: 100%;
   background: transparent !important;
-  /* max-width: 530px; */
-  /* margin: 20px; */
-  /* overflow: hidden; */
-  /* box-shadow: 0 60px 80px 0 rgba(0, 0, 0, .4); */
 }
 
 .model-body {
@@ -432,13 +425,10 @@ span {
 .modal-content {
   background-color: transparent !important;
   padding: 0px !important;
-  /* Set the background to transparent */
 }
 
 .modalTop {
   padding: 30px 30px 20px;
-  /* border-top-left-radius: 10px;
-  border-top-right-radius: 10px; */
   background: #1e1a1a;
 }
 
@@ -452,21 +442,11 @@ span {
 
 .lotteryResult {
   padding: 12px 20px 13px;
-  /* border-top-left-radius: 10px;
-  border-top-right-radius: 10px; */
   background-color: #fff;
   display: flex;
   align-items: center;
   justify-content: space-around;
 }
-
-.lotteryResult h5 {
-  /* color: #fff; */
-}
-
-/* .lotteryResult button {
-  border-radius: 10px
-} */
 
 .lottery_color_result {
   background-color: #f3b200;
@@ -541,7 +521,16 @@ input[type="checkbox"] {
 }
 
 /* Media Queries */
-@media (min-width: 456px) {
+@media only screen and (max-width: 600px) {
+  .MyGameRecordList__C_item_r{
+    width: 24%;
+  }
+  .MyGameRecordList__C {
+    display: flex;
+    justify-content: space-between;
+    margin: 7px;
+    align-items: center;
+  }
   /* Add media query rules here if needed */
 }
  .closeBtn{

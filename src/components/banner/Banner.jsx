@@ -13,7 +13,6 @@ const Banner = () => {
   return (
     <>
       <Header />
-
       <div className="container-fluid my-1 mx-1">
         <div
           id="carouselExampleIndicators"
