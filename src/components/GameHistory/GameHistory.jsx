@@ -250,11 +250,6 @@ const GameHistory = (props) => {
                 )}
               </div>
               <div className={styles.modalSubheader}>
-                {/* {gameResult && gameResult.status && (
-                  <div className={styles.modalSubheader}>
-                    You have won ${gameResult?.message?.split(' ')[2]}
-                  </div>
-                )} */}
                 {gameResult && gameResult.status ? (
                   <p>{gameResult?.message}</p>
                 ) : (
@@ -280,6 +275,7 @@ const GameHistory = (props) => {
           </div>
         </Modal.Body>
       </Modal>
+
       <div className={styles.gameHistory}>
         <button
           className={`btn ${selectedButton === "gameHistory"
@@ -306,37 +302,92 @@ const GameHistory = (props) => {
             <div className={`${styles.noData_message}`}>No data available</div>
           ) : (
             <div className="table-responsive">
-         <table className={`${styles.table}`}>
-              <thead>
-                <tr>
-                  <th>Period</th>
-                  <th>Number</th>
-                  <th>Big Small</th>
-                  <th>Colour</th>
-                </tr>
-              </thead>
-              <tbody>
-                {gameHistory.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.issueNumber}</td>
+              <table className={`${styles.table}`}>
+                <thead >
+                  <tr >
+                    <th className={`${styles.table_head}`}>Period</th>
+                    <th className={`${styles.table_head}`}>Number</th>
+                    <th className={`${styles.table_head}`}>Big Small</th>
+                    <th className={`${styles.table_head}`}>Colour</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {gameHistory.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.issueNumber}</td>
 
-                    <td className={`${getColorForPremium(item.number)}`}>
-                      {item.number}
-                    </td>
+                      <td className={`${getColorForPremium(item.number)}`}>
+                        {item.number}
+                      </td>
 
-                    <td>{item.category}</td>
-                    <td>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-evenly",
-                        }}
-                      >
-                        {item.color &&
-                          typeof item.color === "string" &&
-                          item.color.includes("red") &&
-                          item.color.includes("violet") ? (
-                          <>
+                      <td>{item.category}</td>
+                      <td>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-evenly",
+                          }}
+                        >
+                          {item.color &&
+                            typeof item.color === "string" &&
+                            item.color.includes("red") &&
+                            item.color.includes("violet") ? (
+                            <>
+                              <div
+                                style={{
+                                  width: "10px",
+                                  height: "10px",
+                                  borderRadius: "50%",
+                                  backgroundColor: "#fd565c",
+                                }}
+                              ></div>
+                              <div
+                                style={{
+                                  width: "10px",
+                                  height: "10px",
+                                  borderRadius: "50%",
+                                  backgroundColor: "#ec4cdf",
+                                }}
+                              ></div>
+                            </>
+                          ) : item.color &&
+                            typeof item.color === "string" &&
+                            item.color.includes("green") &&
+                            item.color.includes("violet") ? (
+                            <>
+                              <div
+                                style={{
+                                  width: "10px",
+                                  height: "10px",
+                                  borderRadius: "50%",
+                                  backgroundColor: "#47ba7c",
+                                }}
+                              ></div>
+                              <div
+                                style={{
+                                  width: "10px",
+                                  height: "10px",
+                                  borderRadius: "50%",
+                                  backgroundColor: "#ec4cdf",
+                                }}
+                              ></div>
+                            </>
+                          ) : item.color &&
+                            typeof item.color === "string" &&
+                            item.color.includes("violet") &&
+                            item.number !== "5" ? (
+                            <div
+                              style={{
+                                width: "10px",
+                                height: "10px",
+                                borderRadius: "50%",
+                                backgroundColor: "#ec4cdf",
+                              }}
+                            ></div>
+                          ) : item.color &&
+                            typeof item.color === "string" &&
+                            item.color.includes("red") &&
+                            item.number !== "5" ? (
                             <div
                               style={{
                                 width: "10px",
@@ -345,20 +396,7 @@ const GameHistory = (props) => {
                                 backgroundColor: "#fd565c",
                               }}
                             ></div>
-                            <div
-                              style={{
-                                width: "10px",
-                                height: "10px",
-                                borderRadius: "50%",
-                                backgroundColor: "#ec4cdf",
-                              }}
-                            ></div>
-                          </>
-                        ) : item.color &&
-                          typeof item.color === "string" &&
-                          item.color.includes("green") &&
-                          item.color.includes("violet") ? (
-                          <>
+                          ) : item.color === "green" ? (
                             <div
                               style={{
                                 width: "10px",
@@ -367,55 +405,13 @@ const GameHistory = (props) => {
                                 backgroundColor: "#47ba7c",
                               }}
                             ></div>
-                            <div
-                              style={{
-                                width: "10px",
-                                height: "10px",
-                                borderRadius: "50%",
-                                backgroundColor: "#ec4cdf",
-                              }}
-                            ></div>
-                          </>
-                        ) : item.color &&
-                          typeof item.color === "string" &&
-                          item.color.includes("violet") &&
-                          item.number !== "5" ? (
-                          <div
-                            style={{
-                              width: "10px",
-                              height: "10px",
-                              borderRadius: "50%",
-                              backgroundColor: "#ec4cdf",
-                            }}
-                          ></div>
-                        ) : item.color &&
-                          typeof item.color === "string" &&
-                          item.color.includes("red") &&
-                          item.number !== "5" ? (
-                          <div
-                            style={{
-                              width: "10px",
-                              height: "10px",
-                              borderRadius: "50%",
-                              backgroundColor: "#fd565c",
-                            }}
-                          ></div>
-                        ) : item.color === "green" ? (
-                          <div
-                            style={{
-                              width: "10px",
-                              height: "10px",
-                              borderRadius: "50%",
-                              backgroundColor: "#47ba7c",
-                            }}
-                          ></div>
-                        ) : null}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                          ) : null}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
           )}

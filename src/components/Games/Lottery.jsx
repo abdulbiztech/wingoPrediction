@@ -27,7 +27,7 @@ const Lottery = () => {
   const [recentWinner, setRecentWinner] = useState([]);
   const [isplace, setIsplace] = useState(false);
   const [showResult, setShowResult] = useState(false);
-
+  const [isMobile, setIsMobile] = useState(false);
   const betAmounts = [1, 5, 10, 20, 50, 100];
 
   const handleItemClick = (index) => {
@@ -142,7 +142,16 @@ const Lottery = () => {
       console.error("Error fetching recentWin", error);
     }
   };
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust the width based on your needs
+    };
 
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Call it initially to set the state based on initial window size
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   useEffect(() => {
     if (countDown === 5) {
       setShowPopup(true);
@@ -484,7 +493,7 @@ const Lottery = () => {
               </section>
             </div>
 
-            <div className={`col-6 mx-auto ${styles.web_only}`} >
+            {/* <div className={`col-6 mx-auto ${styles.web_only}`} >
               <div className={`${styles.game_record}`}>
                 <GameHistory setIsplace={setIsplace} isplace={isplace} showResult={showResult} setShowResult={setShowResult} />
               </div>
@@ -493,6 +502,16 @@ const Lottery = () => {
             <div className={`col-12  ${styles.mobile_only} ${styles.game_record_row}`}>
               <div className={`${styles.game_record}`}>
                 <GameHistory setIsplace={setIsplace} isplace={isplace} showResult={showResult} setShowResult={setShowResult} />
+              </div>
+            </div> */}
+            <div className={`mx-auto ${isMobile ? 'col-12' : 'col-6'} ${styles.game_record_row}`}>
+              <div className={styles.game_record}>
+                <GameHistory
+                  setIsplace={setIsplace}
+                  isplace={isplace}
+                  showResult={showResult}
+                  setShowResult={setShowResult}
+                />
               </div>
             </div>
 

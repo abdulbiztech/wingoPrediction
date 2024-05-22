@@ -5,7 +5,7 @@
 /* Wallet Card Styles */
 .main_container_balance_time {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
     text-align: center;
 }
@@ -676,9 +676,7 @@
     margin-bottom: 15px;
 }
 
-.web_only {
-    /* display: flex; */
-}
+
 
 .mobile_only {
     display: none;
@@ -753,7 +751,7 @@
 
     .game_record {
         width: 100%;
-        margin-top: 20px;
+        /* margin-top: 20px; */
     }
 
     .play_num_box {
@@ -776,7 +774,7 @@
 
     .numberbox_img {
         display: flex;
-        grid-gap: 25px;
+        grid-gap: 20px;
         flex-wrap: wrap;
         justify-content: center;
         background-color: #e5e5e5;
@@ -789,7 +787,7 @@
 
     .number_img {
         display: flex;
-        grid-gap: 8px;
+        grid-gap: 3px;
     }
 
     .number_img img {
@@ -800,4 +798,62 @@
         font-weight: 600;
         font-size: 15px;
     }
+
+    .btn_howplay {
+        padding: 5px 10px;
+        border: 1px solid black;
+        border-radius: 15px;
+        color: black;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .play_box {
+        background-color: #e775042b;
+        padding: 10px 10px;
+        height: 150px;
+        border-radius: 10px;
+    }
+
+
+.clr_btn_box {
+    background-color: #f3e7e7;
+    display: flex;
+    justify-content: space-around;
+    margin: 10px 0px;
+    padding: 10px;
+    width: 100%;
+}
+
+.clr_btn .green {
+    background: #40ad72;
+    border-radius: 0 13px;
+    box-shadow: 0 .05333rem .16rem #bae6b0;
+    color: #fff;
+    width: 80px;
+    text-align: center;
+}
+
+.clr_btn .violet {
+    background: #b659fe;
+    box-shadow: 0 .05333rem .16rem #b988df;
+    border-radius: 13px;
+    color: #fff;
+    width: 80px;
+    text-align: center;
+}
+
+.clr_btn .red {
+    background: #FD565C;
+    border-radius: 13px 0;
+    box-shadow: 0 .05333rem .16rem #f49d9d;
+    color: #fff;
+    width: 80px;
+    text-align: center;
+}
+.pop_up_body_line_content_btn {
+    background-color: rgb(236 236 236);
+    border-radius: 5px;
+    margin: 0px 1px;
+}
+
 }
