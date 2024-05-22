@@ -29,6 +29,8 @@ const GameHistory = (props) => {
   const itemsPerPage = 10;
   const [resultAnnounced, setResultAnnounced] = useState(false);
   const [gameResult, setGameResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const handleCardClick = (cardId) => {
     setSelectedCard(selectedCard === cardId ? null : cardId);
   };
@@ -436,7 +438,174 @@ const GameHistory = (props) => {
         </>
       )}
 
-      {selectedButton === "myHistory" && (
+      {/* {selectedButton === "myHistory" && (
+        <div className="row dashboard-cards">
+          {userBet.length === 0 ? (
+            <div className={`${styles.noData_message}`}>No data available</div>
+          ) : (
+            userBet?.map((bet, index) => (
+              <div
+                key={index}
+                className={`card col-md-12 ${styles.mygame_history_item_2}`}
+                onClick={() => handleCardClick(index)}
+              >
+                <div className={`${styles.MyGameRecordList__C}`}>
+                  <div
+                    className={`${styles.MyGameRecordList__item_1} ${getColorForSelectType(bet.selectType, bet.number, bet.color)
+                      }`}
+                  >
+                    {bet.selectType}
+                  </div>
+
+                  <div className="MyGameRecordList__C-item-m">
+                    <div className="MyGameRecordList__C-item-m-top">
+                      {bet.issueNumber}
+                    </div>
+                    <div className="MyGameRecordList__C-item-m-bottom">
+                      {bet.betResult !== "pending" && (
+                        <div className="MyGameRecordList__C-item-m-bottom">
+                          {bet.createdAt}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className={`${styles.MyGameRecordList__C_item_r}`}>
+                    <div
+                      className={`${styles.bet_result_box} ${bet.betResult === "win" ? styles.greenSuccess : styles.redfail
+                        }`}
+                    >
+                      {bet.betResult !== "pending" && (
+                        bet.betResult === "win" ? "Success" : "Failed"
+                      )}
+                    </div>
+                    <span
+                      className={bet.betResult === "win" ? styles.green : styles.red}
+                    >
+                      {bet.betResult !== "pending" ? (
+                        `${bet.betResult === "win" ? "+" : "-"}$${bet.betResult === "win" ? bet.profitAmount.toFixed(2) : bet.amountAfterTax.toFixed(2)}`
+                      ) : (
+                        "Pending"
+                      )}
+                    </span>
+                  </div>
+
+                </div>
+
+                {selectedCard === index && (
+                  <div>
+                    <div className={`${styles.card_Details}`}>
+                      <h2>Details</h2>
+                      <div className={`${styles.card_Details_1}`}>
+                        <p>Order Number</p>
+                        <p>{bet.orderId}</p>
+                      </div>
+                      <div className={`${styles.card_Details_2}`}>
+                        <p>Period</p>
+                        <p>{bet.issueNumber}</p>
+                      </div>
+
+                      <div className={`${styles.card_Details_3}`}>
+                        <p>Purchase Amount</p>
+                        <p>{`$${bet.betAmount.toFixed(2)}`}</p>
+                      </div>
+
+                      <div className={`${styles.card_Details_4}`}>
+                        <p>Quantity</p>
+                        <p>{bet.betCount}</p>
+                      </div>
+
+                      <div className={`${styles.card_Details_5}`}>
+                        <p>Amount After Tax</p>
+                        <p
+                          className={bet.betResult === "win" ? "green" : "red"}
+                        >{`$${bet.amountAfterTax.toFixed(2)}`}</p>
+                      </div>
+
+                      <div className={`${styles.card_Details_6}`}>
+                        <p>Tax</p>
+                        <p>{`$${bet.serviceFee}`}</p>
+                      </div>
+                      <div className={`${styles.card_Details_7}`}>
+                        <p>Result</p>
+                        <div>
+                          <div className={styles.MyGameRecordList__C_inlineB}>
+                            {bet.betResult === "pending"
+                              ? "Pending"
+                              : `${bet.number}`}
+                          </div>
+                          <div className={styles.MyGameRecordList__C_inlineB}>
+                            {bet.betResult === "pending"
+                              ? "Pending"
+                              : `${bet.color}`}
+                          </div>
+                          <div className={styles.MyGameRecordList__C_inlineB}>
+                            {bet.betResult === "pending"
+                              ? "Pending"
+                              : `${bet.category}`}
+                          </div>
+                        </div>
+                      </div>
+
+
+
+
+
+                      <div className={`${styles.card_Details_8}`}>
+                        <p>Select</p>
+                        <p>{bet.selectType}</p>
+                      </div>
+
+                      <div className={`${styles.card_Details_9}`}>
+                        <p>Status</p>
+                        <p
+                          className={bet.betResult === "win" ? "green" : "red"}
+                        > {bet.betResult === "pending"
+                          ? "Pending"
+                          : `${bet.betResult === "win" ? "Success" : "Failed"}`}
+                        </p>
+                      </div>
+                      <div className={`${styles.card_Details_10}`}>
+                        <p>Win/Lose</p>
+                        <p
+                          className={bet.betResult === "win" ? "green" : "red"}
+                        >
+                          {bet.betResult === "pending"
+                            ? "Pending"
+                            : `$${bet.profitAmount.toFixed(2)}`}
+                        </p>
+                      </div>
+
+                      <div className={`${styles.card_Details_11}`}>
+                        <p>Order Time</p>
+                        <p>{bet.createdAt}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+          <div className={styles.pagination}>
+            <button
+              onClick={() => handlePageMyHistory(currentPageMyhistory - 1)}
+              disabled={currentPageMyhistory === 1}
+            >
+              Previous
+            </button>
+            <span>
+              {currentPageMyhistory} / {totalPagesMyhistory}
+            </span>
+            <button
+              onClick={() => handlePageMyHistory(currentPageMyhistory + 1)}
+              disabled={currentPageMyhistory === totalPagesMyhistory}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )} */}
+        {selectedButton === "myHistory" && (
         <div className="row dashboard-cards">
           {userBet.length === 0 ? (
             <div className={`${styles.noData_message}`}>No data available</div>

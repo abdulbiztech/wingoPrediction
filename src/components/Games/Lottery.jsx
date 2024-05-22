@@ -43,18 +43,23 @@ const Lottery = () => {
   };
 
   const handleAmountChange = (event) => {
-    setAmount(parseInt(event.target.value));
+    const { value } = event.target;
+    // Allow only numeric values
+    if (/^\d*$/.test(value))   {
+      setAmount(value);
+    }
   };
 
   const handleIncrement = () => {
-    setAmount((prevAmount) => prevAmount + 1);
+    setAmount((prevAmount) => (parseInt(prevAmount) + 1).toString());
+  };
+  const handleDecrement = () => {
+    setAmount((prevAmount) => {
+      const newAmount = parseInt(prevAmount) - 1;
+      return newAmount > 0 ? newAmount.toString() : "1";
+    });
   };
 
-  const handleDecrement = () => {
-    if (amount > 1) {
-      setAmount((prevAmount) => prevAmount - 1);
-    }
-  };
 
   const getRandomNumber = () => {
     const randomNumber = Math.floor(Math.random() * 10);
@@ -492,18 +497,6 @@ const Lottery = () => {
                 </div>
               </section>
             </div>
-
-            {/* <div className={`col-6 mx-auto ${styles.web_only}`} >
-              <div className={`${styles.game_record}`}>
-                <GameHistory setIsplace={setIsplace} isplace={isplace} showResult={showResult} setShowResult={setShowResult} />
-              </div>
-            </div>
-
-            <div className={`col-12  ${styles.mobile_only} ${styles.game_record_row}`}>
-              <div className={`${styles.game_record}`}>
-                <GameHistory setIsplace={setIsplace} isplace={isplace} showResult={showResult} setShowResult={setShowResult} />
-              </div>
-            </div> */}
             <div className={`mx-auto ${isMobile ? 'col-12' : 'col-6'} ${styles.game_record_row}`}>
               <div className={styles.game_record}>
                 <GameHistory
@@ -562,7 +555,6 @@ const Lottery = () => {
           </p>
         </Modal.Body>
         <Modal.Footer>
-          {/* Close button */}
           <Button
             variant="secondary"
             className={`${styles.close_button}`}
