@@ -857,3 +857,28 @@
 }
 
 }
+
+/* styles.css */
+.modalContent {
+    text-align: center;
+  }
+
+  .modalContent h3 {
+    margin-bottom: 20px;
+  }
+
+  .modalContent input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+
+  .modalContent .btn {
+    margin-right: 10px;
+  }
+.btn_box{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+  /* Add any other styles you need */

@@ -8,7 +8,7 @@ import API_BASE_URL from "../../environment/api";
 import { toast } from "react-toastify";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [userIdInput, setUserIdInput] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const { balance, setBalance } = useContext(myContext);
@@ -19,39 +19,35 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(`${API_BASE_URL}/api/user/user-login`, {
-        username,
+        userId: userIdInput,
         password
       });
       console.log('Response:', response.data.data);
       setBalance(response?.data?.data?.userBalance);
       setUserId(response?.data?.data?.userId);
-      console.log("response?.data?.data?.userId",response?.data?.data?.userId);
+      console.log("response?.data?.data?.userId", response?.data?.data?.userId);
       localStorage.setItem('userId', response?.data?.data?.userId);
       navigate('/lottery');
       toast.success("Login successful!");
     } catch (error) {
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
         console.error('Server responded with error status:', error.response.status);
         console.error('Error response data:', error.response.data);
         if (error.response.status === 400) {
-          setErrorMessage('Invalid username or password. Please try again.');
-          toast.error('Invalid username or password. Please try again.');
+          setErrorMessage('Invalid user ID or password. Please try again.');
+          toast.error('Invalid user ID or password. Please try again.');
         } else if (error.response.status === 404) {
-          setErrorMessage('User not found. Please check your username and try again.');
-          toast.error('User not found. Please check your username and try again.');
+          setErrorMessage('User not found. Please check your user ID and try again.');
+          toast.error('User not found. Please check your user ID and try again.');
         } else {
           setErrorMessage('An error occurred while processing your request. Please try again later.');
           toast.error('An error occurred while processing your request. Please try again later.');
         }
       } else if (error.request) {
-        // The request was made but no response was received
         console.error('No response received from server:', error.request);
         setErrorMessage('No response received from server. Please check your network connection and try again.');
         toast.error('No response received from server. Please check your network connection and try again.');
       } else {
-        // Something happened in setting up the request that triggered an Error
         console.error('Error setting up request:', error.message);
         setErrorMessage('An error occurred while processing your request. Please try again later.');
         toast.error('An error occurred while processing your request. Please try again later.');
@@ -76,10 +72,10 @@ const Login = () => {
                   <form onSubmit={handleSubmit}>
                     <div className="mb-2">
                       <label
-                        htmlFor="username"
+                        htmlFor="userId"
                         className={`${styles.form_label}`}
                       >
-                        Username
+                        User ID
                       </label>
                     </div>
                     <div className="input-group mb-3">
@@ -89,11 +85,11 @@ const Login = () => {
                       <input
                         type="text"
                         className={`${styles.cus_control} form-control`}
-                        placeholder="Username"
-                        aria-label="Username"
+                        placeholder="User ID"
+                        aria-label="User ID"
                         aria-describedby="basic-addon1"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={userIdInput}
+                        onChange={(e) => setUserIdInput(e.target.value)}
                       />
                     </div>
                     <div className="mb-2">
@@ -140,6 +136,7 @@ const Login = () => {
 };
 
 export default Login;
+
 
 
 // import React, { useState, useContext } from "react";

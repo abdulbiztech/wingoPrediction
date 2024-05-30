@@ -4,13 +4,12 @@ import styles from "./lottery.module.css";
 import GameHistory from "../GameHistory/GameHistory";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
-import API_BASE_URL from "../../environment/api.js";
+import API_BASE_URL, { FUND_TRANSFER_SECRET_KEY } from "../../environment/api.js";
 import myContext from "../Context/MyContext.jsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import time_img from "../../assets/time-img.png"
 import { useNavigate } from "react-router-dom";
-
 const Lottery = () => {
   const navigate = useNavigate();
   const { countDown, issueNum, balance, setBalance, userId, setUserId } = useContext(myContext);
@@ -28,6 +27,7 @@ const Lottery = () => {
   const [isplace, setIsplace] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const betAmounts = [1, 5, 10, 20, 50, 100];
 
   const handleItemClick = (index) => {
@@ -45,7 +45,7 @@ const Lottery = () => {
   const handleAmountChange = (event) => {
     const { value } = event.target;
     // Allow only numeric values
-    if (/^\d*$/.test(value))   {
+    if (/^\d*$/.test(value)) {
       setAmount(value);
     }
   };
@@ -86,7 +86,8 @@ const Lottery = () => {
       if (!response.data) {
         throw new Error("Failed to fetch user balance data");
       }
-      setBalance(response.data.data.walletBalance);
+      // console.log("response.data.data.walletBalance",response.data.data.userBalance);
+      setBalance(response.data.data.userBalance);
     } catch (error) {
       console.error("Error fetching user balance data:", error);
     }
@@ -147,6 +148,59 @@ const Lottery = () => {
       console.error("Error fetching recentWin", error);
     }
   };
+  const generateReferenceNo = () => {
+    // Generate a random reference number
+    return Math.random().toString(36).substring(2, 15);
+  };
+  const handleFundTransferClick = async (amount, referenceNo = generateReferenceNo()) => {
+    const storedUserId = localStorage.getItem('userId');
+    console.log("storedUserId", storedUserId);
+    if (amount <= 0) {
+      toast.error("Amount must be greater than 0");
+      return; // Exit function if amount is 0 or negative
+    }
+
+    if (!storedUserId || !amount || !referenceNo || !FUND_TRANSFER_SECRET_KEY) {
+      console.error("Required fields are not filled");
+      toast.error("Please fill in all the required fields");
+      return; // Exit function if any required field is missing
+    }
+
+    const data = {
+      userId: storedUserId,
+      amount: amount,
+      referenceNo: referenceNo,
+      key: FUND_TRANSFER_SECRET_KEY
+    };
+    console.log("data", data);
+
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/user/transfer-funds`, data);
+      console.log('Fund transfer successful:', response.data);
+      toast.success(response.data.message);
+      getBalance(); // Update the balance after the transfer
+    } catch (error) {
+      console.error('Error during fund transfer:', error);
+      toast.error("Error during fund transfer");
+    }
+  }
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSubmit = () => {
+    if (amount && amount > 0) {
+      handleFundTransferClick(amount);
+      closeModal();
+    } else {
+      toast.error("Please enter a valid amount");
+    }
+  };
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768); // Adjust the width based on your needs
@@ -221,11 +275,31 @@ const Lottery = () => {
                     </div>
                   </div>
                   <div className={`${styles.button_box}`}>
-                    <button className={`btn ${styles.withbtn}`}>Withdraw</button>
-                    <button className={`btn ${styles.depobtn}`}>Deposit</button>
+                    <button className={`btn ${styles.withbtn}`} onClick={openModal}>Fund Transfer</button>
+                    <Modal show={isModalOpen} onHide={closeModal} className={`${styles.modal}`}>
+                      <Modal.Body className="p-10">
+                        <div className={styles.modalContent}>
+                          <h3>Enter Amount to Transfer</h3>
+                          <input
+                            type="number"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            placeholder="Enter amount"
+                            className="form-control"
+                          />
+                          <div className={`${styles.btn_box}`}>
+                            <Button onClick={handleSubmit} className="btn">Submit</Button>
+                            <Button onClick={closeModal} className="btn">Cancel</Button>
+                          </div>
+
+                        </div>
+                      </Modal.Body>
+                    </Modal>
+                    <button className={`btn ${styles.depobtn}`}>Deposit Fun</button>
                   </div>
                 </div>
               </div>
+
 
               <div className="row">
                 <div className="col-6">

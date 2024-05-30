@@ -108,6 +108,7 @@ const GameHistory = (props) => {
       console.error("Error fetching user bet history:", error);
     }
   };
+  // console.log("userBet",userBet);
   const getUserResult = async () => {
     if (!issueNum) {
       console.error("Error: No issue number available.");
@@ -160,11 +161,7 @@ const GameHistory = (props) => {
       }, 3000);
     }
   };
-  useEffect(() => {
-    if (countDown === 0) {
-      getUserBetHistory();
-    }
-  }, [countDown]);
+
   useEffect(() => {
     if (isplace === true) {
       getUserBetHistory();
@@ -204,7 +201,11 @@ const GameHistory = (props) => {
       socket.disconnect();
     };
   }, [currentPageMyhistory, currentPage, setIssueNum, setCountDown]);
-
+  // useEffect(() => {
+  //   if (countDown === 0) {
+  //     getUserBetHistory();
+  //   }
+  // }, [countDown]);
   useEffect(() => {
     if (countDown === 0) {
       getUserBetHistory();
@@ -605,7 +606,7 @@ const GameHistory = (props) => {
           </div>
         </div>
       )} */}
-        {selectedButton === "myHistory" && (
+      {selectedButton === "myHistory" && (
         <div className="row dashboard-cards">
           {userBet.length === 0 ? (
             <div className={`${styles.noData_message}`}>No data available</div>
@@ -642,14 +643,14 @@ const GameHistory = (props) => {
                       className={`${styles.bet_result_box} ${bet.betResult === "win" ? styles.greenSuccess : styles.redfail
                         }`}
                     >
-                      {bet.betResult !== "pending" && ( // Check if the result is not pending
-                        bet.betResult === "win" ? "Success" : "Failed" // Only display message if the result is not pending
+                      {bet.betResult !== "pending" && (
+                        bet.betResult === "win" ? "Success" : "Failed"
                       )}
                     </div>
                     <span
                       className={bet.betResult === "win" ? styles.green : styles.red}
                     >
-                      {bet.betResult !== "pending" ? ( // Check if the result is not pending
+                      {bet.betResult !== "pending" ? (
                         `${bet.betResult === "win" ? "+" : "-"}$${bet.betResult === "win" ? bet.profitAmount.toFixed(2) : bet.amountAfterTax.toFixed(2)}`
                       ) : (
                         "Pending"
@@ -700,7 +701,6 @@ const GameHistory = (props) => {
                             {bet.betResult === "pending"
                               ? "Pending"
                               : `${bet.number}`}
-                            {/* {gameResult?.status ? bet.number : "Pending"} */}
                           </div>
                           <div className={styles.MyGameRecordList__C_inlineB}>
                             {bet.betResult === "pending"
@@ -731,7 +731,6 @@ const GameHistory = (props) => {
                         > {bet.betResult === "pending"
                           ? "Pending"
                           : `${bet.betResult === "win" ? "Success" : "Failed"}`}
-                          {/* { gameResult?.status ? bet.betResult === "win" ? "Success" : "Failed" : "Pending" } */}
                         </p>
                       </div>
                       <div className={`${styles.card_Details_10}`}>
