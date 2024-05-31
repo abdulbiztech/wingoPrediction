@@ -91,7 +91,7 @@ const Header = () => {
 
           {userId ? (
             <div className={`form-inline my-2 my-lg-0 ${styles.user_box}`}>
-              <p>User ID: {userId}</p>
+              <p>Username: {userId}</p>
               <button onClick={handleRemoveUserId} className={`btn ${styles.connect_btn}`} type="button">Logout</button>
             </div>
           ) : (

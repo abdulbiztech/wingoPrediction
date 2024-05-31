@@ -149,21 +149,22 @@ const Lottery = () => {
     }
   };
   const generateReferenceNo = () => {
-    // Generate a random reference number
     return Math.random().toString(36).substring(2, 15);
   };
+
   const handleFundTransferClick = async (amount, referenceNo = generateReferenceNo()) => {
     const storedUserId = localStorage.getItem('userId');
     console.log("storedUserId", storedUserId);
+
     if (amount <= 0) {
       toast.error("Amount must be greater than 0");
-      return; // Exit function if amount is 0 or negative
+      return;
     }
 
     if (!storedUserId || !amount || !referenceNo || !FUND_TRANSFER_SECRET_KEY) {
       console.error("Required fields are not filled");
       toast.error("Please fill in all the required fields");
-      return; // Exit function if any required field is missing
+      return;
     }
 
     const data = {
@@ -172,18 +173,34 @@ const Lottery = () => {
       referenceNo: referenceNo,
       key: FUND_TRANSFER_SECRET_KEY
     };
-    console.log("data", data);
+
+    console.log("Sending data:", data);
 
     try {
       const response = await axios.post(`${API_BASE_URL}/api/user/transfer-funds`, data);
       console.log('Fund transfer successful:', response.data);
       toast.success(response.data.message);
-      getBalance(); // Update the balance after the transfer
+      getBalance();
     } catch (error) {
+      if (error.response) {
+        console.error('Server responded with error status:', error.response.status);
+        console.error('Error response data:', error.message);
+        if (error.response.status === 400) {
+          toast.error('Insuficient Amount!');
+        } else {
+          toast.error('An error occurred during the fund transfer. Please try again.');
+        }
+      } else if (error.request) {
+        console.error('No response received from server:', error.request);
+        toast.error('No response received from server. Please check your network connection and try again.');
+      } else {
+        console.error('Error setting up request:', error.message);
+        toast.error('An error occurred while processing your request. Please try again later.');
+      }
       console.error('Error during fund transfer:', error);
-      toast.error("Error during fund transfer");
     }
-  }
+  };
+
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -196,11 +213,11 @@ const Lottery = () => {
     if (amount && amount > 0) {
       handleFundTransferClick(amount);
       closeModal();
+      setAmount("");
     } else {
       toast.error("Please enter a valid amount");
     }
   };
-
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768); // Adjust the width based on your needs
