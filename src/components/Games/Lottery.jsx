@@ -86,7 +86,6 @@ const Lottery = () => {
       if (!response.data) {
         throw new Error("Failed to fetch user balance data");
       }
-      // console.log("response.data.data.walletBalance",response.data);
       setBalance(response.data.data.userBalance);
     } catch (error) {
       console.error("Error fetching user balance data:", error);
@@ -103,36 +102,6 @@ const Lottery = () => {
       gameId: 1,
     };
   };
-
-  // const placeBet = async (selectType, amount) => {
-  //   if (!userId) {
-  //     console.error("User is not logged in");
-  //     toast.error("Please log in to place a bet");
-  //     navigate('/login');
-  //     return;
-  //   }
-  //   const data = generateBetData(selectType, amount);
-  //   try {
-  //     const response = await axios.post(
-  //       `${API_BASE_URL}/api/user/predict`,
-  //       data
-  //     );
-  //     if (response.data.status) {
-  //       toast.success("Bet placed successfully");
-  //       setIsplace(true);
-  //       setShowResult(true);
-  //       setShowModal(false);
-  //       setAmount(1);
-  //       getBalance();
-  //     } else {
-  //       console.error("Failed to place bet:", response.data);
-  //       toast.error(`Failed to place bet: ${response?.data?.data?.message}`);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error placing bet:", error);
-  //     toast.error(`${error.response.data.message}`);
-  //   }
-  // };
   const placeBet = async (selectType, amount) => {
     if (!userId) {
       console.error("User is not logged in");
@@ -154,16 +123,10 @@ const Lottery = () => {
         setAmount(1);
         getBalance();
 
-        // Fetch the latest bet history to update state and local storage
-        // const betHistoryResponse = await axios.get(
-        //   `${API_BASE_URL}/api/user/bet-history?userId=${userId}&page=${currentPageMyhistory}`
-        // );
-        // const betData = betHistoryResponse?.data?.data;
-        // setUserBet(betData);
-        // setTotalPagesMyhistory(betHistoryResponse?.data?.pagination?.totalPages);
-
-        // // Update local storage with the new bet data
-        // localStorage.setItem('userBet', JSON.stringify(betData));
+        // Save the bet data in localStorage
+        const storedBetData = localStorage.getItem("userBet");
+        const newBetData = [...(storedBetData ? JSON.parse(storedBetData) : []), data];
+        localStorage.setItem('userBet', JSON.stringify(newBetData));
       } else {
         console.error("Failed to place bet:", response.data);
         toast.error(`Failed to place bet: ${response?.data?.data?.message}`);
@@ -173,6 +136,8 @@ const Lottery = () => {
       toast.error(`${error.response.data.message}`);
     }
   };
+
+
 
   const recentWin = async () => {
     try {
@@ -194,13 +159,15 @@ const Lottery = () => {
 
   const handleFundTransferClick = async (amount, referenceNo = generateReferenceNo()) => {
     const storedUserId = localStorage.getItem('userId');
-    console.log("storedUserId", storedUserId);
 
+    // Validate amount
     if (amount <= 0) {
       toast.error("Amount must be greater than 0");
       return;
     }
 
+
+    // Check if required fields are filled
     if (!storedUserId || !amount || !referenceNo || !FUND_TRANSFER_SECRET_KEY) {
       console.error("Required fields are not filled");
       toast.error("Please fill in all the required fields");
@@ -214,30 +181,14 @@ const Lottery = () => {
       key: FUND_TRANSFER_SECRET_KEY
     };
 
-    console.log("Sending data:", data);
-
     try {
       const response = await axios.post(`${API_BASE_URL}/api/user/transfer-funds`, data);
       console.log('Fund transfer successful:', response.data);
       toast.success(response.data.message);
       getBalance();
     } catch (error) {
-      if (error.response) {
-        console.error('Server responded with error status:', error.response.status);
-        console.error('Error response data:', error.message);
-        if (error.response.status === 400) {
-          toast.error('Insuficient Amount!');
-        } else {
-          toast.error('An error occurred during the fund transfer. Please try again.');
-        }
-      } else if (error.request) {
-        console.error('No response received from server:', error.request);
-        toast.error('No response received from server. Please check your network connection and try again.');
-      } else {
-        console.error('Error setting up request:', error.message);
-        toast.error('An error occurred while processing your request. Please try again later.');
-      }
-      console.error('Error during fund transfer:', error);
+      console.error('Error during fund transfer:', error.message);
+      toast.error("An error occurred during fund transfer. Please try again later.");
     }
   };
 
@@ -352,7 +303,7 @@ const Lottery = () => {
                         </div>
                       </Modal.Body>
                     </Modal>
-                    <button className={`btn ${styles.depobtn}`}>Deposit Fun</button>
+                    <button className={`btn ${styles.depobtn}`}>Deposit Fund</button>
                   </div>
                 </div>
               </div>

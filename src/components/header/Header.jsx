@@ -76,13 +76,13 @@ const Header = () => {
         <div className="collapse  navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ml-auto mb-2 mb-lg-0">
             <li className={`nav-item ${styles.cus_navitem}`}>
-              <a className={`nav-link active ${styles.cus_navlink}`} href="/store">About</a>
+              <a className={`nav-link active ${styles.cus_navlink}`} href="/">About</a>
             </li>
             <li className={`nav-item ${styles.cus_navitem}`}>
-              <a className={`nav-link ${styles.cus_navlink}`} href="/games">Game</a>
+              <a className={`nav-link ${styles.cus_navlink}`} href="/">Game</a>
             </li>
             <li className={`nav-item ${styles.cus_navitem}`}>
-              <a className={`nav-link ${styles.cus_navlink}`} href="/news">News</a>
+              <a className={`nav-link ${styles.cus_navlink}`} href="/">News</a>
             </li>
           </ul>
 
@@ -91,7 +91,7 @@ const Header = () => {
 
           {userId ? (
             <div className={`form-inline my-2 my-lg-0 ${styles.user_box}`}>
-              <p>Username: {userId}</p>
+              <p>Username: {userId.substring(0, 20) + "..."}</p>
               <button onClick={handleRemoveUserId} className={`btn ${styles.connect_btn}`} type="button">Logout</button>
             </div>
           ) : (

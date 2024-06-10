@@ -11,8 +11,7 @@ const Login = () => {
   const [userIdInput, setUserIdInput] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const { balance, setBalance } = useContext(myContext);
-  const { userId, setUserId } = useContext(myContext);
+  const { setBalance, setUserId } = useContext(myContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -22,36 +21,24 @@ const Login = () => {
         userId: userIdInput,
         password
       });
-      console.log('Response:', response.data.data);
       setBalance(response?.data?.data?.userBalance);
       setUserId(response?.data?.data?.userId);
-      console.log("response?.data?.data?.userId", response?.data?.data?.userId);
       localStorage.setItem('userId', response?.data?.data?.userId);
       navigate('/lottery');
       toast.success("Login successful!");
     } catch (error) {
+      let errorMessage = 'An error occurred while processing your request. Please try again later.';
       if (error.response) {
-        console.error('Server responded with error status:', error.response.status);
-        console.error('Error response data:', error.response.data);
         if (error.response.status === 400) {
-          setErrorMessage('Invalid user ID or password. Please try again.');
-          toast.error('Invalid user ID or password. Please try again.');
+          errorMessage = 'Invalid user ID or password. Please try again.';
         } else if (error.response.status === 404) {
-          setErrorMessage('User not found. Please check your user ID and try again.');
-          toast.error('User not found. Please check your user ID and try again.');
-        } else {
-          setErrorMessage('An error occurred while processing your request. Please try again later.');
-          toast.error('An error occurred while processing your request. Please try again later.');
+          errorMessage = 'User not found. Please check your user ID and try again.';
         }
       } else if (error.request) {
-        console.error('No response received from server:', error.request);
-        setErrorMessage('No response received from server. Please check your network connection and try again.');
-        toast.error('No response received from server. Please check your network connection and try again.');
-      } else {
-        console.error('Error setting up request:', error.message);
-        setErrorMessage('An error occurred while processing your request. Please try again later.');
-        toast.error('An error occurred while processing your request. Please try again later.');
+        errorMessage = 'No response received from server. Please check your network connection and try again.';
       }
+      setErrorMessage(errorMessage);
+      toast.error(errorMessage);
       console.error('Error:', error);
     }
   };
@@ -90,7 +77,9 @@ const Login = () => {
                         aria-describedby="basic-addon1"
                         value={userIdInput}
                         onChange={(e) => setUserIdInput(e.target.value)}
+                        pattern="^\S+$" // This pattern disallows whitespace
                       />
+
                     </div>
                     <div className="mb-2">
                       <label
@@ -136,6 +125,7 @@ const Login = () => {
 };
 
 export default Login;
+
 
 
 

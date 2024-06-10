@@ -29,11 +29,12 @@ const GameHistory = (props) => {
   const itemsPerPage = 10;
   const [resultAnnounced, setResultAnnounced] = useState(false);
   const [gameResult, setGameResult] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleCardClick = (cardId) => {
     setSelectedCard(selectedCard === cardId ? null : cardId);
   };
+
   const getColorForPremium = (number) => {
     const numString = String(number).toLowerCase();
     if (numString === "0") {
@@ -48,6 +49,7 @@ const GameHistory = (props) => {
       return "";
     }
   };
+
   const getColorForSelectType = (selectType) => {
     if (selectType.toLowerCase() === "0") {
       return styles.gradientRedViolet;
@@ -71,21 +73,25 @@ const GameHistory = (props) => {
       return "";
     }
   };
+
   const handleButtonClick = (buttonName) => {
     setSelectedButton((prevButton) =>
       prevButton === buttonName ? prevButton : buttonName
     );
   };
+
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
+
   const handlePageMyHistory = (page) => {
     if (page >= 1 && page <= totalPagesMyhistory) {
       setCurrentPageMyHistory(page);
     }
   };
+
   const getGameHistory = async () => {
     try {
       const response = await axios.get(
@@ -97,33 +103,30 @@ const GameHistory = (props) => {
       console.error("Error fetching game history:", error);
     }
   };
-  // const getUserBetHistory = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${API_BASE_URL}/api/user/bet-history?userId=${userId}&page=${currentPageMyhistory}`
-  //     );
-  //     setUserBet(response?.data?.data);
-  //     setTotalPagesMyhistory(response?.data?.pagination?.totalPages);
-  //   } catch (error) {
-  //     console.error("Error fetching user bet history:", error);
-  //   }
-  // };
+
   const getUserBetHistory = async () => {
-    console.log(userId);
     try {
+      setLoading(true);
+
       const response = await axios.get(
         `${API_BASE_URL}/api/user/bet-history?userId=${userId}&page=${currentPageMyhistory}`
       );
       const betData = response?.data?.data;
-      console.log("betData", betData);
       setUserBet(betData);
       setTotalPagesMyhistory(response?.data?.pagination?.totalPages);
-      // Store user bet data in local storage
-      localStorage.setItem('userBet', JSON.stringify(betData));
+      localStorage.setItem("userBet", JSON.stringify(betData));
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching user bet history:", error);
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (userId) {
+      getUserBetHistory();
+    }
+  }, [userId]);
 
   const getUserResult = async () => {
     if (!issueNum) {
@@ -149,7 +152,6 @@ const GameHistory = (props) => {
       } else {
         console.error("Error:", response.data.message);
       }
-
     } catch (error) {
       if (error.response) {
         console.error(
@@ -162,14 +164,17 @@ const GameHistory = (props) => {
       }
     }
   };
+
   const placeBetsData = (placeBets) => {
     if (placeBets) {
       setBetPlaced(true);
     }
   };
+
   const handlePopUpResult = () => {
     setResultAnnounced(false);
   };
+
   const handleAutoClose = (event) => {
     if (event.target.checked) {
       setTimeout(() => {
@@ -184,34 +189,35 @@ const GameHistory = (props) => {
       setIsplace(false);
     }
   }, [isplace]);
+
   useEffect(() => {
     if (countDown === 0 && isplace) {
       setIsplace(false);
     }
-  }, [countDown]);
-
+  }, [countDown, isplace]);
   useEffect(() => {
-    if (countDown === 0 && showResult) {
+    if (countDown === 0 && showResult && userBet.length > 0 && betPlaced) {
       getUserResult();
       setResultAnnounced(true);
       setShowResult(false);
     }
-
-  }, [countDown])
+  }, [countDown, showResult, userBet, betPlaced]);
   useEffect(() => {
-    if (userBet) {
-      console.log("Updated userBet state:", userBet); // Debugging log
-      localStorage.setItem("userBet", JSON.stringify(userBet));
-    }
-  }, [userBet]);
-  useEffect(() => {
-    const storedUserBet = JSON.parse(localStorage.getItem('userBet'));
-    if (storedUserBet) {
-      setUserBet(storedUserBet);
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      setUserId(storedUserId);
+      const storedBetData = localStorage.getItem("userBet");
+      if (storedBetData) {
+        setUserBet(JSON.parse(storedBetData));
+      } else {
+        getUserBetHistory();
+      }
     } else {
-      getUserBetHistory();
+      console.error("User ID not found.");
     }
+  }, []);
 
+  useEffect(() => {
     getGameHistory();
     const socket = io(`${API_BASE_URL}`);
     const countDownIssue = (countdownUpdate) => {
@@ -230,41 +236,27 @@ const GameHistory = (props) => {
     };
   }, [currentPageMyhistory, currentPage, setIssueNum, setCountDown]);
 
-
-  // useEffect(() => {
-  //   getGameHistory();
-  //   getUserBetHistory();
-  //   const socket = io(`${API_BASE_URL}`);
-  //   const countDownIssue = (countdownUpdate) => {
-  //     setIssueNum(countdownUpdate?.issueNumber);
-  //     setCountDown(countdownUpdate?.remainingTime);
-  //     if (countdownUpdate?.remainingTime === 0) {
-  //       getGameHistory();
-  //       getUserBetHistory();
-  //     }
-  //   };
-  //   socket.on("countdownUpdate", countDownIssue);
-  //   socket.on("placeBets", placeBetsData);
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, [currentPageMyhistory, currentPage, setIssueNum, setCountDown]);
+  useEffect(() => {
+    if (userBet) {
+      localStorage.setItem("userBet", JSON.stringify(userBet));
+    }
+  }, [userBet]);
 
   useEffect(() => {
-    if (countDown === 0) {
+    if (countDown === 0 && userBet.length > 0) {
       getGameHistory();
       getUserBetHistory();
       setBetPlaced(false);
       setShowResult(true);
     }
-  }, [countDown, betPlaced]);
+  }, [countDown, betPlaced, userBet]);
 
   useEffect(() => {
     setPaginatedData(
       gameHistory.slice((currentPage - 1) * pageSize, currentPage * pageSize)
     );
   }, [gameHistory, currentPage, pageSize]);
+
   useEffect(() => {
     setPaginatedDataMyHis(
       userBet?.slice(
@@ -273,17 +265,97 @@ const GameHistory = (props) => {
       )
     );
   }, [userBet, currentPageMyhistory, itemsPerPage]);
+
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      setUserId(storedUserId);
+      getUserBetHistory();
+    } else {
+      console.error("User ID not found.");
+    }
+  }, []);
+
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      setUserId(storedUserId);
+      getUserBetHistory();
+    } else {
+      console.error("User ID not found.");
+    }
+  }, []);
+
+  useEffect(() => {
+    getGameHistory();
+    const socket = io(`${API_BASE_URL}`);
+    const countDownIssue = (countdownUpdate) => {
+      setIssueNum(countdownUpdate?.issueNumber);
+      setCountDown(countdownUpdate?.remainingTime);
+      if (countdownUpdate?.remainingTime === 0) {
+        getGameHistory();
+        getUserBetHistory();
+      }
+    };
+    socket.on("countdownUpdate", countDownIssue);
+    socket.on("placeBets", placeBetsData);
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [currentPageMyhistory, currentPage, setIssueNum, setCountDown]);
+
+  useEffect(() => {
+    if (userBet) {
+      localStorage.setItem("userBet", JSON.stringify(userBet));
+    }
+  }, [userBet]);
+
+  useEffect(() => {
+    if (countDown === 0 && userBet.length > 0) {
+      getGameHistory();
+      getUserBetHistory();
+      setBetPlaced(false);
+      setShowResult(true);
+    }
+  }, [countDown, betPlaced, userBet]);
+
+  useEffect(() => {
+    setPaginatedData(
+      gameHistory.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+    );
+  }, [gameHistory, currentPage, pageSize]);
+
+  useEffect(() => {
+    setPaginatedDataMyHis(
+      userBet?.slice(
+        (currentPageMyhistory - 1) * itemsPerPage,
+        currentPageMyhistory * itemsPerPage
+      )
+    );
+  }, [userBet, currentPageMyhistory, itemsPerPage]);
+
   return (
     <>
-      <Modal className={`${styles.model_body}`} show={resultAnnounced} onHide={() => setResultAnnounced(false)}>
+      <Modal
+        className={`${styles.model_body}`}
+        show={resultAnnounced}
+        onHide={() => setResultAnnounced(false)}
+      >
         <Modal.Body className="p-0">
           <div className={styles.modal}>
             {gameHistory && (
               <div className={styles.lotteryResult}>
                 <h5>Lottery Result</h5>
-                <button className={`btn ${styles.lottery_color_result}`}>{gameHistory[0]?.color}</button>
-                <button className={`btn ${styles.lottery_color_number}`}>{gameHistory[0]?.number}</button>
-                <button className={`btn ${styles.lottery_color_category}`}>{gameHistory[0]?.category}</button>
+                <button className={`btn ${styles.lottery_color_result}`}>
+                  {gameHistory[0]?.color}
+                </button>
+                <button className={`btn ${styles.lottery_color_number}`}>
+                  {gameHistory[0]?.number}
+                </button>
+                <button className={`btn ${styles.lottery_color_category}`}>
+                  {gameHistory[0]?.category}
+                </button>
               </div>
             )}
 
@@ -306,7 +378,6 @@ const GameHistory = (props) => {
                 ) : (
                   <p></p>
                 )}
-
               </div>
             </div>
 
@@ -321,7 +392,11 @@ const GameHistory = (props) => {
             </div>
 
             <div className={`${styles.closeBtn}`}>
-              <button type="button" className="btn btn-close shadow-none" onClick={handlePopUpResult}></button>
+              <button
+                type="button"
+                className="btn btn-close shadow-none"
+                onClick={handlePopUpResult}
+              ></button>
             </div>
           </div>
         </Modal.Body>
@@ -354,8 +429,8 @@ const GameHistory = (props) => {
           ) : (
             <div className="table-responsive">
               <table className={`${styles.table}`}>
-                <thead >
-                  <tr >
+                <thead>
+                  <tr>
                     <th className={`${styles.table_head}`}>Period</th>
                     <th className={`${styles.table_head}`}>Number</th>
                     <th className={`${styles.table_head}`}>Big Small</th>
@@ -464,7 +539,6 @@ const GameHistory = (props) => {
                 </tbody>
               </table>
             </div>
-
           )}
           {/* Pagination */}
           <div className={styles.pagination}>
@@ -500,8 +574,12 @@ const GameHistory = (props) => {
               >
                 <div className={`${styles.MyGameRecordList__C}`}>
                   <div
-                    className={`${styles.MyGameRecordList__item_1} ${getColorForSelectType(bet.selectType, bet.number, bet.color)
-                      }`}
+                    className={`${styles.MyGameRecordList__item_1
+                      } ${getColorForSelectType(
+                        bet.selectType,
+                        bet.number,
+                        bet.color
+                      )}`}
                   >
                     {bet.selectType}
                   </div>
@@ -521,24 +599,27 @@ const GameHistory = (props) => {
 
                   <div className={`${styles.MyGameRecordList__C_item_r}`}>
                     <div
-                      className={`${styles.bet_result_box} ${bet.betResult === "win" ? styles.greenSuccess : styles.redfail
+                      className={`${styles.bet_result_box} ${bet.betResult === "win"
+                        ? styles.greenSuccess
+                        : styles.redfail
                         }`}
                     >
-                      {bet.betResult !== "pending" && (
-                        bet.betResult === "win" ? "Success" : "Failed"
-                      )}
+                      {bet.betResult !== "pending" &&
+                        (bet.betResult === "win" ? "Success" : "Failed")}
                     </div>
                     <span
-                      className={bet.betResult === "win" ? styles.green : styles.red}
+                      className={
+                        bet.betResult === "win" ? styles.green : styles.red
+                      }
                     >
-                      {bet.betResult !== "pending" ? (
-                        `${bet.betResult === "win" ? "+" : "-"}$${bet.betResult === "win" ? bet.profitAmount.toFixed(2) : bet.amountAfterTax.toFixed(2)}`
-                      ) : (
-                        "Pending"
-                      )}
+                      {bet.betResult !== "pending"
+                        ? `${bet.betResult === "win" ? "+" : "-"}$${bet.betResult === "win"
+                          ? bet.profitAmount.toFixed(2)
+                          : bet.amountAfterTax.toFixed(2)
+                        }`
+                        : "Pending"}
                     </span>
                   </div>
-
                 </div>
 
                 {selectedCard === index && (
@@ -596,10 +677,6 @@ const GameHistory = (props) => {
                         </div>
                       </div>
 
-
-
-
-
                       <div className={`${styles.card_Details_8}`}>
                         <p>Select</p>
                         <p>{bet.selectType}</p>
@@ -609,9 +686,12 @@ const GameHistory = (props) => {
                         <p>Status</p>
                         <p
                           className={bet.betResult === "win" ? "green" : "red"}
-                        > {bet.betResult === "pending"
-                          ? "Pending"
-                          : `${bet.betResult === "win" ? "Success" : "Failed"}`}
+                        >
+                          {" "}
+                          {bet.betResult === "pending"
+                            ? "Pending"
+                            : `${bet.betResult === "win" ? "Success" : "Failed"
+                            }`}
                         </p>
                       </div>
                       <div className={`${styles.card_Details_10}`}>
