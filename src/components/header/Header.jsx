@@ -30,6 +30,7 @@ const Header = () => {
         setUserId(0);
         setBalance(0)
         localStorage.removeItem('userId');
+        localStorage.removeItem('userBet');
         navigate('/login');
         toast.success("Logout successful!");
       } else {

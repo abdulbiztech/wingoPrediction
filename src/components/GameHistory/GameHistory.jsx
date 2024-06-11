@@ -218,6 +218,12 @@ const GameHistory = (props) => {
   }, []);
 
   useEffect(() => {
+    if (userId) {
+      getUserBetHistory();
+    }
+  }, [userId]);
+
+  useEffect(() => {
     getGameHistory();
     const socket = io(`${API_BASE_URL}`);
     const countDownIssue = (countdownUpdate) => {
@@ -235,12 +241,6 @@ const GameHistory = (props) => {
       socket.disconnect();
     };
   }, [currentPageMyhistory, currentPage, setIssueNum, setCountDown]);
-
-  useEffect(() => {
-    if (userBet) {
-      localStorage.setItem("userBet", JSON.stringify(userBet));
-    }
-  }, [userBet]);
 
   useEffect(() => {
     if (countDown === 0 && userBet.length > 0) {
@@ -404,19 +404,21 @@ const GameHistory = (props) => {
 
       <div className={styles.gameHistory}>
         <button
-          className={`btn ${selectedButton === "gameHistory"
-            ? styles.gamehistory_btn_selected
-            : styles.gamehistory_btn
-            }`}
+          className={`btn ${
+            selectedButton === "gameHistory"
+              ? styles.gamehistory_btn_selected
+              : styles.gamehistory_btn
+          }`}
           onClick={() => handleButtonClick("gameHistory")}
         >
           Game History
         </button>
         <button
-          className={`btn ${selectedButton === "myHistory"
-            ? styles.myhistory_btn_selected
-            : styles.myhistory_btn
-            }`}
+          className={`btn ${
+            selectedButton === "myHistory"
+              ? styles.myhistory_btn_selected
+              : styles.myhistory_btn
+          }`}
           onClick={() => handleButtonClick("myHistory")}
         >
           My History
@@ -455,9 +457,9 @@ const GameHistory = (props) => {
                           }}
                         >
                           {item.color &&
-                            typeof item.color === "string" &&
-                            item.color.includes("red") &&
-                            item.color.includes("violet") ? (
+                          typeof item.color === "string" &&
+                          item.color.includes("red") &&
+                          item.color.includes("violet") ? (
                             <>
                               <div
                                 style={{
@@ -574,12 +576,13 @@ const GameHistory = (props) => {
               >
                 <div className={`${styles.MyGameRecordList__C}`}>
                   <div
-                    className={`${styles.MyGameRecordList__item_1
-                      } ${getColorForSelectType(
-                        bet.selectType,
-                        bet.number,
-                        bet.color
-                      )}`}
+                    className={`${
+                      styles.MyGameRecordList__item_1
+                    } ${getColorForSelectType(
+                      bet.selectType,
+                      bet.number,
+                      bet.color
+                    )}`}
                   >
                     {bet.selectType}
                   </div>
@@ -599,10 +602,11 @@ const GameHistory = (props) => {
 
                   <div className={`${styles.MyGameRecordList__C_item_r}`}>
                     <div
-                      className={`${styles.bet_result_box} ${bet.betResult === "win"
-                        ? styles.greenSuccess
-                        : styles.redfail
-                        }`}
+                      className={`${styles.bet_result_box} ${
+                        bet.betResult === "win"
+                          ? styles.greenSuccess
+                          : styles.redfail
+                      }`}
                     >
                       {bet.betResult !== "pending" &&
                         (bet.betResult === "win" ? "Success" : "Failed")}
@@ -613,10 +617,11 @@ const GameHistory = (props) => {
                       }
                     >
                       {bet.betResult !== "pending"
-                        ? `${bet.betResult === "win" ? "+" : "-"}$${bet.betResult === "win"
-                          ? bet.profitAmount.toFixed(2)
-                          : bet.amountAfterTax.toFixed(2)
-                        }`
+                        ? `${bet.betResult === "win" ? "+" : "-"}$${
+                            bet.betResult === "win"
+                              ? bet.profitAmount.toFixed(2)
+                              : bet.amountAfterTax.toFixed(2)
+                          }`
                         : "Pending"}
                     </span>
                   </div>
@@ -690,8 +695,9 @@ const GameHistory = (props) => {
                           {" "}
                           {bet.betResult === "pending"
                             ? "Pending"
-                            : `${bet.betResult === "win" ? "Success" : "Failed"
-                            }`}
+                            : `${
+                                bet.betResult === "win" ? "Success" : "Failed"
+                              }`}
                         </p>
                       </div>
                       <div className={`${styles.card_Details_10}`}>
