@@ -4,18 +4,15 @@ import styles from "./lottery.module.css";
 import GameHistory from "../GameHistory/GameHistory";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
-import API_BASE_URL, {
-  FUND_TRANSFER_SECRET_KEY,
-} from "../../environment/api.js";
+import API_BASE_URL, { FUND_TRANSFER_SECRET_KEY } from "../../environment/api.js";
 import myContext from "../Context/MyContext.jsx";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import time_img from "../../assets/time-img.png";
 import { useNavigate } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 const Lottery = () => {
   const navigate = useNavigate();
-  const { countDown, issueNum, balance, setBalance, userId, setUserId } =
-    useContext(myContext);
+  const { countDown, issueNum, balance, setBalance, userId, setUserId } = useContext(myContext);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("x1");
   const [showPopup, setShowPopup] = useState(false);
@@ -82,30 +79,24 @@ const Lottery = () => {
       console.log("Stored User ID is null");
       return;
     }
-
     try {
       const response = await axios.get(
         `${API_BASE_URL}/api/user/get-balance?userId=${storedUserId}`
       );
-
       if (!response.data) {
         throw new Error("Failed to fetch user balance data");
       }
-
       const userBalance = response.data.data?.userBalance;
-
       if (userBalance === null || userBalance === undefined) {
         console.log("User balance is empty or null");
-        setBalance(0); // Or set to a default value you prefer
+        setBalance(0);
       } else {
         setBalance(userBalance);
       }
-
     } catch (error) {
       console.error("Error fetching user balance data:", error);
     }
   };
-
 
   const generateBetData = (selectType, amount) => {
     return {
@@ -161,9 +152,8 @@ const Lottery = () => {
     } catch (error) {
       console.error("Error placing bet:", error);
       toast.error(
-        `${
-          error.response?.data?.message ||
-          "An error occurred while placing the bet"
+        `${error.response?.data?.message ||
+        "An error occurred while placing the bet"
         }`
       );
     }
@@ -184,20 +174,10 @@ const Lottery = () => {
     }
   };
   const generateReferenceNo = () => {
-    return Math.random().toString(36).substring(2, 15);
+    return Math.random().toString(36).substring(2, 14);
   };
-
-  const handleFundTransferClick = async (
-    amount,
-    referenceNo = generateReferenceNo()
-  ) => {
+  const handleFundTransferClick = async (amount, referenceNo = generateReferenceNo()) => {
     const storedUserId = localStorage.getItem("userId");
-
-    // Validate amount
-    if (amount <= 0) {
-      toast.error("Amount must be greater than 0");
-      return;
-    }
 
     // Check if required fields are filled
     if (!storedUserId || !amount || !referenceNo || !FUND_TRANSFER_SECRET_KEY) {
@@ -206,37 +186,50 @@ const Lottery = () => {
       return;
     }
 
+    // Check if amount is valid
+    if (amount <= 0) {
+      toast.error("Amount must be greater than 0");
+      return;
+    }
+
+    // Prepare the data for the POST request
     const data = {
       userId: storedUserId,
       amount: amount,
       referenceNo: referenceNo,
-      key: FUND_TRANSFER_SECRET_KEY,
+      key: "0a0a5e19c94d60081d34f1223b55b3e31ebabaed211feb143b285efd"
     };
 
+    // Prepare the URLs for the GET and POST requests
+    const transferFundsApiUrl = `https://demosoftech.com/GVTest/api/Fund/TransferFunds?userId=${storedUserId}&amount=${amount}&referenceNo=${referenceNo}&key=0a0a5e19c94d60081d34f1223b55b3e31ebabaed211feb143b285efd`;
+    const userTransferFundsApiUrl = `${API_BASE_URL}/api/user/transfer-funds`;
+
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/api/user/transfer-funds`,
-        data
-      );
-      console.log("Fund transfer successful:", response.data);
-      toast.success(response.data.message);
+      // Send both requests simultaneously
+      const [transferFundsResponse, userTransferFundsResponse] = await Promise.all([
+        axios.get(transferFundsApiUrl),
+        axios.post(userTransferFundsApiUrl, data)
+      ]);
+
+      // Handle responses
+      console.log("Fund transfer successful:", transferFundsResponse);
+      console.log("User transfer funds successful:", userTransferFundsResponse);
+
+      // Update balance
       getBalance();
     } catch (error) {
       console.error("Error during fund transfer:", error.message);
-      toast.error(
-        "An error occurred during fund transfer. Please try again later."
-      );
+      toast.error("An error occurred during fund transfer. Please try again later.");
     }
   };
+
 
   const openModal = () => {
     setIsModalOpen(true);
   };
-
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
   const handleSubmit = () => {
     if (amount && amount > 0) {
       handleFundTransferClick(amount);
@@ -246,16 +239,16 @@ const Lottery = () => {
       toast.error("Please enter a valid amount");
     }
   };
+
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Adjust the width based on your needs
+      setIsMobile(window.innerWidth <= 768);
     };
-
     window.addEventListener("resize", handleResize);
-    handleResize(); // Call it initially to set the state based on initial window size
-
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   useEffect(() => {
     if (countDown === 5) {
       setShowPopup(true);
@@ -315,9 +308,8 @@ const Lottery = () => {
                       {[{ text: "Win Go 1 Min" }].map((item, index) => (
                         <div
                           key={index}
-                          className={`${styles.time_box_wihing} ${
-                            activeIndex === index ? styles.cus_active : ""
-                          }`}
+                          className={`${styles.time_box_wihing} ${activeIndex === index ? styles.cus_active : ""
+                            }`}
                           onClick={() => handleItemClick(index)}
                         >
                           <img src={time_img} alt="" />
@@ -569,49 +561,43 @@ const Lottery = () => {
                     Random
                   </button>
                   <button
-                    className={`btn ${styles.num_boxbtn_btns} ${
-                      selectedOption === "x1" ? styles.selected : ""
-                    }`}
+                    className={`btn ${styles.num_boxbtn_btns} ${selectedOption === "x1" ? styles.selected : ""
+                      }`}
                     onClick={() => handleButtonClick("x1")}
                   >
                     x1
                   </button>
                   <button
-                    className={`btn ${styles.num_boxbtn_btns} ${
-                      selectedOption === "x5" ? styles.selected : ""
-                    }`}
+                    className={`btn ${styles.num_boxbtn_btns} ${selectedOption === "x5" ? styles.selected : ""
+                      }`}
                     onClick={() => handleButtonClick("x5")}
                   >
                     x5
                   </button>
                   <button
-                    className={`btn ${styles.num_boxbtn_btns} ${
-                      selectedOption === "x10" ? styles.selected : ""
-                    }`}
+                    className={`btn ${styles.num_boxbtn_btns} ${selectedOption === "x10" ? styles.selected : ""
+                      }`}
                     onClick={() => handleButtonClick("x10")}
                   >
                     x10
                   </button>
                   <button
-                    className={`btn ${styles.num_boxbtn_btns} ${
-                      selectedOption === "x20" ? styles.selected : ""
-                    }`}
+                    className={`btn ${styles.num_boxbtn_btns} ${selectedOption === "x20" ? styles.selected : ""
+                      }`}
                     onClick={() => handleButtonClick("x20")}
                   >
                     x20
                   </button>
                   <button
-                    className={`btn ${styles.num_boxbtn_btns} ${
-                      selectedOption === "x50" ? styles.selected : ""
-                    }`}
+                    className={`btn ${styles.num_boxbtn_btns} ${selectedOption === "x50" ? styles.selected : ""
+                      }`}
                     onClick={() => handleButtonClick("x50")}
                   >
                     x50
                   </button>
                   <button
-                    className={`btn ${styles.num_boxbtn_btns} ${
-                      selectedOption === "x100" ? styles.selected : ""
-                    }`}
+                    className={`btn ${styles.num_boxbtn_btns} ${selectedOption === "x100" ? styles.selected : ""
+                      }`}
                     onClick={() => handleButtonClick("x100")}
                   >
                     x100
@@ -643,9 +629,8 @@ const Lottery = () => {
               </section>
             </div>
             <div
-              className={`mx-auto ${isMobile ? "col-12" : "col-6"} ${
-                styles.game_record_row
-              }`}
+              className={`mx-auto ${isMobile ? "col-12" : "col-6"} ${styles.game_record_row
+                }`}
             >
               <div className={styles.game_record}>
                 <GameHistory

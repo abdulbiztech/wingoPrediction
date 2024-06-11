@@ -260,6 +260,7 @@ const Login = () => {
     try {
       // Use the production API endpoint
       const response = await axios.get(`https://demosoftech.com/GVTest/api/Fund/Login?userId=${username}&password=${password}`);
+      console.log("response",response);
       setUserId(response?.data?.data[0]?.userid);
       console.log("User ID:", response?.data?.data[0]?.userid);
       localStorage.setItem('userId', response?.data?.data[0]?.userid);

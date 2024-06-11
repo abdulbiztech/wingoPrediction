@@ -29,7 +29,7 @@ const GameHistory = (props) => {
   const itemsPerPage = 10;
   const [resultAnnounced, setResultAnnounced] = useState(false);
   const [gameResult, setGameResult] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const handleCardClick = (cardId) => {
     setSelectedCard(selectedCard === cardId ? null : cardId);
@@ -121,14 +121,7 @@ const GameHistory = (props) => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (userId) {
-      getUserBetHistory();
-    }
-  }, [userId]);
-
-  const getUserResult = async () => {
+  const getUserResult = async (userId, issueNum, setResultAnnounced, setGameResult, setUserResults) => {
     if (!issueNum) {
       console.error("Error: No issue number available.");
       return;
@@ -140,10 +133,7 @@ const GameHistory = (props) => {
     };
 
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/api/game/announce-results`,
-        data
-      );
+      const response = await axios.post(`${API_BASE_URL}/api/game/announce-results`, data);
 
       if (response.status === 200) {
         setResultAnnounced(true);
@@ -154,9 +144,7 @@ const GameHistory = (props) => {
       }
     } catch (error) {
       if (error.response) {
-        console.error(
-          `${error.response.status} ${error.response.statusText}: ${error.response.data}`
-        );
+        console.error(`${error.response.status} ${error.response.statusText}: ${error.response.data}`);
       } else if (error.request) {
         console.error("No response received:", error.request);
       } else {
@@ -164,6 +152,7 @@ const GameHistory = (props) => {
       }
     }
   };
+
 
   const placeBetsData = (placeBets) => {
     if (placeBets) {
@@ -182,19 +171,11 @@ const GameHistory = (props) => {
       }, 3000);
     }
   };
-
   useEffect(() => {
-    if (isplace === true) {
-      getUserBetHistory();
-      setIsplace(false);
+    if (userId) {
+      getUserBetHistory(userId, currentPageMyhistory, setUserBet, setLoading);
     }
-  }, [isplace]);
-
-  useEffect(() => {
-    if (countDown === 0 && isplace) {
-      setIsplace(false);
-    }
-  }, [countDown, isplace]);
+  }, [userId, currentPageMyhistory]);
   useEffect(() => {
     if (countDown === 0 && showResult && userBet.length > 0 && betPlaced) {
       getUserResult();
@@ -202,6 +183,18 @@ const GameHistory = (props) => {
       setShowResult(false);
     }
   }, [countDown, showResult, userBet, betPlaced]);
+  useEffect(() => {
+    if (countDown === 0 && isplace) {
+      setIsplace(false);
+    }
+  }, [countDown, isplace]);
+  useEffect(() => {
+    if (isplace === true) {
+      getUserBetHistory();
+      setIsplace(false);
+    }
+  }, [isplace]);
+
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
     if (storedUserId) {
@@ -404,21 +397,19 @@ const GameHistory = (props) => {
 
       <div className={styles.gameHistory}>
         <button
-          className={`btn ${
-            selectedButton === "gameHistory"
-              ? styles.gamehistory_btn_selected
-              : styles.gamehistory_btn
-          }`}
+          className={`btn ${selectedButton === "gameHistory"
+            ? styles.gamehistory_btn_selected
+            : styles.gamehistory_btn
+            }`}
           onClick={() => handleButtonClick("gameHistory")}
         >
           Game History
         </button>
         <button
-          className={`btn ${
-            selectedButton === "myHistory"
-              ? styles.myhistory_btn_selected
-              : styles.myhistory_btn
-          }`}
+          className={`btn ${selectedButton === "myHistory"
+            ? styles.myhistory_btn_selected
+            : styles.myhistory_btn
+            }`}
           onClick={() => handleButtonClick("myHistory")}
         >
           My History
@@ -457,9 +448,9 @@ const GameHistory = (props) => {
                           }}
                         >
                           {item.color &&
-                          typeof item.color === "string" &&
-                          item.color.includes("red") &&
-                          item.color.includes("violet") ? (
+                            typeof item.color === "string" &&
+                            item.color.includes("red") &&
+                            item.color.includes("violet") ? (
                             <>
                               <div
                                 style={{
@@ -576,13 +567,12 @@ const GameHistory = (props) => {
               >
                 <div className={`${styles.MyGameRecordList__C}`}>
                   <div
-                    className={`${
-                      styles.MyGameRecordList__item_1
-                    } ${getColorForSelectType(
-                      bet.selectType,
-                      bet.number,
-                      bet.color
-                    )}`}
+                    className={`${styles.MyGameRecordList__item_1
+                      } ${getColorForSelectType(
+                        bet.selectType,
+                        bet.number,
+                        bet.color
+                      )}`}
                   >
                     {bet.selectType}
                   </div>
@@ -602,11 +592,10 @@ const GameHistory = (props) => {
 
                   <div className={`${styles.MyGameRecordList__C_item_r}`}>
                     <div
-                      className={`${styles.bet_result_box} ${
-                        bet.betResult === "win"
-                          ? styles.greenSuccess
-                          : styles.redfail
-                      }`}
+                      className={`${styles.bet_result_box} ${bet.betResult === "win"
+                        ? styles.greenSuccess
+                        : styles.redfail
+                        }`}
                     >
                       {bet.betResult !== "pending" &&
                         (bet.betResult === "win" ? "Success" : "Failed")}
@@ -617,11 +606,10 @@ const GameHistory = (props) => {
                       }
                     >
                       {bet.betResult !== "pending"
-                        ? `${bet.betResult === "win" ? "+" : "-"}$${
-                            bet.betResult === "win"
-                              ? bet.profitAmount.toFixed(2)
-                              : bet.amountAfterTax.toFixed(2)
-                          }`
+                        ? `${bet.betResult === "win" ? "+" : "-"}$${bet.betResult === "win"
+                          ? bet.profitAmount.toFixed(2)
+                          : bet.amountAfterTax.toFixed(2)
+                        }`
                         : "Pending"}
                     </span>
                   </div>
@@ -695,9 +683,8 @@ const GameHistory = (props) => {
                           {" "}
                           {bet.betResult === "pending"
                             ? "Pending"
-                            : `${
-                                bet.betResult === "win" ? "Success" : "Failed"
-                              }`}
+                            : `${bet.betResult === "win" ? "Success" : "Failed"
+                            }`}
                         </p>
                       </div>
                       <div className={`${styles.card_Details_10}`}>
