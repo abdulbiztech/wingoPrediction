@@ -121,7 +121,7 @@ const GameHistory = (props) => {
       setLoading(false);
     }
   };
-  const getUserResult = async (userId, issueNum, setResultAnnounced, setGameResult, setUserResults) => {
+  const getUserResult = async () => {
     if (!issueNum) {
       console.error("Error: No issue number available.");
       return;
@@ -134,7 +134,6 @@ const GameHistory = (props) => {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/api/game/announce-results`, data);
-
       if (response.status === 200) {
         setResultAnnounced(true);
         setGameResult(response.data);
@@ -176,20 +175,21 @@ const GameHistory = (props) => {
       getUserBetHistory(userId, currentPageMyhistory, setUserBet, setLoading);
     }
   }, [userId, currentPageMyhistory]);
+
   useEffect(() => {
-    if (countDown === 0 && showResult && userBet.length > 0 && betPlaced) {
+    if (countDown === 0 && userBet.length > 0 && betPlaced) {
       getUserResult();
-      setResultAnnounced(true);
-      setShowResult(false);
     }
-  }, [countDown, showResult, userBet, betPlaced]);
+  }, [countDown, userBet, betPlaced]);
+
   useEffect(() => {
     if (countDown === 0 && isplace) {
       setIsplace(false);
     }
   }, [countDown, isplace]);
+
   useEffect(() => {
-    if (isplace === true) {
+    if (isplace) {
       getUserBetHistory();
       setIsplace(false);
     }
@@ -217,7 +217,6 @@ const GameHistory = (props) => {
   }, [userId]);
 
   useEffect(() => {
-    getGameHistory();
     const socket = io(`${API_BASE_URL}`);
     const countDownIssue = (countdownUpdate) => {
       setIssueNum(countdownUpdate?.issueNumber);

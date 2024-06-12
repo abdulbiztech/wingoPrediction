@@ -108,7 +108,6 @@ const Lottery = () => {
       gameId: 1,
     };
   };
-
   const placeBet = async (selectType, amount) => {
     if (!userId) {
       console.error("User is not logged in");
@@ -120,6 +119,12 @@ const Lottery = () => {
     // Check if the amount is valid
     if (amount == null || amount <= 0) {
       toast.error("Please enter a valid bet amount greater than 0");
+      return;
+    }
+
+    // Block bet placement if countDown has reached 0
+    if (countDown <= 5) {
+      toast.error("Time out! You can't place the bet now");
       return;
     }
 
@@ -158,6 +163,54 @@ const Lottery = () => {
       );
     }
   };
+  // const placeBet = async (selectType, amount) => {
+  //   if (!userId) {
+  //     console.error("User is not logged in");
+  //     toast.error("Please log in to place a bet");
+  //     navigate("/login");
+  //     return;
+  //   }
+  //   // Check if the amount is valid
+  //   if (amount == null || amount <= 0) {
+  //     toast.error("Please enter a valid bet amount greater than 0");
+  //     return;
+  //   }
+
+  //   const data = generateBetData(selectType, amount);
+
+  //   try {
+  //     const response = await axios.post(
+  //       `${API_BASE_URL}/api/user/predict`,
+  //       data
+  //     );
+  //     if (response.data.status) {
+  //       toast.success("Bet placed successfully");
+  //       setIsplace(true);
+  //       setShowResult(true);
+  //       setShowModal(false);
+  //       setAmount(1);
+  //       getBalance();
+
+  //       // Save the bet data in localStorage
+  //       const storedBetData = localStorage.getItem("userBet");
+  //       const newBetData = [
+  //         ...(storedBetData ? JSON.parse(storedBetData) : []),
+  //         data,
+  //       ];
+  //       localStorage.setItem("userBet", JSON.stringify(newBetData));
+  //     } else {
+  //       console.error("Failed to place bet:", response.data);
+  //       toast.error(`Failed to place bet: ${response?.data?.data?.message}`);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error placing bet:", error);
+  //     toast.error(
+  //       `${error.response?.data?.message ||
+  //       "An error occurred while placing the bet"
+  //       }`
+  //     );
+  //   }
+  // };
 
   const recentWin = async () => {
     try {
@@ -223,7 +276,10 @@ const Lottery = () => {
     }
   };
 
-
+  const handleBalance = () => {
+    toast.info("Balance refreshed successfully");
+    getBalance();
+  };
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -294,13 +350,13 @@ const Lottery = () => {
                         <p>$ {balance}</p>
                         <button
                           className={`btn ${styles.balance_box}`}
-                          onClick={getBalance}
+                          onClick={handleBalance}
                         >
                           <i className="bi bi-arrow-clockwise"></i>
                         </button>
                       </div>
                       <div className={`${styles.balance_title}`}>
-                        <i className="bi bi-wallet2"></i>
+                        <i className="bi bi-wallet2" ></i>
                         <p> Wallet balance</p>
                       </div>
                     </div>
