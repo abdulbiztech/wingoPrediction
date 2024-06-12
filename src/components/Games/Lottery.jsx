@@ -163,54 +163,6 @@ const Lottery = () => {
       );
     }
   };
-  // const placeBet = async (selectType, amount) => {
-  //   if (!userId) {
-  //     console.error("User is not logged in");
-  //     toast.error("Please log in to place a bet");
-  //     navigate("/login");
-  //     return;
-  //   }
-  //   // Check if the amount is valid
-  //   if (amount == null || amount <= 0) {
-  //     toast.error("Please enter a valid bet amount greater than 0");
-  //     return;
-  //   }
-
-  //   const data = generateBetData(selectType, amount);
-
-  //   try {
-  //     const response = await axios.post(
-  //       `${API_BASE_URL}/api/user/predict`,
-  //       data
-  //     );
-  //     if (response.data.status) {
-  //       toast.success("Bet placed successfully");
-  //       setIsplace(true);
-  //       setShowResult(true);
-  //       setShowModal(false);
-  //       setAmount(1);
-  //       getBalance();
-
-  //       // Save the bet data in localStorage
-  //       const storedBetData = localStorage.getItem("userBet");
-  //       const newBetData = [
-  //         ...(storedBetData ? JSON.parse(storedBetData) : []),
-  //         data,
-  //       ];
-  //       localStorage.setItem("userBet", JSON.stringify(newBetData));
-  //     } else {
-  //       console.error("Failed to place bet:", response.data);
-  //       toast.error(`Failed to place bet: ${response?.data?.data?.message}`);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error placing bet:", error);
-  //     toast.error(
-  //       `${error.response?.data?.message ||
-  //       "An error occurred while placing the bet"
-  //       }`
-  //     );
-  //   }
-  // };
 
   const recentWin = async () => {
     try {
@@ -232,20 +184,17 @@ const Lottery = () => {
   const handleFundTransferClick = async (amount, referenceNo = generateReferenceNo()) => {
     const storedUserId = localStorage.getItem("userId");
 
-    // Check if required fields are filled
     if (!storedUserId || !amount || !referenceNo || !FUND_TRANSFER_SECRET_KEY) {
       console.error("Required fields are not filled");
       toast.error("Please fill in all the required fields");
       return;
     }
 
-    // Check if amount is valid
     if (amount <= 0) {
       toast.error("Amount must be greater than 0");
       return;
     }
 
-    // Prepare the data for the POST request
     const data = {
       userId: storedUserId,
       amount: amount,
@@ -253,22 +202,16 @@ const Lottery = () => {
       key: "0a0a5e19c94d60081d34f1223b55b3e31ebabaed211feb143b285efd"
     };
 
-    // Prepare the URLs for the GET and POST requests
     const transferFundsApiUrl = `https://demosoftech.com/GVTest/api/Fund/TransferFunds?userId=${storedUserId}&amount=${amount}&referenceNo=${referenceNo}&key=0a0a5e19c94d60081d34f1223b55b3e31ebabaed211feb143b285efd`;
     const userTransferFundsApiUrl = `${API_BASE_URL}/api/user/transfer-funds`;
 
     try {
-      // Send both requests simultaneously
       const [transferFundsResponse, userTransferFundsResponse] = await Promise.all([
         axios.get(transferFundsApiUrl),
         axios.post(userTransferFundsApiUrl, data)
       ]);
-
-      // Handle responses
       console.log("Fund transfer successful:", transferFundsResponse);
       console.log("User transfer funds successful:", userTransferFundsResponse);
-
-      // Update balance
       getBalance();
     } catch (error) {
       console.error("Error during fund transfer:", error.message);
