@@ -1,13 +1,51 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import styles from "./header.module.css";
-
+import GameVerseHub from "../../assets/GameVerseHub.png"
+import { useNavigate } from "react-router-dom";
+import myContext from "../Context/MyContext.jsx";
+import axios from "axios";
+import API_BASE_URL from "../../environment/api.js";
+import { toast } from "react-toastify";
 const Header = () => {
+  const { userId, setUserId } = useContext(myContext);
+  const { balance, setBalance } = useContext(myContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('userId');
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
+  }, [setUserId]);
+
+  const handleConnectClick = () => {
+    navigate('/login');
+  };
+
+
+  const handleRemoveUserId = async () => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/user/user-logOut/${userId}`);
+      if (response.data.status) {
+        console.log(response.data.message);
+        setUserId(0);
+        setBalance(0)
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userBet');
+        navigate('/login');
+        toast.success("Logout successful!");
+      } else {
+        console.error('Logout failed');
+      }
+    } catch (error) {
+      console.error('An error occurred during logout:', error);
+    }
+  };
   return (
     <nav className={`navbar navbar-expand-lg navbar-light bg-dark ${styles.cus_navbar}`}>
       <div className="container">
         <a className="navbar-brand" href="/">
           <img
-            src="/src/assets/GameVerseHub.png"
+            src={GameVerseHub}
             className={`img-fluid ${styles.GameLogo}`}
             alt="GameVerseHub Logo"
           />
@@ -39,20 +77,29 @@ const Header = () => {
         <div className="collapse  navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ml-auto mb-2 mb-lg-0">
             <li className={`nav-item ${styles.cus_navitem}`}>
-              <a className={`nav-link active ${styles.cus_navlink}`} href="/store">About</a>
+              <a className={`nav-link active ${styles.cus_navlink}`} href="/">About</a>
             </li>
             <li className={`nav-item ${styles.cus_navitem}`}>
-              <a className={`nav-link ${styles.cus_navlink}`} href="/games">Game</a>
+              <a className={`nav-link ${styles.cus_navlink}`} href="/">Game</a>
             </li>
             <li className={`nav-item ${styles.cus_navitem}`}>
-              <a className={`nav-link ${styles.cus_navlink}`} href="/news">News</a>
+              <a className={`nav-link ${styles.cus_navlink}`} href="/">News</a>
             </li>
           </ul>
 
           {/* Connect Button */}
-          <form className={`form-inline my-2 my-lg-0 ${styles.connect_form}`}>
-            <button  className={`btn ${styles.connect_btn}`} type="button">Connect</button>
-          </form>
+
+
+          {userId ? (
+            <div className={`form-inline my-2 my-lg-0 ${styles.user_box}`}>
+              <p>Username: {userId.substring(0, 20) + "..."}</p>
+              <button onClick={handleRemoveUserId} className={`btn ${styles.connect_btn}`} type="button">Logout</button>
+            </div>
+          ) : (
+            <form className={`form-inline my-2 my-lg-0 ${styles.connect_form}`}>
+              <button onClick={handleConnectClick} className={`btn ${styles.connect_btn}`} type="button">Connect</button>
+            </form>
+          )}
         </div>
       </div>
     </nav>

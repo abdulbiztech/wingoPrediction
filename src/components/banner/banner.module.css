@@ -1,4 +1,4 @@
-.cus_navbar {
+/* .cus_navbar {
     background-color: #121212;
     color: #fff !important;
     ;
@@ -318,4 +318,324 @@
         font-size: 12px !important;
     }
 
+} */
+
+.cus_navbar {
+    background-color: #121212;
+    color: #fff !important;
+}
+
+.cus_navlink {
+    color: #fff !important;
+    font-family: "Russo One", sans-serif;
+    font-weight: 100;
+}
+
+.decentra_link {
+    text-decoration: none;
+}
+
+.decentra_link span:nth-child(1) {
+    font-size: 12px;
+    color: #dbdbdb;
+    text-decoration: none;
+}
+
+.decentra_link span:nth-child(2) {
+    font-size: 12px;
+    color: #ececec;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.decentra_link2 {
+    text-decoration: none;
+}
+
+.decentra_link2 span:nth-child(1) {
+    font-size: 25px;
+    color: #dbdbdb;
+    text-decoration: none;
+}
+
+.decentra_link2 span:nth-child(2) {
+    font-size: 35px;
+    color: #ececec;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.cus_form {
+    background-color: #464646 !important;
+    box-shadow: none !important;
+    color: #fff !important;
+    position: relative;
+    padding: 5px 35px !important;
+    border: 0 !important;
+    border-radius: 20px !important;
+}
+
+.main_form_tag {
+    position: relative;
+}
+
+.serach_icon {
+    position: absolute;
+    top: 20%;
+    transform: translate(-20%);
+    left: 5%;
+    font-weight: 900;
+    color: #fff;
+    box-shadow: none !important;
+}
+
+.connect_btn {
+    background-color: #fff !important;
+    color: black;
+    padding: 5px 20px;
+    box-shadow: none !important;
+    font-family: "Russo One", sans-serif;
+    font-weight: 500;
+}
+
+.prev_nav {
+    cursor: pointer;
+    background: #dbd0d0d0 !important;
+    width: 40px !important;
+    height: 45px !important;
+    position: absolute !important;
+    top: 40% !important;
+}
+
+.prev_next {
+    cursor: pointer;
+    background: #dbd0d0d0 !important;
+    width: 40px !important;
+    height: 45px !important;
+    position: absolute !important;
+    top: 40% !important;
+}
+
+.cus_carousel_item:hover .prev_next {
+    opacity: 1 !important;
+}
+
+.cus_carousel_item:hover .prev_nav {
+    opacity: 1 !important;
+}
+
+.cus_carousel_item img {
+    width: 100%;
+    height: 250px;
+}
+
+.cus_carousel_item {
+    width: 100%;
+    height: 250px;
+    position: relative;
+}
+
+.cus_carousel_item img {
+    width: 100%;
+    height: 250px;
+}
+
+.heading {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.heading img {
+    width: 40px;
+    margin-right: 10px;
+}
+
+.banner {
+    width: 100%;
+    position: relative;
+}
+
+.banner img {
+    width: 100%;
+    height: 200px;
+}
+
+.lottery_icon_img {
+    width: 30% !important;
+    height: 170px !important;
+    position: absolute;
+    right: 0.86667rem;
+    top: -1.34667rem;
+}
+
+.lottery_span {
+    position: absolute;
+    top: 1.46667rem;
+    left: 6.4rem;
+    color: #fff;
+    white-space: break-spaces;
+    font-weight: 700;
+    font-size: 3.56rem;
+}
+
+.lottery_h4 {
+    color: #f4f5f8;
+    font-weight: 400;
+    font-size: 26px;
+    position: absolute;
+    bottom: .26667rem;
+    left: 6.5rem;
+    top: 121px;
+    text-align: left;
+    line-height: 35px;
+}
+
+.text_box {
+    color: #fff;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: #666161;
+}
+
+.title_box p {
+    color: #9d9d9d;
+    font-family: "Russo One", sans-serif;
+    font-weight: 500;
+}
+
+.line_box {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    justify-content: center;
+}
+
+.heading_side {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.border_style_cus {
+    border-bottom: 1px solid #666161;
+}
+
+.btn_view {
+    font-size: 20px;
+    font-weight: 700;
+    color: #8734ff !important;
+    font-family: "Russo One", sans-serif;
+}
+
+.footer_bg {
+    background-color: #212529;
+    padding: 30px 0px;
+}
+
+.list li {
+    list-style: none;
+}
+
+.list_box {
+    margin-top: 20px;
+}
+
+.list li a {
+    color: #dbd3d3;
+    line-height: 29px;
+    text-decoration: none !important;
+    font-size: 15px;
+    transition: all 0.3s;
+}
+
+.list li a:hover {
+    color: #8734ff;
+    line-height: 29px;
+    text-decoration: underline !important;
+    font-size: 15px;
+}
+
+.list p {
+    color: #fff !important;
+    font-size: 20px;
+}
+
+.social_box i {
+    color: #fff;
+    margin: 5px;
+    font-size: 20px;
+}
+
+.social_box a {
+    text-decoration: none;
+}
+
+.offcanvas_cus {
+    background-color: #212529 !important;
+}
+
+.modal_body_cus {
+    background-color: #212529 !important;
+    border: none !important;
+}
+
+@media screen and (max-width: 600px) {
+    .cus_carousel_item {
+        height: auto !important;
+    }
+
+    .prev_nav,
+    .prev_next {
+        cursor: pointer;
+        background: #dbd0d0d0 !important;
+        width: 40px !important;
+        height: 45px !important;
+        position: absolute !important;
+        top: 40% !important;
+        opacity: 0 !important;
+    }
+
+    .cus_carousel_item:hover .prev_next,
+    .cus_carousel_item:hover .prev_nav {
+        opacity: 1 !important;
+    }
+
+    .cus_carousel_item img {
+        width: 100%;
+        height: auto !important;
+    }
+
+    .title_box p {
+        font-size: 12px !important;
+    }
+
+    .banner img {
+        height: auto !important;
+    }
+
+    .lottery_icon_img {
+        width: 20% !important;
+        height: 100px !important;
+        right: 0.5rem;
+        top: -1rem;
+    }
+
+    .lottery_span {
+        top: 1rem;
+        left: 3rem;
+        font-size: 2rem;
+    }
+
+    .lottery_h4 {
+        font-size: 15px;
+        margin: 10px !important;
+        bottom: -0.2rem;
+        left: 3rem;
+        top: auto;
+        line-height: 1.2rem;
+    }
 }

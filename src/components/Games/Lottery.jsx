@@ -1,16 +1,18 @@
-import React, { useState, useEffect, createContext, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Header from "../header/Header";
 import styles from "./lottery.module.css";
 import GameHistory from "../GameHistory/GameHistory";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
-import API_BASE_URL from "../../environment/api.js";
+import API_BASE_URL, { FUND_TRANSFER_SECRET_KEY } from "../../environment/api.js";
 import myContext from "../Context/MyContext.jsx";
 import { toast } from "react-toastify";
+import time_img from "../../assets/time-img.png";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import io from "socket.io-client";
 const Lottery = () => {
-  const { countDown, issueNum } = useContext(myContext);
+  const navigate = useNavigate();
+  const { countDown, issueNum, balance, setBalance, userId, setUserId } = useContext(myContext);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("x1");
   const [showPopup, setShowPopup] = useState(false);
@@ -19,17 +21,19 @@ const Lottery = () => {
   const [selectedButton, setSelectedButton] = useState();
   const [showModalPlay, setShowModalPlay] = useState(false);
   const [selectedColor, setSelectedColor] = useState();
-  const [balance, setBalance] = useState(null);
   const [amount, setAmount] = useState(1);
   const [isBettingAllowed, setIsBettingAllowed] = useState(true);
-  const betAmounts = [1, 5, 10, 20, 50, 100];
   const [recentWinner, setRecentWinner] = useState([]);
-  const [isplace, setIsplace] = useState(false)
-  const [showResult, setShowResult] = useState(false)
+  const [isplace, setIsplace] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const betAmounts = [1, 5, 10, 20, 50, 100];
 
   const handleItemClick = (index) => {
     setActiveIndex(index);
   };
+
   const toggleModalPlay = () => {
     setShowModalPlay(!showModalPlay);
   };
@@ -37,17 +41,27 @@ const Lottery = () => {
   const handleButtonClick = (option) => {
     setSelectedOption(option);
   };
+
   const handleAmountChange = (event) => {
-    setAmount(event.target.value);
+    const { value } = event.target;
+    // Allow only numeric values
+    if (/^\d*$/.test(value) && value !== "") {
+      setAmount(parseInt(value, 10));
+    } else if (value === "") {
+      setAmount("");
+    }
   };
   const handleIncrement = () => {
     setAmount((prevAmount) => prevAmount + 1);
   };
+
   const handleDecrement = () => {
-    if (amount > 1) {
-      setAmount((prevAmount) => prevAmount - 1);
-    }
+    setAmount((prevAmount) => {
+      const newAmount = prevAmount - 1;
+      return newAmount > 0 ? newAmount : 1;
+    });
   };
+
   const getRandomNumber = () => {
     const randomNumber = Math.floor(Math.random() * 10);
     setSelectedButton(randomNumber.toString());
@@ -58,23 +72,35 @@ const Lottery = () => {
         : "#fd565c"
     );
   };
+
   const getBalance = async () => {
-    const userId = 1;
+    const storedUserId = localStorage.getItem("userId");
+    if (!storedUserId) {
+      console.log("Stored User ID is null");
+      return;
+    }
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/api/user/get-balance?userId=${userId}`
+        `${API_BASE_URL}/api/user/get-balance?userId=${storedUserId}`
       );
       if (!response.data) {
         throw new Error("Failed to fetch user balance data");
       }
-      setBalance(response?.data?.data?.walletBalance);
+      const userBalance = response.data.data?.userBalance;
+      if (userBalance === null || userBalance === undefined) {
+        console.log("User balance is empty or null");
+        setBalance(0);
+      } else {
+        setBalance(userBalance);
+      }
     } catch (error) {
       console.error("Error fetching user balance data:", error);
     }
   };
+
   const generateBetData = (selectType, amount) => {
     return {
-      userId: 1,
+      userId: userId,
       issueNumber: issueNum,
       selectType: selectType,
       amount: amount,
@@ -82,30 +108,57 @@ const Lottery = () => {
       gameId: 1,
     };
   };
+
   const placeBet = async (selectType, amount) => {
+    if (!userId) {
+      console.error("User is not logged in");
+      toast.error("Please log in to place a bet");
+      navigate("/login");
+      return;
+    }
+
+    // Check if the amount is valid
+    if (amount == null || amount <= 0) {
+      toast.error("Please enter a valid bet amount greater than 0");
+      return;
+    }
+
     const data = generateBetData(selectType, amount);
+
     try {
       const response = await axios.post(
         `${API_BASE_URL}/api/user/predict`,
         data
       );
       if (response.data.status) {
-        // console.log("Bet placed successfully");
         toast.success("Bet placed successfully");
         setIsplace(true);
         setShowResult(true);
         setShowModal(false);
         setAmount(1);
         getBalance();
+
+        // Save the bet data in localStorage
+        const storedBetData = localStorage.getItem("userBet");
+        const newBetData = [
+          ...(storedBetData ? JSON.parse(storedBetData) : []),
+          data,
+        ];
+        localStorage.setItem("userBet", JSON.stringify(newBetData));
       } else {
         console.error("Failed to place bet:", response.data);
         toast.error(`Failed to place bet: ${response?.data?.data?.message}`);
       }
     } catch (error) {
       console.error("Error placing bet:", error);
-      toast.error(`Error placing bet: ${error.response.data.message}`);
+      toast.error(
+        `${error.response?.data?.message ||
+        "An error occurred while placing the bet"
+        }`
+      );
     }
   };
+
   const recentWin = async () => {
     try {
       const response = await axios.get(
@@ -120,6 +173,82 @@ const Lottery = () => {
       console.error("Error fetching recentWin", error);
     }
   };
+  const generateReferenceNo = () => {
+    return Math.random().toString(36).substring(2, 14);
+  };
+  const handleFundTransferClick = async (amount, referenceNo = generateReferenceNo()) => {
+    const storedUserId = localStorage.getItem("userId");
+
+    // Check if required fields are filled
+    if (!storedUserId || !amount || !referenceNo || !FUND_TRANSFER_SECRET_KEY) {
+      console.error("Required fields are not filled");
+      toast.error("Please fill in all the required fields");
+      return;
+    }
+
+    // Check if amount is valid
+    if (amount <= 0) {
+      toast.error("Amount must be greater than 0");
+      return;
+    }
+
+    // Prepare the data for the POST request
+    const data = {
+      userId: storedUserId,
+      amount: amount,
+      referenceNo: referenceNo,
+      key: "0a0a5e19c94d60081d34f1223b55b3e31ebabaed211feb143b285efd"
+    };
+
+    // Prepare the URLs for the GET and POST requests
+    const transferFundsApiUrl = `https://demosoftech.com/GVTest/api/Fund/TransferFunds?userId=${storedUserId}&amount=${amount}&referenceNo=${referenceNo}&key=0a0a5e19c94d60081d34f1223b55b3e31ebabaed211feb143b285efd`;
+    const userTransferFundsApiUrl = `${API_BASE_URL}/api/user/transfer-funds`;
+
+    try {
+      // Send both requests simultaneously
+      const [transferFundsResponse, userTransferFundsResponse] = await Promise.all([
+        axios.get(transferFundsApiUrl),
+        axios.post(userTransferFundsApiUrl, data)
+      ]);
+
+      // Handle responses
+      console.log("Fund transfer successful:", transferFundsResponse);
+      console.log("User transfer funds successful:", userTransferFundsResponse);
+
+      // Update balance
+      getBalance();
+    } catch (error) {
+      console.error("Error during fund transfer:", error.message);
+      toast.error("An error occurred during fund transfer. Please try again later.");
+    }
+  };
+
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  const handleSubmit = () => {
+    if (amount && amount > 0) {
+      handleFundTransferClick(amount);
+      closeModal();
+      setAmount("");
+    } else {
+      toast.error("Please enter a valid amount");
+    }
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     if (countDown === 5) {
       setShowPopup(true);
@@ -127,6 +256,7 @@ const Lottery = () => {
       setShowModal(false);
     }
   }, [countDown]);
+
   useEffect(() => {
     if (countDown <= 5 && countDown > 0) {
       setShow(true);
@@ -139,6 +269,7 @@ const Lottery = () => {
     getBalance();
     recentWin();
   }, []);
+
   useEffect(() => {
     if (countDown === 0) {
       getBalance();
@@ -152,11 +283,13 @@ const Lottery = () => {
       <div className={`${styles.mainContainer}`}>
         <div className="container my-5">
           <div className="row">
-            <div className="col-6">
+            <div className="col-12 col-md-6">
               <div className="wallet-box">
                 <div className={`card ${styles.wallet_card}`}>
-                  <div className="card-body">
-                    <div className={` ${styles.price_box}`}>
+                  <div
+                    className={`card-body ${styles.main_container_balance_time}`}
+                  >
+                    <div className={`${styles.price_box}`}>
                       <div className={`${styles.balance_show}`}>
                         <p>$ {balance}</p>
                         <button
@@ -171,35 +304,58 @@ const Lottery = () => {
                         <p> Wallet balance</p>
                       </div>
                     </div>
-                  </div>
-                  <div className="card-footer">
-                    <div className="row">
-                      <div className="col-6">
-                        <button className={`btn ${styles.withbtn}`}>
-                          Withdraw
-                        </button>
-                      </div>
-                      <div className="col-6">
-                        <button className={`btn ${styles.depobtn}`}>
-                          Deposit
-                        </button>
-                      </div>
+                    <div className={`${styles.time_box}`}>
+                      {[{ text: "Win Go 1 Min" }].map((item, index) => (
+                        <div
+                          key={index}
+                          className={`${styles.time_box_wihing} ${activeIndex === index ? styles.cus_active : ""
+                            }`}
+                          onClick={() => handleItemClick(index)}
+                        >
+                          <img src={time_img} alt="" />
+                          <p>{item.text}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className={`${styles.time_box}`}>
-                {[{ text: "Win Go 1 Min" }].map((item, index) => (
-                  <div
-                    key={index}
-                    className={`${styles.time_box_wihing} ${activeIndex === index ? styles.cus_active : ""
-                      }`}
-                    onClick={() => handleItemClick(index)}
-                  >
-                    <img src="/src/assets/time-img.png" alt="" />
-                    <p>{item.text}</p>
+                  <div className={`${styles.button_box}`}>
+                    <button
+                      className={`btn ${styles.withbtn}`}
+                      onClick={openModal}
+                    >
+                      Fund Transfer
+                    </button>
+                    <Modal
+                      show={isModalOpen}
+                      onHide={closeModal}
+                      className={`${styles.modal}`}
+                    >
+                      <Modal.Body className="p-10">
+                        <div className={styles.modalContent}>
+                          <h3>Enter Amount to Transfer</h3>
+                          <input
+                            type="number"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            placeholder="Enter amount"
+                            className="form-control"
+                          />
+                          <div className={`${styles.btn_box}`}>
+                            <Button onClick={handleSubmit} className="btn">
+                              Submit
+                            </Button>
+                            <Button onClick={closeModal} className="btn">
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      </Modal.Body>
+                    </Modal>
+                    <button className={`btn ${styles.depobtn}`}>
+                      Deposit Fund
+                    </button>
                   </div>
-                ))}
+                </div>
               </div>
 
               <div className="row">
@@ -221,8 +377,8 @@ const Lottery = () => {
                         {recentWinner.map((item, index) => (
                           <img
                             key={index}
-                            src={`/src/assets/number-${item.number}.png`}
-                            alt={`Number ${item.number}`}
+                            src={`/assets/number-${item.number}.png`}
+                            alt={`Num`}
                           />
                         ))}
                       </div>
@@ -308,7 +464,7 @@ const Lottery = () => {
                           "linear-gradient(180deg, #FD565C 50.96%, #b659fe 50.97%)"
                         );
                       }}
-                      src="/src/assets/number-0.png"
+                      src={"/assets/number-0.png"}
                       alt=""
                     />
                     <img
@@ -317,7 +473,7 @@ const Lottery = () => {
                         setSelectedButton("1");
                         setSelectedColor("#40ad72");
                       }}
-                      src="/src/assets/number-1.png"
+                      src={"/assets/number-1.png"}
                       alt=""
                     />
                     <img
@@ -326,7 +482,7 @@ const Lottery = () => {
                         setSelectedButton("2");
                         setSelectedColor("#fd565c");
                       }}
-                      src="/src/assets/number-2.png"
+                      src={"/assets/number-2.png"}
                       alt=""
                     />
                     <img
@@ -335,7 +491,7 @@ const Lottery = () => {
                         setSelectedButton("3");
                         setSelectedColor("#40ad72");
                       }}
-                      src="/src/assets/number-3.png"
+                      src={"/assets/number-3.png"}
                       alt=""
                     />
                     <img
@@ -344,7 +500,7 @@ const Lottery = () => {
                         setSelectedButton("4");
                         setSelectedColor("#fd565c");
                       }}
-                      src="/src/assets/number-4.png"
+                      src={"/assets/number-4.png"}
                       alt=""
                     />
                     <img
@@ -355,7 +511,7 @@ const Lottery = () => {
                           "linear-gradient(180deg, #40ad72 51.48%, #b659fe 51.49%)"
                         );
                       }}
-                      src="/src/assets/number-5.png"
+                      src={"/assets/number-5.png"}
                       alt=""
                     />
                     <img
@@ -364,7 +520,7 @@ const Lottery = () => {
                         setSelectedButton("6");
                         setSelectedColor("#fd565c");
                       }}
-                      src="/src/assets/number-6.png"
+                      src={"/assets/number-6.png"}
                       alt=""
                     />
                     <img
@@ -373,7 +529,7 @@ const Lottery = () => {
                         setSelectedButton("7");
                         setSelectedColor("#40ad72");
                       }}
-                      src="/src/assets/number-7.png"
+                      src={"/assets/number-7.png"}
                       alt=""
                     />
                     <img
@@ -382,7 +538,7 @@ const Lottery = () => {
                         setSelectedButton("8");
                         setSelectedColor("#fd565c");
                       }}
-                      src="/src/assets/number-8.png"
+                      src={"/assets/number-8.png"}
                       alt=""
                     />
                     <img
@@ -391,7 +547,7 @@ const Lottery = () => {
                         setSelectedButton("9");
                         setSelectedColor("#40ad72");
                       }}
-                      src="/src/assets/number-9.png"
+                      src={"/assets/number-9.png"}
                       alt=""
                     />
                   </div>
@@ -472,10 +628,17 @@ const Lottery = () => {
                 </div>
               </section>
             </div>
-
-            <div className="col-6">
-              <div className={`${styles.game_record}`}>
-                <GameHistory setIsplace={setIsplace} isplace={isplace} showResult={showResult} setShowResult={setShowResult} />
+            <div
+              className={`mx-auto ${isMobile ? "col-12" : "col-6"} ${styles.game_record_row
+                }`}
+            >
+              <div className={styles.game_record}>
+                <GameHistory
+                  setIsplace={setIsplace}
+                  isplace={isplace}
+                  showResult={showResult}
+                  setShowResult={setShowResult}
+                />
               </div>
             </div>
           </div>
@@ -525,7 +688,6 @@ const Lottery = () => {
           </p>
         </Modal.Body>
         <Modal.Footer>
-          {/* Close button */}
           <Button
             variant="secondary"
             className={`${styles.close_button}`}

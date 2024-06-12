@@ -3,82 +3,87 @@ import styles from "./banner.module.css";
 import Slider from "../slider/page";
 import Header from "../header/Header";
 import { Link } from "react-router-dom";
+import banner1 from "../../assets/banner1.png"
+import banner from "../../assets/banner.png";
+import banner3 from "../../assets/banner3.jpg";
+import lottery_logo from "../../assets/lottery_logo.png"
+import wingo_banner from "../../assets/wingo-banner.jpg"
+import icons from "../../assets/3icons-wingo.png"
 const Banner = () => {
   return (
     <>
       <Header />
-
-        <div className="container-fluid my-1 mx-1">
-      <div
-        id="carouselExampleIndicators"
-        className="carousel slide"
-        data-bs-ride="carousel"
-      >
-        <div className="carousel-indicators">
-          <button
-            type="button"
-            data-bs-target="#carouselExampleIndicators"
-            data-bs-slide-to={0}
-            className="active"
-            aria-current="true"
-            aria-label="Slide 1"
-          />
-          <button
-            type="button"
-            data-bs-target="#carouselExampleIndicators"
-            data-bs-slide-to={1}
-            aria-label="Slide 2"
-          />
-          <button
-            type="button"
-            data-bs-target="#carouselExampleIndicators"
-            data-bs-slide-to={2}
-            aria-label="Slide 3"
-          />
-        </div>
-        <div className="carousel-inner">
-          <div className={`carousel-item active ${styles.cus_carousel_item}`}>
-            <img
-              src="/src/assets/banner1.png"
-              className="d-block w-100"
-              alt="..."
-            />
-          </div>
-          <div className={`carousel-item ${styles.cus_carousel_item}`}>
-            <img
-              src="/src/assets/banner.png"
-              className="d-block w-100"
-              alt="..."
-            />
-          </div>
-          <div className={`carousel-item ${styles.cus_carousel_item}`}>
-            <img
-              src="/src/assets/banner3.jpg"
-              className="d-block w-100"
-              alt="..."
-            />
-          </div>
-        </div>
-        <button
-          className={`carousel-control-prev ${styles.prev_nav}`}
-          type="button"
-          data-bs-target="#carouselExampleIndicators"
-          data-bs-slide="prev"
+      <div className="container-fluid my-1 mx-1">
+        <div
+          id="carouselExampleIndicators"
+          className="carousel slide"
+          data-bs-ride="carousel"
         >
-          <span className="carousel-control-prev-icon" aria-hidden="true" />
-          <span className="visually-hidden">Previous</span>
-        </button>
-        <button
-          className={`carousel-control-next ${styles.prev_next}`}
-          type="button"
-          data-bs-target="#carouselExampleIndicators"
-          data-bs-slide="next"
-        >
-          <span className="carousel-control-next-icon" aria-hidden="true" />
-          <span className="visually-hidden">Next</span>
-        </button>
+          <div className="carousel-indicators">
+            <button
+              type="button"
+              data-bs-target="#carouselExampleIndicators"
+              data-bs-slide-to={0}
+              className="active"
+              aria-current="true"
+              aria-label="Slide 1"
+            />
+            <button
+              type="button"
+              data-bs-target="#carouselExampleIndicators"
+              data-bs-slide-to={1}
+              aria-label="Slide 2"
+            />
+            <button
+              type="button"
+              data-bs-target="#carouselExampleIndicators"
+              data-bs-slide-to={2}
+              aria-label="Slide 3"
+            />
+          </div>
+          <div className="carousel-inner">
+            <div className={`carousel-item active ${styles.cus_carousel_item}`}>
+              <img
+                src={banner1}
+                className="d-block w-100"
+                alt="..."
+              />
+            </div>
+            <div className={`carousel-item ${styles.cus_carousel_item}`}>
+              <img
+                src={banner}
+                className="d-block w-100"
+                alt="..."
+              />
+            </div>
+            <div className={`carousel-item ${styles.cus_carousel_item}`}>
+              <img
+                src={banner3}
+                className="d-block w-100"
+                alt="..."
+              />
+            </div>
+          </div>
+          <button
+            className={`carousel-control-prev ${styles.prev_nav}`}
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="prev"
+          >
+            <span className="carousel-control-prev-icon" aria-hidden="true" />
+            <span className="visually-hidden">Previous</span>
+          </button>
+          <button
+            className={`carousel-control-next ${styles.prev_next}`}
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="next"
+          >
+            <span className="carousel-control-next-icon" aria-hidden="true" />
+            <span className="visually-hidden">Next</span>
+          </button>
+        </div>
       </div>
-    </div>
 
       {/* OUR GAMES */}
       <div className="container">
@@ -106,7 +111,7 @@ const Banner = () => {
         <div className="row">
           <div className="col-12">
             <div className={` ${styles.heading}`}>
-              <img src="/src/assets/lottery_logo.png" alt="" />
+              <img src={lottery_logo} alt="" />
               <h3>Lottery</h3>
             </div>
           </div>
@@ -116,12 +121,12 @@ const Banner = () => {
             <Link to="/lottery">
               <div className={` ${styles.banner}`}>
                 <img
-                  src="/src/assets/wingo-banner.jpg"
+                  src={wingo_banner}
                   alt=""
                   className={` ${styles.banner_img}`}
                 />
                 <img
-                  src="/src/assets/3icons-wingo.png"
+                  src={icons}
                   alt=""
                   className={` ${styles.lottery_icon_img}`}
                 />

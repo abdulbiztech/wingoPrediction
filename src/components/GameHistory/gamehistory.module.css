@@ -1,575 +1,570 @@
-.gameHistory {
-  width: 100%;
-  display: flex;
-  align-content: flex-start;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.gameHistory button {
-  width: 100%;
-  margin: 10px;
-  border-radius: 10px;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table th,
-.table td {
-  padding: 8px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-.table th {
-  background-color: #f2f2f2;
-}
-
-.gamehistory_btn {
-  background: #e8e7e8;
-  font-weight: 600;
-  color: #000;
-}
-
-.chart_btn {
-  background: #e8e7e8;
-  font-weight: 600;
-  color: #000;
-}
-
-.myhistory_btn {
-  background: #e8e7e8;
-  font-weight: 600;
-  color: #000;
-}
-
-.gamehistory_btn_selected {
-  background: #ec7c01;
-  font-weight: 600;
-  color: #fff;
-}
-
-.gamehistory_btn_selected:hover {
-  color: #fff;
-}
-
-.chart_btn_selected {
-  background: #ec7c01;
-  font-weight: 600;
-  color: #fff;
-}
-
-.chart_btn_selected:hover {
-  color: #fff;
-}
-
-.myhistory_btn_selected {
-  background: #ec7c01;
-  font-weight: 600;
-  color: #fff;
-}
-
-.myhistory_btn_selected:hover {
-  color: #fff;
-}
-
-.numbers {
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.disabled {
-  pointer-events: none;
-  opacity: 0.5;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.pagination a {
-  color: black;
-  cursor: pointer;
-  margin: 0 5px;
-  padding: 5px;
-  text-decoration: none;
-}
-
-.pagination button {
-  margin-right: 5px;
-  background-color: #ff9901;
-  color: white;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.pagination span {
-  margin-right: 5px;
-  padding: 5px 10px;
-  font-size: 16px;
-}
-
-.pagination button:hover {
-  background-color: #ff9901;
-}
-
-.pagination button:disabled {
-  background-color: #aaaaaa;
-  cursor: not-allowed;
-}
-
-span {
-  margin: 0 10px;
-}
-
-.dashboard-cards {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.MyGameRecordList__C {
-  display: flex;
-  justify-content: space-between;
-  margin: 5px;
-  align-items: center;
-}
-
-.MyGameRecordList__item_1 {
-  background-color: rgb(122, 207, 222);
-  border-radius: 10px;
-  text-align: center;
-  height: 30px;
-  width: 60px;
-}
-
-.card_Details {
-  width: 100%;
-  padding: 15px;
-  background-color: #f6f6f6;
-}
-
-.card_Details_1,
-.card_Details_2,
-.card_Details_3,
-.card_Details_4,
-.card_Details_5,
-.card_Details_6,
-.card_Details_7,
-.card_Details_8,
-.card_Details_9,
-.card_Details_10,
-.card_Details_11 {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  background-color: #eae4e4;
-  margin-bottom: 5px;
-  height: 50px;
-}
-
-.card_Details_7 div {
-  display: flex;
-  align-items: center;
-}
-
-.card_Details_7 div div {
-  margin-right: 5px;
-  height: 100%;
-}
-
-.card_Details_7 .redColor {
-  color: red;
-}
-
-/* //chart css */
-
-.chart_box_title {
-  background-color: orange;
-  text-align: center;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  align-content: center;
-}
-
-.chart_box {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 20px;
-}
-
-.chart_box_title {
-  background-color: orange;
-  padding: 5px;
-  margin: auto;
-}
-
-.chart_box_title>.col-4 {
-  font-weight: bold;
-}
-
-.chart_box_title>.col-8 {
-  font-weight: bold;
-}
-
-.chart_content {
-  margin-top: 5px;
-  padding: 20px;
-}
-
-.Winning_Num {
-  display: flex;
-}
-
-.Missing_Num {
-  display: flex;
-}
-
-.AVG_Num {
-  display: flex;
-}
-
-.MAX_NUM {
-  display: flex;
-}
-
-.MAX_CON_NUM {
-  display: flex;
-}
-
-.Winning_Num p {
-  border-radius: 50%;
-  border: 2px solid #fd565c;
-  color: #fd565c;
-  padding: 0 8px;
-  margin: 0px 2px;
-  font-size: 13px;
-}
-
-.Missing_Num p {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.number_category {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 50%;
-}
-
-.number_category p {
-  display: flex;
-  align-items: center;
-  border-radius: 50%;
-  width: 20px;
-  border: 1px solid rgb(75, 74, 74);
-  justify-content: center;
-}
-.MyGameRecordList__C_item_r{
-  width: 18%;
-}
-.bet_result_box {
-  color: #000;
-  border-radius: 5px;
-  text-align: center;
-}
-.greenSuccess{
-  background-color: #40ad72;
-  color: #fff;
-}
-.redfail{
-  background-color: #fd565c;
-  color: #fff;
-}
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.pagination_button {
-  padding: 8px 16px;
-  margin: 0 5px;
-  border: 1px solid #007bff;
-  background-color: #007bff;
-  color: #fff;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.pagination_button:hover {
-  background-color: #0056b3;
-}
-
-.pagination_button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.pagination_info {
-  margin: 0 10px;
-  font-size: 14px;
-  color: #333;
-}
-
-.noData_message {
-  text-align: center;
-  font-size: 18px;
-  color: #888;
-  margin-top: 20px;
-}
-
-/* Define the colors for different select types */
-
-.smallColor {
-  background-color: #6da7f4;
-  color: #fff;
-}
-
-
-.bigColor {
-  background-color: #ffa82e;
-  color: #fff;
-}
-
-.gradientRedViolet {
-  background: linear-gradient(to top, rgba(182, 89, 254, 1) 50%, rgba(253, 86, 92, 1) 50.01%);
-  color: #fff;
-}
-
-.gradientGreenViolet {
-  background: linear-gradient(to top, rgba(182, 89, 254, 1) 50%, rgba(71, 186, 124, 1) 50.01%);
-  color: #fff;
-}
-
-.greenColor {
-  color: #fff;
-  background-color: #40ad72;
-}
-
-.redColor {
-  color: #fff;
-  background-color: #fd565c;
-}
-
-.violetColor {
-  color: #fff;
-  background-color: #b659fe;
-}
-
-/* //for numbers */
-.gradientRedViolet2 {
-  background: -webkit-linear-gradient(top, #FD565C 50.96%, #b659fe 50.97%);
-  background: linear-gradient(180deg, #FD565C 50.96%, #b659fe 50.97%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-size: 24px;
-  font-weight: bold;
-
-}
-
-.gradientGreenViolet2 {
-  background: -webkit-linear-gradient(top, #40ad72 51.48%, #b659fe 51.49%);
-  background: linear-gradient(180deg, #40ad72 51.48%, #b659fe 51.49%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.greenColor2 {
-  color: #40ad72;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.redColor2 {
-  color: #fd565c;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.violetColor2 {
-  color: #b659fe;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-/* //winner pop up */
-/* Modal Wrapper */
-/* Modal Wrapper */
-.wrapper {
-  display: flex;
-}
-
-/* Modal */
-.modal {
-  width: 100%;
-  background: transparent !important;
-  /* max-width: 530px; */
-  /* margin: 20px; */
-  /* overflow: hidden; */
-  /* box-shadow: 0 60px 80px 0 rgba(0, 0, 0, .4); */
-}
-
-.model-body {
-  padding: 0px !important;
-}
-
-.modal-content {
-  background-color: transparent !important;
-  padding: 0px !important;
-  /* Set the background to transparent */
-}
-
-.modalTop {
-  padding: 30px 30px 20px;
-  /* border-top-left-radius: 10px;
-  border-top-right-radius: 10px; */
-  background: #1e1a1a;
-}
-
-.modalTop .modalHeader {
-  color: #fff;
-}
-
-.modalTop .modalSubheader {
-  color: #fff;
-}
-
-.lotteryResult {
-  padding: 12px 20px 13px;
-  /* border-top-left-radius: 10px;
-  border-top-right-radius: 10px; */
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-
-.lotteryResult h5 {
-  /* color: #fff; */
-}
-
-/* .lotteryResult button {
-  border-radius: 10px
-} */
-
-.lottery_color_result {
-  background-color: #f3b200;
-  color: white;
-  box-shadow: none;
-}
-
-.lottery_color_number {
-  background-color: #f3b200;
-  color: white;
-  box-shadow: none;
-}
-
-.lottery_color_category {
-  background-color: #f3b200;
-  color: white;
-  box-shadow: none;
-}
-.lottery_color_result:hover,
-.lottery_color_number:hover,
-.lottery_color_category:hover {
-  background-color: #f3b200; /* Same as the normal background color */
-  color: white; /* Same as the normal text color */
-}
-
-
-.modalIcon {
-  display: block;
-  max-width: 207px;
-  margin: 0px auto;
-}
-
-.modalHeader {
-  margin: 0px auto;
-  /* margin-bottom: 10px; */
-  font-size: 25.5px;
-  letter-spacing: 2px;
-  text-align: center;
-}
-
-.modalSubheader {
-  max-width: 350px;
-  margin: 10px auto;
-  font-size: 19px;
-  line-height: 1.3;
-  letter-spacing: 1.25px;
-  text-align: center;
-  color: #999;
-}
-
-/* Modal Bottom Section */
-.modalBottom {
-  display: flex;
-  align-items: center;
-  /* Align items vertically */
-  padding: 10px 55px;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  background: #fff;
-}
-
-/* Radio Button */
-input[type="checkbox"] {
-  margin-right: 10px;
-  /* Adjust spacing between radio button and label */
-}
-
-/* Label for Radio Button */
-.modalBottom label {
-  font-size: 16px;
-  color: #333;
-}
-
-/* Media Queries */
-@media (min-width: 456px) {
-  /* Add media query rules here if needed */
-}
- .closeBtn{
-  position: absolute;
-  bottom: -55px;
-  left: 47%;
-  background-color: #ffffff;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-
-}
-.btn-close {
-  box-sizing: content-box;
-  width: 1em;
-  height: 1em;
-  /* position: absolute;
-  bottom: -31px; */
-  /* top: -2px; */
-  left: 50%;
-  /* background: red; */
-  right: 0;
-  padding: .25em .25em;
-  color: #fff;
-  border: 0;
-  border-radius: .25rem;
-  opacity: 0.5;
-}
+ .gameHistory {
+   width: 100%;
+   display: flex;
+   align-content: flex-start;
+   justify-content: space-between;
+   align-items: center;
+ }
+
+ .gameHistory button {
+   width: 100%;
+   margin: 10px;
+   border-radius: 10px;
+ }
+
+ .table {
+   width: 100%;
+ }
+
+
+ .table th,
+ .table td {
+   padding: 8px;
+   text-align: left;
+   border-bottom: 1px solid #ddd;
+ }
+
+ .table th {
+   background-color: #f2f2f2;
+ }
+
+ .gamehistory_btn {
+   background: #e8e7e8;
+   font-weight: 600;
+   color: #000;
+ }
+
+ .chart_btn {
+   background: #e8e7e8;
+   font-weight: 600;
+   color: #000;
+ }
+
+ .myhistory_btn {
+   background: #e8e7e8;
+   font-weight: 600;
+   color: #000;
+ }
+
+ .gamehistory_btn_selected {
+   background: #ec7c01;
+   font-weight: 600;
+   color: #fff;
+ }
+
+ .gamehistory_btn_selected:hover {
+   color: #fff;
+ }
+
+ .chart_btn_selected {
+   background: #ec7c01;
+   font-weight: 600;
+   color: #fff;
+ }
+
+ .chart_btn_selected:hover {
+   color: #fff;
+ }
+
+ .myhistory_btn_selected {
+   background: #ec7c01;
+   font-weight: 600;
+   color: #fff;
+ }
+
+ .myhistory_btn_selected:hover {
+   color: #fff;
+ }
+
+ .numbers {
+   font-size: 24px;
+   font-weight: 700;
+ }
+
+ .disabled {
+   pointer-events: none;
+   opacity: 0.5;
+ }
+
+ .pagination {
+   display: flex;
+   justify-content: center;
+   margin-top: 20px;
+ }
+
+ .pagination a {
+   color: black;
+   cursor: pointer;
+   margin: 0 5px;
+   padding: 5px;
+   text-decoration: none;
+ }
+
+ .pagination button {
+   margin-right: 5px;
+   background-color: #ff9901;
+   color: white;
+   padding: 5px 10px;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+ }
+
+ .pagination span {
+   margin-right: 5px;
+   padding: 5px 10px;
+   font-size: 16px;
+ }
+
+ .pagination button:hover {
+   background-color: #ff9901;
+ }
+
+ .pagination button:disabled {
+   background-color: #aaaaaa;
+   cursor: not-allowed;
+ }
+
+ span {
+   margin: 0 10px;
+ }
+
+ .dashboard-cards {
+   display: flex;
+   flex-wrap: wrap;
+ }
+
+ .MyGameRecordList__C {
+   display: flex;
+   justify-content: space-between;
+   margin: 5px;
+   align-items: center;
+ }
+
+ .MyGameRecordList__item_1 {
+   background-color: rgb(122, 207, 222);
+   border-radius: 10px;
+   text-align: center;
+   height: 30px;
+   width: 60px;
+ }
+
+ .card_Details {
+   width: 100%;
+   padding: 15px;
+   background-color: #f6f6f6;
+ }
+
+ .card_Details_1,
+ .card_Details_2,
+ .card_Details_3,
+ .card_Details_4,
+ .card_Details_5,
+ .card_Details_6,
+ .card_Details_7,
+ .card_Details_8,
+ .card_Details_9,
+ .card_Details_10,
+ .card_Details_11 {
+   display: flex;
+   justify-content: space-between;
+   padding: 10px;
+   background-color: #eae4e4;
+   margin-bottom: 5px;
+   height: 50px;
+ }
+
+ .card_Details_7 div {
+   display: flex;
+   align-items: center;
+ }
+
+ .card_Details_7 div div {
+   margin-right: 5px;
+   height: 100%;
+ }
+
+ .card_Details_7 .redColor {
+   color: red;
+ }
+
+ .chart_box_title {
+   background-color: orange;
+   text-align: center;
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   justify-content: center;
+   align-content: center;
+ }
+
+ .chart_box {
+   border: 1px solid #ccc;
+   border-radius: 5px;
+   padding: 20px;
+ }
+
+ .chart_box_title {
+   background-color: orange;
+   padding: 5px;
+   margin: auto;
+ }
+
+ .chart_box_title>.col-4 {
+   font-weight: bold;
+ }
+
+ .chart_box_title>.col-8 {
+   font-weight: bold;
+ }
+
+ .chart_content {
+   margin-top: 5px;
+   padding: 20px;
+ }
+
+ .Winning_Num {
+   display: flex;
+ }
+
+ .Missing_Num {
+   display: flex;
+ }
+
+ .AVG_Num {
+   display: flex;
+ }
+
+ .MAX_NUM {
+   display: flex;
+ }
+
+ .MAX_CON_NUM {
+   display: flex;
+ }
+
+ .Winning_Num p {
+   border-radius: 50%;
+   border: 2px solid #fd565c;
+   color: #fd565c;
+   padding: 0 8px;
+   margin: 0px 2px;
+   font-size: 13px;
+ }
+
+ .Missing_Num p {
+   display: flex;
+   justify-content: space-evenly;
+ }
+
+ .number_category {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   width: 50%;
+ }
+
+ .number_category p {
+   display: flex;
+   align-items: center;
+   border-radius: 50%;
+   width: 20px;
+   border: 1px solid rgb(75, 74, 74);
+   justify-content: center;
+ }
+
+ .MyGameRecordList__C_item_r {
+   width: 18%;
+ }
+
+ .bet_result_box {
+   color: #000;
+   border-radius: 5px;
+   text-align: center;
+ }
+
+ .greenSuccess {
+   background-color: #40ad72;
+   color: #fff;
+ }
+
+ .redfail {
+   background-color: #fd565c;
+   color: #fff;
+ }
+
+ .pagination {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin-top: 20px;
+ }
+
+ .pagination_button {
+   padding: 8px 16px;
+   margin: 0 5px;
+   border: 1px solid #007bff;
+   background-color: #007bff;
+   color: #fff;
+   border-radius: 4px;
+   cursor: pointer;
+   transition: background-color 0.3s ease;
+ }
+
+ .pagination_button:hover {
+   background-color: #0056b3;
+ }
+
+ .pagination_button:disabled {
+   opacity: 0.5;
+   cursor: not-allowed;
+ }
+
+ .pagination_info {
+   margin: 0 10px;
+   font-size: 14px;
+   color: #333;
+ }
+
+ .noData_message {
+   text-align: center;
+   font-size: 18px;
+   color: #888;
+   margin-top: 20px;
+ }
+
+
+ .smallColor {
+   background-color: #6da7f4;
+   color: #fff;
+ }
+
+
+ .bigColor {
+   background-color: #ffa82e;
+   color: #fff;
+ }
+
+ .gradientRedViolet {
+   background: linear-gradient(to top, rgba(182, 89, 254, 1) 50%, rgba(253, 86, 92, 1) 50.01%);
+   color: #fff;
+ }
+
+ .gradientGreenViolet {
+   background: linear-gradient(to top, rgba(182, 89, 254, 1) 50%, rgba(71, 186, 124, 1) 50.01%);
+   color: #fff;
+ }
+
+ .greenColor {
+   color: #fff;
+   background-color: #40ad72;
+ }
+
+ .redColor {
+   color: #fff;
+   background-color: #fd565c;
+ }
+
+ .violetColor {
+   color: #fff;
+   background-color: #b659fe;
+ }
+
+ .gradientRedViolet2 {
+   background: -webkit-linear-gradient(top, #FD565C 50.96%, #b659fe 50.97%);
+   background: linear-gradient(180deg, #FD565C 50.96%, #b659fe 50.97%);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-clip: text;
+   font-size: 24px;
+   font-weight: bold;
+
+ }
+
+ .gradientGreenViolet2 {
+   background: -webkit-linear-gradient(top, #40ad72 51.48%, #b659fe 51.49%);
+   background: linear-gradient(180deg, #40ad72 51.48%, #b659fe 51.49%);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-clip: text;
+   font-size: 24px;
+   font-weight: bold;
+ }
+
+ .greenColor2 {
+   color: #40ad72;
+   font-size: 24px;
+   font-weight: bold;
+ }
+
+ .redColor2 {
+   color: #fd565c;
+   font-size: 24px;
+   font-weight: bold;
+ }
+
+ .violetColor2 {
+   color: #b659fe;
+   font-size: 24px;
+   font-weight: bold;
+ }
+
+ .wrapper {
+   display: flex;
+ }
+
+ .modal {
+   width: 100%;
+   background: transparent !important;
+ }
+
+ .model-body {
+   padding: 0px !important;
+ }
+
+ .modal-content {
+   background-color: transparent !important;
+   padding: 0px !important;
+ }
+
+ .modalTop {
+   padding: 30px 30px 20px;
+   background: #1e1a1a;
+ }
+
+ .modalTop .modalHeader {
+   color: #fff;
+ }
+
+ .modalTop .modalSubheader {
+   color: #fff;
+ }
+
+ .lotteryResult {
+   padding: 12px 20px 13px;
+   background-color: #fff;
+   display: flex;
+   align-items: center;
+   justify-content: space-around;
+ }
+
+ .lottery_color_result {
+   background-color: #f3b200;
+   color: white;
+   box-shadow: none;
+ }
+
+ .lottery_color_number {
+   background-color: #f3b200;
+   color: white;
+   box-shadow: none;
+ }
+
+ .lottery_color_category {
+   background-color: #f3b200;
+   color: white;
+   box-shadow: none;
+ }
+
+ .lottery_color_result:hover,
+ .lottery_color_number:hover,
+ .lottery_color_category:hover {
+   background-color: #f3b200;
+   color: white;
+ }
+
+
+ .modalIcon {
+   display: block;
+   max-width: 207px;
+   margin: 0px auto;
+ }
+
+ .modalHeader {
+   margin: 0px auto;
+   font-size: 25.5px;
+   letter-spacing: 2px;
+   text-align: center;
+ }
+
+ .modalSubheader {
+   max-width: 350px;
+   margin: 10px auto;
+   font-size: 19px;
+   line-height: 1.3;
+   letter-spacing: 1.25px;
+   text-align: center;
+   color: #999;
+ }
+
+ .modalBottom {
+   display: flex;
+   align-items: center;
+   padding: 10px 55px;
+   border-bottom-left-radius: 10px;
+   border-bottom-right-radius: 10px;
+   background: #fff;
+ }
+
+ input[type="checkbox"] {
+   margin-right: 10px;
+ }
+
+ .modalBottom label {
+   font-size: 16px;
+   color: #333;
+ }
+
+ .closeBtn {
+   position: absolute;
+   bottom: -55px;
+   left: 47%;
+   background-color: #ffffff;
+   width: 40px;
+   height: 40px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border-radius: 50%;
+
+ }
+
+ .btn-close {
+   box-sizing: content-box;
+   width: 1em;
+   height: 1em;
+   left: 50%;
+   right: 0;
+   padding: .25em .25em;
+   color: #fff;
+   border: 0;
+   border-radius: .25rem;
+   opacity: 0.5;
+ }
+
+ /* Media Queries */
+ @media only screen and (max-width: 600px) {
+   .MyGameRecordList__C_item_r {
+     width: 24%;
+   }
+
+   .MyGameRecordList__C {
+     display: flex;
+     justify-content: space-between;
+     margin: 7px;
+     align-items: center;
+   }
+
+   .table_head {
+     font-size: 12px;
+     font-weight: 700;
+   }
+
+   .table th,
+   .table td {
+     padding: 8px;
+     text-align: center;
+     border-bottom: 1px solid #ddd;
+     font-size: 14px;
+   }
+ }
