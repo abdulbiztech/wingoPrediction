@@ -92,7 +92,7 @@ const Header = () => {
 
           {userId ? (
             <div className={`form-inline my-2 my-lg-0 ${styles.user_box}`}>
-              <p>Username: {userId.substring(0, 20) + "..."}</p>
+              <p>UserId: {userId.substring(0, 20) + "..."}</p>
               <button onClick={handleRemoveUserId} className={`btn ${styles.connect_btn}`} type="button">Logout</button>
             </div>
           ) : (
