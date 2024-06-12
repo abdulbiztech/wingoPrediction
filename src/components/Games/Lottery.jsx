@@ -210,6 +210,7 @@ const Lottery = () => {
         axios.get(transferFundsApiUrl),
         axios.post(userTransferFundsApiUrl, data)
       ]);
+      toast.success("Fund transfer successful");
       console.log("Fund transfer successful:", transferFundsResponse);
       console.log("User transfer funds successful:", userTransferFundsResponse);
       getBalance();
