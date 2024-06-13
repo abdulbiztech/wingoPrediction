@@ -114,7 +114,7 @@ const GameHistory = (props) => {
       const betData = response?.data?.data;
       setUserBet(betData);
       setTotalPagesMyhistory(response?.data?.pagination?.totalPages);
-      localStorage.setItem("userBet", JSON.stringify(betData));
+      sessionStorage.setItem("userBet", JSON.stringify(betData));
       setLoading(false);
     } catch (error) {
       console.error("Error fetching user bet history:", error);
@@ -227,10 +227,10 @@ const GameHistory = (props) => {
   }, [isplace]);
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
+    const storedUserId = sessionStorage.getItem("userId");
     if (storedUserId) {
       setUserId(storedUserId);
-      const storedBetData = localStorage.getItem("userBet");
+      const storedBetData = sessionStorage.getItem("userBet");
       if (storedBetData) {
         setUserBet(JSON.parse(storedBetData));
       } else {
@@ -290,7 +290,7 @@ const GameHistory = (props) => {
   }, [userBet, currentPageMyhistory, itemsPerPage]);
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
+    const storedUserId = sessionStorage.getItem("userId");
     if (storedUserId) {
       setUserId(storedUserId);
       getUserBetHistory();
@@ -300,7 +300,7 @@ const GameHistory = (props) => {
   }, []);
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
+    const storedUserId = sessionStorage.getItem("userId");
     if (storedUserId) {
       setUserId(storedUserId);
       getUserBetHistory();
@@ -330,7 +330,7 @@ const GameHistory = (props) => {
 
   useEffect(() => {
     if (userBet) {
-      localStorage.setItem("userBet", JSON.stringify(userBet));
+      sessionStorage.setItem("userBet", JSON.stringify(userBet));
     }
   }, [userBet]);
 
@@ -762,3 +762,8 @@ const GameHistory = (props) => {
 };
 
 export default GameHistory;
+
+
+
+
+// logout after session expire login check field

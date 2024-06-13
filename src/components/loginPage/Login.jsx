@@ -4,7 +4,8 @@ import axios from "axios";
 import myContext from "../Context/MyContext.jsx";
 import API_BASE_URL from "../../environment/api";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -17,18 +18,42 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true); // Set loading state to true
+    setErrorMessage(''); // Clear previous error message
+
+    // Basic validation for empty fields
+    if (!username || !password) {
+      setErrorMessage('UserId and Password are required.');
+      toast.error('UserId and Password are required.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await axios.get(`https://demosoftech.com/GVTest/api/Fund/Login?userId=${username}&password=${password}`);
-      console.log("response",response);
-      setUserId(response?.data?.data[0]?.userid);
-      console.log("User ID:", response?.data?.data[0]?.userid);
-      localStorage.setItem('userId', response?.data?.data[0]?.userid);
-      navigate('/lottery');
-      toast.success("Login successful!");
+      if (response.data?.data && response.data?.data.length > 0) {
+        console.log("response", response);
+        setUserId(response?.data?.data[0]?.userid);
+        console.log("User ID:", response?.data?.data[0]?.userid);
+        sessionStorage.setItem('userId', response?.data?.data[0]?.userid);
+        navigate('/lottery');
+        toast.success("Login successful!");
+      } else {
+        setErrorMessage('Invalid UserId or Password.');
+        toast.error('Invalid UserId or Password.');
+      }
     } catch (error) {
-      console.error('Error:', error);
-      setErrorMessage('An error occurred while processing your request. Please try again later.');
-      toast.error('An error occurred while processing your request. Please try again later.');
+      if (error.response) {
+        if (error.response.status === 500) {
+          setErrorMessage('Server error occurred. Please try again later.');
+          toast.error('Server error occurred. Please try again later.');
+        } else {
+          setErrorMessage('Invalid UserId or Password.');
+          toast.error('Invalid UserId or Password.');
+        }
+      } else {
+        setErrorMessage('An error occurred while processing your request. Please try again later.');
+        toast.error('An error occurred while processing your request. Please try again later.');
+      }
     } finally {
       setIsLoading(false); // Reset loading state
     }

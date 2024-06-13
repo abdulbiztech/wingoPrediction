@@ -74,7 +74,7 @@ const Lottery = () => {
   };
 
   const getBalance = async () => {
-    const storedUserId = localStorage.getItem("userId");
+    const storedUserId = sessionStorage.getItem("userId");
     if (!storedUserId) {
       console.log("Stored User ID is null");
       return;
@@ -143,13 +143,12 @@ const Lottery = () => {
         setAmount(1);
         getBalance();
 
-        // Save the bet data in localStorage
-        const storedBetData = localStorage.getItem("userBet");
+        const storedBetData = sessionStorage.getItem("userBet");
         const newBetData = [
           ...(storedBetData ? JSON.parse(storedBetData) : []),
           data,
         ];
-        localStorage.setItem("userBet", JSON.stringify(newBetData));
+        sessionStorage.setItem("userBet", JSON.stringify(newBetData));
       } else {
         console.error("Failed to place bet:", response.data);
         toast.error(`Failed to place bet: ${response?.data?.data?.message}`);
@@ -182,7 +181,7 @@ const Lottery = () => {
     return Math.random().toString(36).substring(2, 14);
   };
   const handleFundTransferClick = async (amount, referenceNo = generateReferenceNo()) => {
-    const storedUserId = localStorage.getItem("userId");
+    const storedUserId = sessionStorage.getItem("userId");
 
     if (!storedUserId || !amount || !referenceNo || !FUND_TRANSFER_SECRET_KEY) {
       console.error("Required fields are not filled");

@@ -11,7 +11,7 @@ const Header = () => {
   const { balance, setBalance } = useContext(myContext);
   const navigate = useNavigate();
   useEffect(() => {
-    const storedUserId = localStorage.getItem('userId');
+    const storedUserId = sessionStorage.getItem('userId');
     if (storedUserId) {
       setUserId(storedUserId);
     }
@@ -29,8 +29,8 @@ const Header = () => {
         console.log(response.data.message);
         setUserId(0);
         setBalance(0)
-        localStorage.removeItem('userId');
-        localStorage.removeItem('userBet');
+        sessionStorage.removeItem('userId');
+        sessionStorage.removeItem('userBet');
         navigate('/login');
         toast.success("Logout successful!");
       } else {
