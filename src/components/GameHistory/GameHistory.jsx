@@ -121,36 +121,7 @@ const GameHistory = (props) => {
       setLoading(false);
     }
   };
-  // const getUserResult = async () => {
-  //   if (!issueNum) {
-  //     console.error("Error: No issue number available.");
-  //     return;
-  //   }
 
-  //   const data = {
-  //     userId: userId,
-  //     issueNumber: issueNum,
-  //   };
-
-  //   try {
-  //     const response = await axios.post(`${API_BASE_URL}/api/game/announce-results`, data);
-  //     if (response.status === 200) {
-  //       setResultAnnounced(true);
-  //       setGameResult(response.data);
-  //       setUserResults(response.data);
-  //     } else {
-  //       console.error("Error:", response.data.message);
-  //     }
-  //   } catch (error) {
-  //     if (error.response) {
-  //       console.error(`${error.response.status} ${error.response.statusText}: ${error.response.data}`);
-  //     } else if (error.request) {
-  //       console.error("No response received:", error.request);
-  //     } else {
-  //       console.error("Error fetching user result:", error.message);
-  //     }
-  //   }
-  // };
   const getUserResult = async () => {
     if (!issueNum) {
       console.error("Error: No issue number available.");
@@ -392,7 +363,7 @@ const GameHistory = (props) => {
                 {gameResult && gameResult.status ? (
                   <p>Congratulations!</p>
                 ) : (
-                  <p>Sorry you lose</p>
+                  <p>Sorry, you lost</p>
                 )}
               </div>
               <div className={styles.modalSubheader}>
