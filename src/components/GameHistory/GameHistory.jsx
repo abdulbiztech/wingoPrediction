@@ -114,13 +114,14 @@ const GameHistory = (props) => {
       const betData = response?.data?.data;
       setUserBet(betData);
       setTotalPagesMyhistory(response?.data?.pagination?.totalPages);
-      localStorage.setItem("userBet", JSON.stringify(betData));
+      sessionStorage.setItem("userBet", JSON.stringify(betData));
       setLoading(false);
     } catch (error) {
       console.error("Error fetching user bet history:", error);
       setLoading(false);
     }
   };
+
   const getUserResult = async () => {
     if (!issueNum) {
       console.error("Error: No issue number available.");
@@ -151,6 +152,7 @@ const GameHistory = (props) => {
       }
     }
   };
+
 
 
   const placeBetsData = (placeBets) => {
@@ -196,10 +198,10 @@ const GameHistory = (props) => {
   }, [isplace]);
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
+    const storedUserId = sessionStorage.getItem("userId");
     if (storedUserId) {
       setUserId(storedUserId);
-      const storedBetData = localStorage.getItem("userBet");
+      const storedBetData = sessionStorage.getItem("userBet");
       if (storedBetData) {
         setUserBet(JSON.parse(storedBetData));
       } else {
@@ -259,7 +261,7 @@ const GameHistory = (props) => {
   }, [userBet, currentPageMyhistory, itemsPerPage]);
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
+    const storedUserId = sessionStorage.getItem("userId");
     if (storedUserId) {
       setUserId(storedUserId);
       getUserBetHistory();
@@ -269,7 +271,7 @@ const GameHistory = (props) => {
   }, []);
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
+    const storedUserId = sessionStorage.getItem("userId");
     if (storedUserId) {
       setUserId(storedUserId);
       getUserBetHistory();
@@ -299,7 +301,7 @@ const GameHistory = (props) => {
 
   useEffect(() => {
     if (userBet) {
-      localStorage.setItem("userBet", JSON.stringify(userBet));
+      sessionStorage.setItem("userBet", JSON.stringify(userBet));
     }
   }, [userBet]);
 
@@ -361,7 +363,7 @@ const GameHistory = (props) => {
                 {gameResult && gameResult.status ? (
                   <p>Congratulations!</p>
                 ) : (
-                  <p>Sorry you lose</p>
+                  <p>Sorry, you lost</p>
                 )}
               </div>
               <div className={styles.modalSubheader}>
@@ -731,3 +733,8 @@ const GameHistory = (props) => {
 };
 
 export default GameHistory;
+
+
+
+
+// logout after session expire login check field

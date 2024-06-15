@@ -11,7 +11,7 @@ const Header = () => {
   const { balance, setBalance } = useContext(myContext);
   const navigate = useNavigate();
   useEffect(() => {
-    const storedUserId = localStorage.getItem('userId');
+    const storedUserId = sessionStorage.getItem('userId');
     if (storedUserId) {
       setUserId(storedUserId);
     }
@@ -29,8 +29,8 @@ const Header = () => {
         console.log(response.data.message);
         setUserId(0);
         setBalance(0)
-        localStorage.removeItem('userId');
-        localStorage.removeItem('userBet');
+        sessionStorage.removeItem('userId');
+        sessionStorage.removeItem('userBet');
         navigate('/login');
         toast.success("Logout successful!");
       } else {
@@ -92,7 +92,7 @@ const Header = () => {
 
           {userId ? (
             <div className={`form-inline my-2 my-lg-0 ${styles.user_box}`}>
-              <p>Username: {userId.substring(0, 20) + "..."}</p>
+              <p>UserId: {userId.substring(0, 20) + "..."}</p>
               <button onClick={handleRemoveUserId} className={`btn ${styles.connect_btn}`} type="button">Logout</button>
             </div>
           ) : (
