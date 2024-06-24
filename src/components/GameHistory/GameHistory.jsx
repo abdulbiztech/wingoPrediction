@@ -10,9 +10,7 @@ import winResult from "../../assets/win-result.png";
 import loseResult from "../../assets/lose-result.png";
 const GameHistory = (props) => {
   const { setIsplace, isplace, setShowResult, showResult } = props;
-  const { issueNum, setIssueNum } = useContext(myContext);
-  const { countDown, setCountDown } = useContext(myContext);
-  const { userBet, setUserBet } = useContext(myContext);
+  const { issueNum, setIssueNum, balance, setBalance, countDown, setCountDown, userBet, setUserBet } = useContext(myContext);
   const [selectedButton, setSelectedButton] = useState("gameHistory");
   const [gameHistory, setGameHistory] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -122,6 +120,31 @@ const GameHistory = (props) => {
     }
   };
 
+  const getBalance = async () => {
+    const storedUserId = sessionStorage.getItem("userId");
+    console.log(storedUserId);
+    if (!storedUserId) {
+      console.log("Stored User ID is null");
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/api/user/get-balance?userId=${storedUserId}`
+      );
+      if (!response.data) {
+        throw new Error("Failed to fetch user balance data");
+      }
+      const userBalance = response.data.data?.userBalance;
+      if (userBalance === null || userBalance === undefined) {
+        console.log("User balance is empty or null");
+        setBalance(0);
+      } else {
+        setBalance(userBalance);
+      }
+    } catch (error) {
+      console.error("Error fetching user balance data:", error);
+    }
+  };
   const getUserResult = async () => {
     if (!issueNum) {
       console.error("Error: No issue number available.");
@@ -139,6 +162,7 @@ const GameHistory = (props) => {
         setResultAnnounced(true);
         setGameResult(response.data);
         setUserResults(response.data);
+        await getBalance();
       } else {
         console.error("Error:", response.data.message);
       }
@@ -165,13 +189,16 @@ const GameHistory = (props) => {
     setResultAnnounced(false);
   };
 
-  const handleAutoClose = (event) => {
-    if (event.target.checked) {
-      setTimeout(() => {
-        setResultAnnounced(false);
-      }, 3000);
-    }
+  const handleAutoClose = () => {
+    setTimeout(() => {
+      setResultAnnounced(false);
+    }, 3000);
   };
+  useEffect(() => {
+    if (resultAnnounced) {
+      handleAutoClose();
+    }
+  }, [resultAnnounced]);
   useEffect(() => {
     if (userId) {
       getUserBetHistory(userId, currentPageMyhistory, setUserBet, setLoading);
@@ -376,13 +403,7 @@ const GameHistory = (props) => {
             </div>
 
             <div className={styles.modalBottom}>
-              <input
-                type="checkbox"
-                id="autoClose"
-                name="autoClose"
-                onChange={handleAutoClose}
-              />
-              <label htmlFor="autoClose">3 seconds auto close</label>
+              <label htmlFor="autoClose">Automatically closing in 3 seconds</label>
             </div>
 
             <div className={`${styles.closeBtn}`}>
