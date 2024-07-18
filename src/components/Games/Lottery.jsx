@@ -28,6 +28,7 @@ const Lottery = () => {
   const [showResult, setShowResult] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const betAmounts = [1, 5, 10, 20, 50, 100];
 
   const handleItemClick = (index) => {
@@ -109,6 +110,7 @@ const Lottery = () => {
     };
   };
   const placeBet = async (selectType, amount) => {
+    setIsLoading(true);
     if (!userId) {
       console.error("User is not logged in");
       toast.error("Please log in to place a bet");
@@ -160,6 +162,8 @@ const Lottery = () => {
         "An error occurred while placing the bet"
         }`
       );
+    } finally {
+      setIsLoading(false); // Always set loading state to false after API call
     }
   };
 
@@ -783,12 +787,19 @@ const Lottery = () => {
             Cancel
           </Button>
           <Button
-            className={`btn ${styles.pop_up_submit_btn}`}
+            className="btn"
             onClick={() => placeBet(selectedButton, amount)}
+            disabled={isLoading} // Disable button while loading
           >
-            Total Amount
+            {isLoading ? 'Placing Bet...' : 'Place Bet'}
           </Button>
         </Modal.Footer>
+        {isLoading && (
+          <div className="loading-indicator">
+            <p>Loading...</p>
+            {/* Add any loading animation or spinner here */}
+          </div>
+        )}
       </Modal>
     </>
   );
