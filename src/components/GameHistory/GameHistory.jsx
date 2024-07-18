@@ -90,17 +90,6 @@ const GameHistory = (props) => {
     }
   };
 
-  // const getGameHistory = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${API_BASE_URL}/api/game/get-game-history?page=${currentPage}`
-  //     );
-  //     setGameHistory(response?.data?.data);
-  //     setTotalPages(response?.data?.pagination?.totalPages);
-  //   } catch (error) {
-  //     console.error("Error fetching game history:", error);
-  //   }
-  // };
   const getGameHistory = async () => {
     try {
       const response = await axios.get(
@@ -110,7 +99,6 @@ const GameHistory = (props) => {
       setTotalPages(response?.data?.pagination?.totalPages);
     } catch (error) {
       console.error("Error fetching game history:", error);
-      // Handle error, possibly set gameHistory to an empty array or show an error message
     }
   };
 
@@ -135,7 +123,6 @@ const GameHistory = (props) => {
 
   const getBalance = async () => {
     const storedUserId = sessionStorage.getItem("userId");
-    // console.log(storedUserId);
     if (!storedUserId) {
       console.log("Stored User ID is null");
       return;
@@ -163,12 +150,10 @@ const GameHistory = (props) => {
       console.error("Error: No issue number available.");
       return;
     }
-
     const data = {
       userId: userId,
       issueNumber: issueNum,
     };
-
     try {
       const response = await axios.post(`${API_BASE_URL}/api/game/announce-results`, data);
       if (response.status === 200) {
@@ -189,8 +174,6 @@ const GameHistory = (props) => {
       }
     }
   };
-
-
 
   const placeBetsData = (placeBets) => {
     if (placeBets) {
@@ -453,7 +436,7 @@ const GameHistory = (props) => {
       {selectedButton === "gameHistory" && (
         <>
           {gameHistory.length === 0 ? (
-            <div className={`${styles.noData_message}`}>No data available</div>
+            <div className={`${styles.noData_message}`}>No game history available.</div>
           ) : (
             <div className="table-responsive">
               <table className={`${styles.table}`}>
@@ -568,7 +551,6 @@ const GameHistory = (props) => {
               </table>
             </div>
           )}
-          {/* Pagination */}
           <div className={styles.pagination}>
             <button
               onClick={() => handlePageChange(currentPage - 1)}
@@ -642,8 +624,8 @@ const GameHistory = (props) => {
                     >
                       {bet.betResult !== "pending"
                         ? `${bet.betResult === "win" ? "+" : "-"}$${bet.betResult === "win"
-                          ? bet.profitAmount.toFixed(2)
-                          : bet.amountAfterTax.toFixed(2)
+                          ? bet.profitAmount.toFixed(1)
+                          : bet.amountAfterTax.toFixed(1)
                         }`
                         : "Pending"}
                     </span>

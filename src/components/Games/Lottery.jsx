@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import time_img from "../../assets/time-img.png";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 const Lottery = () => {
   const navigate = useNavigate();
   const { countDown, issueNum, balance, setBalance, userId, setUserId } = useContext(myContext);
@@ -163,7 +165,7 @@ const Lottery = () => {
         }`
       );
     } finally {
-      setIsLoading(false); // Always set loading state to false after API call
+      setIsLoading(false);
     }
   };
 
@@ -789,15 +791,16 @@ const Lottery = () => {
           <Button
             className="btn"
             onClick={() => placeBet(selectedButton, amount)}
-            disabled={isLoading} // Disable button while loading
+            disabled={isLoading}
           >
             {isLoading ? 'Placing Bet...' : 'Place Bet'}
           </Button>
         </Modal.Footer>
+
         {isLoading && (
-          <div className="loading-indicator">
-            <p>Loading...</p>
-            {/* Add any loading animation or spinner here */}
+          <div className={styles.loadingIndicator}>
+            <FontAwesomeIcon icon={faSpinner} spin className={styles.spinnerIcon} />
+            <p className={styles.loadingText}>Loading...</p>
           </div>
         )}
       </Modal>
