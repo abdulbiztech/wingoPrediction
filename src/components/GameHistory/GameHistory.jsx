@@ -90,6 +90,17 @@ const GameHistory = (props) => {
     }
   };
 
+  // const getGameHistory = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${API_BASE_URL}/api/game/get-game-history?page=${currentPage}`
+  //     );
+  //     setGameHistory(response?.data?.data);
+  //     setTotalPages(response?.data?.pagination?.totalPages);
+  //   } catch (error) {
+  //     console.error("Error fetching game history:", error);
+  //   }
+  // };
   const getGameHistory = async () => {
     try {
       const response = await axios.get(
@@ -99,8 +110,10 @@ const GameHistory = (props) => {
       setTotalPages(response?.data?.pagination?.totalPages);
     } catch (error) {
       console.error("Error fetching game history:", error);
+      // Handle error, possibly set gameHistory to an empty array or show an error message
     }
   };
+
 
   const getUserBetHistory = async () => {
     try {
@@ -122,7 +135,7 @@ const GameHistory = (props) => {
 
   const getBalance = async () => {
     const storedUserId = sessionStorage.getItem("userId");
-    console.log(storedUserId);
+    // console.log(storedUserId);
     if (!storedUserId) {
       console.log("Stored User ID is null");
       return;
@@ -579,7 +592,7 @@ const GameHistory = (props) => {
       {selectedButton === "myHistory" && (
         <div className="row dashboard-cards">
           {userBet.length === 0 ? (
-            <div className={`${styles.noData_message}`}>No data available</div>
+            <div className={`${styles.noData_message}`}>No betting history available.</div>
           ) : (
             userBet?.map((bet, index) => (
               <div
@@ -754,8 +767,3 @@ const GameHistory = (props) => {
 };
 
 export default GameHistory;
-
-
-
-
-// logout after session expire login check field
