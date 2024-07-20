@@ -624,8 +624,8 @@ const GameHistory = (props) => {
                     >
                       {bet.betResult !== "pending"
                         ? `${bet.betResult === "win" ? "+" : "-"}$${bet.betResult === "win"
-                          ? bet.profitAmount.toFixed(2)
-                          : bet.amountAfterTax.toFixed(2)
+                          ? bet.profitAmount
+                          : bet.amountAfterTax
                         }`
                         : "Pending"}
                     </span>
@@ -647,7 +647,7 @@ const GameHistory = (props) => {
 
                       <div className={`${styles.card_Details_3}`}>
                         <p>Purchase Amount</p>
-                        <p>{`$${bet.betAmount.toFixed(2)}`}</p>
+                        <p>{`$${bet.betAmount}`}</p>
                       </div>
 
                       <div className={`${styles.card_Details_4}`}>
@@ -659,7 +659,7 @@ const GameHistory = (props) => {
                         <p>Amount After Tax</p>
                         <p
                           className={bet.betResult === "win" ? "green" : "red"}
-                        >{`$${bet.amountAfterTax.toFixed(2)}`}</p>
+                        >{`$${bet.amountAfterTax}`}</p>
                       </div>
 
                       <div className={`${styles.card_Details_6}`}>
@@ -711,7 +711,7 @@ const GameHistory = (props) => {
                         >
                           {bet.betResult === "pending"
                             ? "Pending"
-                            : `$${bet.profitAmount.toFixed(2)}`}
+                            : `$${bet.profitAmount}`}
                         </p>
                       </div>
 

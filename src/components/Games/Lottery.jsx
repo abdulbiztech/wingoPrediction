@@ -31,8 +31,8 @@ const Lottery = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isBettingInProgress, setIsBettingInProgress] = useState(false);
   const betAmounts = [1, 5, 10, 20, 50, 100];
-
   const handleItemClick = (index) => {
     setActiveIndex(index);
   };
@@ -54,6 +54,7 @@ const Lottery = () => {
       setAmount("");
     }
   };
+
   const handleIncrement = () => {
     setAmount((prevAmount) => prevAmount + 1);
   };
@@ -111,24 +112,30 @@ const Lottery = () => {
       gameId: 1,
     };
   };
+
   const placeBet = async (selectType, amount) => {
+    if (countDown <= 5) {
+      toast.error("Time out! You can't place the bet now");
+      setShowModal(false);
+      return;
+    }
+
     setIsLoading(true);
+    setIsBettingInProgress(true);
+
     if (!userId) {
       console.error("User is not logged in");
       toast.error("Please log in to place a bet");
       navigate("/login");
+      setIsLoading(false);
+      setIsBettingInProgress(false);
       return;
     }
 
-    // Check if the amount is valid
     if (amount == null || amount <= 0) {
       toast.error("Please enter a valid bet amount greater than 0");
-      return;
-    }
-
-    // Block bet placement if countDown has reached 0
-    if (countDown <= 5) {
-      toast.error("Time out! You can't place the bet now");
+      setIsLoading(false);
+      setIsBettingInProgress(false);
       return;
     }
 
@@ -166,6 +173,7 @@ const Lottery = () => {
       );
     } finally {
       setIsLoading(false);
+      setIsBettingInProgress(false);
     }
   };
 
@@ -183,9 +191,11 @@ const Lottery = () => {
       console.error("Error fetching recentWin", error);
     }
   };
+
   const generateReferenceNo = () => {
     return Math.random().toString(36).substring(2, 14);
   };
+
   const handleFundTransferClick = async (amount, referenceNo = generateReferenceNo()) => {
     const storedUserId = sessionStorage.getItem("userId");
 
@@ -204,10 +214,10 @@ const Lottery = () => {
       userId: storedUserId,
       amount: amount,
       referenceNo: referenceNo,
-      key: "0a0a5e19c94d60081d34f1223b55b3e31ebabaed211feb143b285efd"
+      key: FUND_TRANSFER_SECRET_KEY
     };
 
-    const transferFundsApiUrl = `https://demosoftech.com/GVTest/api/Fund/TransferFunds?userId=${storedUserId}&amount=${amount}&referenceNo=${referenceNo}&key=0a0a5e19c94d60081d34f1223b55b3e31ebabaed211feb143b285efd`;
+    const transferFundsApiUrl = `https://demosoftech.com/GVTest/api/Fund/TransferFunds?userId=${storedUserId}&amount=${amount}&referenceNo=${referenceNo}&key=${FUND_TRANSFER_SECRET_KEY}`;
     const userTransferFundsApiUrl = `${API_BASE_URL}/api/user/transfer-funds`;
 
     try {
@@ -229,12 +239,15 @@ const Lottery = () => {
     toast.info("Balance refreshed successfully");
     getBalance();
   };
+
   const openModal = () => {
     setIsModalOpen(true);
   };
+
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
   const handleSubmit = () => {
     if (amount && amount > 0) {
       handleFundTransferClick(amount);
@@ -279,8 +292,259 @@ const Lottery = () => {
     if (countDown === 0) {
       getBalance();
       recentWin();
+      if (isBettingInProgress) {
+        setShowModal(false); // Close modal on timeout
+      }
     }
   }, [countDown]);
+  // const handleItemClick = (index) => {
+  //   setActiveIndex(index);
+  // };
+
+  // const toggleModalPlay = () => {
+  //   setShowModalPlay(!showModalPlay);
+  // };
+
+  // const handleButtonClick = (option) => {
+  //   setSelectedOption(option);
+  // };
+
+  // const handleAmountChange = (event) => {
+  //   const { value } = event.target;
+  //   // Allow only numeric values
+  //   if (/^\d*$/.test(value) && value !== "") {
+  //     setAmount(parseInt(value, 10));
+  //   } else if (value === "") {
+  //     setAmount("");
+  //   }
+  // };
+  // const handleIncrement = () => {
+  //   setAmount((prevAmount) => prevAmount + 1);
+  // };
+
+  // const handleDecrement = () => {
+  //   setAmount((prevAmount) => {
+  //     const newAmount = prevAmount - 1;
+  //     return newAmount > 0 ? newAmount : 1;
+  //   });
+  // };
+
+  // const getRandomNumber = () => {
+  //   const randomNumber = Math.floor(Math.random() * 10);
+  //   setSelectedButton(randomNumber.toString());
+  //   setShowModal(true);
+  //   setSelectedColor(
+  //     randomNumber % 2 === 0
+  //       ? "linear-gradient(180deg, #40ad72 51.48%, #b659fe 51.49%)"
+  //       : "#fd565c"
+  //   );
+  // };
+
+  // const getBalance = async () => {
+  //   const storedUserId = sessionStorage.getItem("userId");
+  //   if (!storedUserId) {
+  //     console.log("Stored User ID is null");
+  //     return;
+  //   }
+  //   try {
+  //     const response = await axios.get(
+  //       `${API_BASE_URL}/api/user/get-balance?userId=${storedUserId}`
+  //     );
+  //     if (!response.data) {
+  //       throw new Error("Failed to fetch user balance data");
+  //     }
+  //     const userBalance = response.data.data?.userBalance;
+  //     if (userBalance === null || userBalance === undefined) {
+  //       console.log("User balance is empty or null");
+  //       setBalance(0);
+  //     } else {
+  //       setBalance(userBalance);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching user balance data:", error);
+  //   }
+  // };
+
+  // const generateBetData = (selectType, amount) => {
+  //   return {
+  //     userId: userId,
+  //     issueNumber: issueNum,
+  //     selectType: selectType,
+  //     amount: amount,
+  //     betCount: amount,
+  //     gameId: 1,
+  //   };
+  // };
+  // const placeBet = async (selectType, amount) => {
+  //   setIsLoading(true);
+  //   if (!userId) {
+  //     console.error("User is not logged in");
+  //     toast.error("Please log in to place a bet");
+  //     navigate("/login");
+  //     return;
+  //   }
+
+  //   // Check if the amount is valid
+  //   if (amount == null || amount <= 0) {
+  //     toast.error("Please enter a valid bet amount greater than 0");
+  //     return;
+  //   }
+
+  //   // Block bet placement if countDown has reached 0
+  //   if (countDown <= 5) {
+  //     toast.error("Time out! You can't place the bet now");
+  //     return;
+  //   }
+
+  //   const data = generateBetData(selectType, amount);
+
+  //   try {
+  //     const response = await axios.post(
+  //       `${API_BASE_URL}/api/user/predict`,
+  //       data
+  //     );
+  //     if (response.data.status) {
+  //       toast.success("Bet placed successfully");
+  //       setIsplace(true);
+  //       setShowResult(true);
+  //       setShowModal(false);
+  //       setAmount(1);
+  //       getBalance();
+
+  //       const storedBetData = sessionStorage.getItem("userBet");
+  //       const newBetData = [
+  //         ...(storedBetData ? JSON.parse(storedBetData) : []),
+  //         data,
+  //       ];
+  //       sessionStorage.setItem("userBet", JSON.stringify(newBetData));
+  //     } else {
+  //       console.error("Failed to place bet:", response.data);
+  //       toast.error(`Failed to place bet: ${response?.data?.data?.message}`);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error placing bet:", error);
+  //     toast.error(
+  //       `${error.response?.data?.message ||
+  //       "An error occurred while placing the bet"
+  //       }`
+  //     );
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // const recentWin = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${API_BASE_URL}/api/game/latest-results`
+  //     );
+  //     if (response) {
+  //       setRecentWinner(response.data.data);
+  //     } else {
+  //       console.error("Error:", response.data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching recentWin", error);
+  //   }
+  // };
+  // const generateReferenceNo = () => {
+  //   return Math.random().toString(36).substring(2, 14);
+  // };
+  // const handleFundTransferClick = async (amount, referenceNo = generateReferenceNo()) => {
+  //   const storedUserId = sessionStorage.getItem("userId");
+
+  //   if (!storedUserId || !amount || !referenceNo || !FUND_TRANSFER_SECRET_KEY) {
+  //     console.error("Required fields are not filled");
+  //     toast.error("Please fill in all the required fields");
+  //     return;
+  //   }
+
+  //   if (amount <= 0) {
+  //     toast.error("Amount must be greater than 0");
+  //     return;
+  //   }
+
+  //   const data = {
+  //     userId: storedUserId,
+  //     amount: amount,
+  //     referenceNo: referenceNo,
+  //     key: "0a0a5e19c94d60081d34f1223b55b3e31ebabaed211feb143b285efd"
+  //   };
+
+  //   const transferFundsApiUrl = `https://demosoftech.com/GVTest/api/Fund/TransferFunds?userId=${storedUserId}&amount=${amount}&referenceNo=${referenceNo}&key=0a0a5e19c94d60081d34f1223b55b3e31ebabaed211feb143b285efd`;
+  //   const userTransferFundsApiUrl = `${API_BASE_URL}/api/user/transfer-funds`;
+
+  //   try {
+  //     const [transferFundsResponse, userTransferFundsResponse] = await Promise.all([
+  //       axios.get(transferFundsApiUrl),
+  //       axios.post(userTransferFundsApiUrl, data)
+  //     ]);
+  //     toast.success("Fund transfer successful");
+  //     console.log("Fund transfer successful:", transferFundsResponse);
+  //     console.log("User transfer funds successful:", userTransferFundsResponse);
+  //     getBalance();
+  //   } catch (error) {
+  //     console.error("Error during fund transfer:", error.message);
+  //     toast.error("An error occurred during fund transfer. Please try again later.");
+  //   }
+  // };
+
+  // const handleBalance = () => {
+  //   toast.info("Balance refreshed successfully");
+  //   getBalance();
+  // };
+  // const openModal = () => {
+  //   setIsModalOpen(true);
+  // };
+  // const closeModal = () => {
+  //   setIsModalOpen(false);
+  // };
+  // const handleSubmit = () => {
+  //   if (amount && amount > 0) {
+  //     handleFundTransferClick(amount);
+  //     closeModal();
+  //     setAmount("");
+  //   } else {
+  //     toast.error("Please enter a valid amount");
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     setIsMobile(window.innerWidth <= 768);
+  //   };
+  //   window.addEventListener("resize", handleResize);
+  //   handleResize();
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
+
+  // useEffect(() => {
+  //   if (countDown === 5) {
+  //     setShowPopup(true);
+  //     setIsBettingAllowed(false);
+  //     setShowModal(false);
+  //   }
+  // }, [countDown]);
+
+  // useEffect(() => {
+  //   if (countDown <= 5 && countDown > 0) {
+  //     setShow(true);
+  //   } else {
+  //     setShow(false);
+  //   }
+  // }, [countDown]);
+
+  // useEffect(() => {
+  //   getBalance();
+  //   recentWin();
+  // }, []);
+
+  // useEffect(() => {
+  //   if (countDown === 0) {
+  //     getBalance();
+  //     recentWin();
+  //   }
+  // }, [countDown]);
 
   return (
     <>
