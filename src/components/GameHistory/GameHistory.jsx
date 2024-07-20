@@ -624,8 +624,8 @@ const GameHistory = (props) => {
                     >
                       {bet.betResult !== "pending"
                         ? `${bet.betResult === "win" ? "+" : "-"}$${bet.betResult === "win"
-                          ? bet.profitAmount.toFixed(1)
-                          : bet.amountAfterTax.toFixed(1)
+                          ? bet.profitAmount.toFixed(2)
+                          : bet.amountAfterTax.toFixed(2)
                         }`
                         : "Pending"}
                     </span>
