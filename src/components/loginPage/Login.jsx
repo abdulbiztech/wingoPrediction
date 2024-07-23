@@ -11,16 +11,15 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // New state for loading status
+  const [isLoading, setIsLoading] = useState(false);
   const { setBalance, setUserId } = useContext(myContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Set loading state to true
-    setErrorMessage(''); // Clear previous error message
+    setIsLoading(true);
+    setErrorMessage('');
 
-    // Basic validation for empty fields
     if (!username || !password) {
       setErrorMessage('UserId and Password are required.');
       toast.error('UserId and Password are required.');
@@ -29,7 +28,13 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.get(`https://demosoftech.com/GVTest/api/Fund/Login?userId=${username}&password=${password}`);
+      const response = await axios.get(`https://demosoftech.com/GVTest/api/Fund/Login`, {
+        params: {
+          userId: username,
+          password: password
+        }
+      });
+
       if (response.data?.data && response.data?.data.length > 0) {
         console.log("response", response);
         setUserId(response?.data?.data[0]?.userid);
@@ -59,6 +64,7 @@ const Login = () => {
     }
   };
 
+console.log("password",password);
   return (
     <>
       <div className={`${styles.logbg}`}>

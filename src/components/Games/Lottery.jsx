@@ -80,7 +80,7 @@ const Lottery = () => {
   const getBalance = async () => {
     const storedUserId = sessionStorage.getItem("userId");
     if (!storedUserId) {
-      console.log("Stored User ID is null");
+      // console.log("Stored User ID is null");
       return;
     }
     try {
@@ -92,7 +92,7 @@ const Lottery = () => {
       }
       const userBalance = response.data.data?.userBalance;
       if (userBalance === null || userBalance === undefined) {
-        console.log("User balance is empty or null");
+        // console.log("User balance is empty or null");
         setBalance(0);
       } else {
         setBalance(userBalance);
