@@ -27,26 +27,35 @@ const Login = () => {
       return;
     }
 
+    // Convert userId to lowercase
+    const userIdLowerCase = username
+
     try {
-      const response = await axios.get(`https://demosoftech.com/GVTest/api/Fund/Login`, {
-        params: {
-          userId: username,
-          password: password
-        }
+      const response = await axios.post(`${API_BASE_URL}/api/user/user-login`, {
+        userId: userIdLowerCase,
+        password: password
       });
 
-      if (response.data?.data && response.data?.data.length > 0) {
+      // Log the full response for debugging
+      console.log("API Response:", response);
+
+      // Check if login was successful based on the response
+      if (response.data?.status) {
         console.log("response", response);
-        setUserId(response?.data?.data[0]?.userid);
-        console.log("User ID:", response?.data?.data[0]?.userid);
-        sessionStorage.setItem('userId', response?.data?.data[0]?.userid);
+        setUserId(response.data?.data?.userId);
+        console.log("User ID:", response.data?.data?.userId);
+        sessionStorage.setItem('userId', response.data?.data?.userId);
         navigate('/lottery');
         toast.success("Login successful!");
       } else {
-        setErrorMessage('Invalid UserId or Password.');
-        toast.error('Invalid UserId or Password.');
+        // Display the exact message from the API
+        setErrorMessage(response.data?.message || 'Invalid UserId or Password.');
+        toast.error(response.data?.message || 'Invalid UserId or Password.');
       }
     } catch (error) {
+      // Log error details for debugging
+      console.error("API Error:", error);
+
       if (error.response) {
         if (error.response.status === 500) {
           setErrorMessage('Server error occurred. Please try again later.');
@@ -64,7 +73,8 @@ const Login = () => {
     }
   };
 
-console.log("password",password);
+  console.log("password", password);
+
   return (
     <>
       <div className={`${styles.logbg}`}>
@@ -132,6 +142,7 @@ console.log("password",password);
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };
